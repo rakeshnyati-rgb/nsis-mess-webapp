@@ -25,10 +25,10 @@
     }
 
     .header {
-      background: white;
+      background: #ffffff;
       text-align: center;
-      padding: 18px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      padding: 18px 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
     }
 
     .header h1 {
@@ -38,50 +38,49 @@
 
     .container {
       max-width: 500px;
-      margin: 18px auto;
-      padding: 14px;
+      margin: 16px auto;
+      padding: 12px;
     }
 
     .card {
-      background: white;
-      padding: 20px;
+      background: #ffffff;
       border-radius: 18px;
+      padding: 18px;
       box-shadow: 0 4px 18px rgba(0,0,0,.09);
     }
 
     .title {
       text-align: center;
-      margin-bottom: 20px;
     }
 
     .title h2 {
-      margin: 0 0 8px;
+      margin: 0 0 7px;
+      font-size: 21px;
     }
 
     .title p {
       margin: 0;
-      color: #5f6368;
+      color: #666;
     }
 
-    .backend {
-      margin: 10px 0 15px;
-      padding: 9px;
-      border-radius: 9px;
+    #backendStatus {
+      margin: 16px 0;
+      padding: 10px;
+      border-radius: 10px;
       text-align: center;
-      font-size: 13px;
       font-weight: bold;
+      font-size: 14px;
       background: #fff3cd;
       color: #795500;
     }
 
-    .backend.ready {
+    #backendStatus.ready {
       background: #e6f4ea;
       color: #137333;
     }
 
     #reader {
       width: 100%;
-      margin-top: 12px;
       overflow: hidden;
       border-radius: 14px;
     }
@@ -90,21 +89,24 @@
       width: 100%;
       padding: 15px;
       margin-top: 12px;
+      border-radius: 11px;
       font-size: 17px;
       font-weight: bold;
-      border-radius: 11px;
       cursor: pointer;
     }
 
-    .startBtn {
+    #startButton {
+      border: 0;
       background: #1a73e8;
       color: white;
-      border: 0;
     }
 
-    .stopBtn {
+    #startButton:disabled {
+      opacity: .5;
+    }
+
+    #stopButton {
       background: white;
-      color: #333;
       border: 1px solid #ccc;
     }
 
@@ -113,8 +115,8 @@
     }
 
     .resultCard {
-      padding: 22px;
       border-radius: 16px;
+      padding: 20px;
       text-align: center;
     }
 
@@ -123,39 +125,38 @@
       height: 135px;
       object-fit: cover;
       border-radius: 16px;
-      border: 4px solid white;
-      box-shadow: 0 3px 12px rgba(0,0,0,.18);
       display: block;
       margin: 0 auto 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.18);
     }
 
     .placeholder {
       width: 135px;
       height: 135px;
       border-radius: 16px;
+      margin: 0 auto 14px;
       background: #eef1f5;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       font-size: 50px;
-      margin: 0 auto 14px;
     }
 
     .studentName {
       font-size: 22px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
     }
 
     .statusIcon {
-      font-size: 40px;
-      margin-top: 14px;
+      font-size: 42px;
+      margin-top: 15px;
     }
 
     .statusText {
-      font-size: 25px;
+      font-size: 24px;
       font-weight: bold;
-      margin-top: 6px;
+      margin-top: 5px;
     }
 
     #backendFrame {
@@ -163,17 +164,6 @@
       width: 1px;
       height: 1px;
       border: 0;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 10px;
-        margin-top: 8px;
-      }
-
-      .card {
-        padding: 16px;
-      }
     }
   </style>
 </head>
@@ -185,7 +175,6 @@
 </div>
 
 <div class="container">
-
   <div class="card">
 
     <div class="title">
@@ -193,13 +182,12 @@
       <p>Scan Student QR Code</p>
     </div>
 
-    <div id="backendStatus" class="backend">
+    <div id="backendStatus">
       Connecting to Mess System...
     </div>
 
     <button
       id="startButton"
-      class="startBtn"
       onclick="startScanner()"
       disabled
     >
@@ -209,7 +197,7 @@
     <div id="reader"></div>
 
     <button
-      class="stopBtn"
+      id="stopButton"
       onclick="stopScanner()"
     >
       Stop Camera
@@ -218,11 +206,8 @@
     <div id="result"></div>
 
   </div>
-
 </div>
 
-
-<!-- Hidden Apps Script Backend Bridge -->
 <iframe
   id="backendFrame"
   src="https://script.google.com/macros/s/AKfycbyEwKZwMwd0m3glz0gI10aaJWJt7UOU2Wf7I5S0cCor2kKo3FQDEInPW1LapZcQq8sS/exec?mode=bridge"
@@ -231,193 +216,163 @@
 
 <script>
 
+const BACKEND_URL =
+  'https://script.google.com/macros/s/AKfycbyEwKZwMwd0m3glz0gI10aaJWJt7UOU2Wf7I5S0cCor2kKo3FQDEInPW1LapZcQq8sS/exec';
+
 let html5QrCode = null;
 let scannerRunning = false;
 let scanLocked = false;
 let backendReady = false;
+let currentRequestId = '';
 
-const pendingRequests = new Map();
-
-
-/* ==========================================
-   BACKEND COMMUNICATION
-========================================== */
-
-window.addEventListener(
-  'message',
-  function(event) {
-
-    let validOrigin = false;
-
-    try {
-      const host = new URL(event.origin).hostname;
-
-      validOrigin =
-        host === 'script.google.com' ||
-        host === 'script.googleusercontent.com' ||
-        host.endsWith('.googleusercontent.com');
-
-    } catch (e) {}
-
-    if (!validOrigin) {
-      return;
-    }
+let responseTimer = null;
 
 
-    const message = event.data || {};
+/* =========================================
+   RECEIVE MESSAGE FROM APPS SCRIPT
+========================================= */
+
+window.addEventListener('message', function(event) {
+
+  let validGoogleOrigin = false;
+
+  try {
+
+    const hostname =
+      new URL(event.origin).hostname;
+
+    validGoogleOrigin =
+      hostname === 'script.google.com' ||
+      hostname === 'script.googleusercontent.com' ||
+      hostname.endsWith('.googleusercontent.com');
+
+  } catch (e) {}
+
+  if (!validGoogleOrigin) {
+    return;
+  }
 
 
-    if (message.type === 'BRIDGE_READY') {
-
-      backendReady = true;
-
-      const status =
-        document.getElementById('backendStatus');
-
-      status.textContent =
-        '✅ Mess System Connected';
-
-      status.classList.add('ready');
-
-      document
-        .getElementById('startButton')
-        .disabled = false;
-
-      return;
-    }
+  const message =
+    event.data || {};
 
 
-    if (
-      message.type === 'MEAL_RESULT' &&
-      pendingRequests.has(message.requestId)
-    ) {
+  if (message.type === 'BRIDGE_READY') {
 
-      const handlers =
-        pendingRequests.get(
-          message.requestId
-        );
+    backendReady = true;
 
-      pendingRequests.delete(
-        message.requestId
-      );
+    const status =
+      document.getElementById('backendStatus');
 
-      handlers.resolve(
-        message.result
-      );
+    status.textContent =
+      '✅ Mess System Connected';
 
-      return;
-    }
+    status.classList.add('ready');
+
+    document.getElementById(
+      'startButton'
+    ).disabled = false;
+
+    return;
+  }
 
 
-    if (
-      message.type === 'MEAL_ERROR' &&
-      pendingRequests.has(message.requestId)
-    ) {
+  if (
+    message.type === 'MEAL_RESULT' &&
+    message.requestId === currentRequestId
+  ) {
 
-      const handlers =
-        pendingRequests.get(
-          message.requestId
-        );
+    clearTimeout(responseTimer);
 
-      pendingRequests.delete(
-        message.requestId
-      );
+    currentRequestId = '';
 
-      handlers.reject(
-        new Error(
-          message.message ||
-          'Backend error'
-        )
-      );
-    }
+    showMealResult(
+      message.result
+    );
+
+    return;
+  }
+
+
+  if (
+    message.type === 'MEAL_ERROR' &&
+    message.requestId === currentRequestId
+  ) {
+
+    clearTimeout(responseTimer);
+
+    currentRequestId = '';
+
+    showError(
+      message.message ||
+      'Backend error'
+    );
+
+    scheduleNextScan();
 
   }
-);
+
+});
 
 
-function recordMealOnServer(qr) {
+/* =========================================
+   SEND QR TO APPS SCRIPT
+========================================= */
 
-  return new Promise(
-    function(resolve, reject) {
+function sendQrToBackend(qr) {
 
-      if (!backendReady) {
-
-        reject(
-          new Error(
-            'Mess backend is not connected'
-          )
-        );
-
-        return;
-      }
+  currentRequestId =
+    'REQ_' +
+    Date.now() +
+    '_' +
+    Math.random()
+      .toString(36)
+      .substring(2,8);
 
 
-      const requestId =
-        'REQ_' +
-        Date.now() +
-        '_' +
-        Math.random()
-          .toString(36)
-          .substring(2, 8);
+  const url =
+    BACKEND_URL +
+    '?mode=bridge' +
+    '&requestId=' +
+    encodeURIComponent(
+      currentRequestId
+    ) +
+    '&qr=' +
+    encodeURIComponent(qr) +
+    '&t=' +
+    Date.now();
 
 
-      pendingRequests.set(
-        requestId,
-        {
-          resolve: resolve,
-          reject: reject
+  document.getElementById(
+    'backendFrame'
+  ).src = url;
+
+
+  responseTimer =
+    setTimeout(
+      function() {
+
+        if (currentRequestId) {
+
+          currentRequestId = '';
+
+          showError(
+            'Server response timeout'
+          );
+
+          scheduleNextScan();
+
         }
-      );
 
-
-      const frame =
-        document.getElementById(
-          'backendFrame'
-        );
-
-
-      frame.contentWindow.postMessage(
-        {
-          type: 'RECORD_MEAL',
-          requestId: requestId,
-          qr: qr
-        },
-        '*'
-      );
-
-
-      setTimeout(
-        function() {
-
-          if (
-            pendingRequests.has(
-              requestId
-            )
-          ) {
-
-            pendingRequests.delete(
-              requestId
-            );
-
-            reject(
-              new Error(
-                'Server response timeout'
-              )
-            );
-          }
-
-        },
-        20000
-      );
-
-    }
-  );
+      },
+      20000
+    );
 }
 
 
-/* ==========================================
-   START LIVE CAMERA
-========================================== */
+/* =========================================
+   START CAMERA
+========================================= */
 
 async function startScanner() {
 
@@ -425,20 +380,22 @@ async function startScanner() {
     return;
   }
 
-
   if (!backendReady) {
 
     showError(
-      'Mess System is still connecting.'
+      'Mess System is not connected.'
     );
 
     return;
   }
 
 
-  document
-    .getElementById('result')
-    .innerHTML = '';
+  document.getElementById(
+    'result'
+  ).innerHTML = '';
+
+
+  scanLocked = false;
 
 
   try {
@@ -509,7 +466,6 @@ async function startScanner() {
             ) * 0.70
           );
 
-
         return {
           width: size,
           height: size
@@ -528,7 +484,7 @@ async function startScanner() {
       onQrDetected,
 
       function() {
-        // Normal failed frames ignored
+        // Ignore normal scan failures
       }
 
     );
@@ -539,6 +495,10 @@ async function startScanner() {
   }
 
   catch (error) {
+
+    scannerRunning = false;
+
+    html5QrCode = null;
 
     showError(
       'Camera Error: ' +
@@ -552,9 +512,9 @@ async function startScanner() {
 }
 
 
-/* ==========================================
+/* =========================================
    QR DETECTED
-========================================== */
+========================================= */
 
 async function onQrDetected(
   decodedText
@@ -584,55 +544,29 @@ async function onQrDetected(
   await stopScanner();
 
 
-  document
-    .getElementById('result')
-    .innerHTML =
+  document.getElementById(
+    'result'
+  ).innerHTML =
 
-    '<div style="' +
-      'padding:20px;' +
-      'text-align:center;' +
-      'font-weight:bold;' +
-    '">' +
+    '<div class="resultCard" ' +
+    'style="background:#eef3fd;">' +
 
-      'Checking student...' +
+    '<strong>QR: ' +
+    escapeHtml(qr) +
+    '</strong><br><br>' +
+
+    'Checking student...' +
 
     '</div>';
 
 
-  try {
-
-    const data =
-      await recordMealOnServer(qr);
-
-
-    showMealResult(data);
-
-  }
-
-  catch (error) {
-
-    showError(
-      error.message ||
-      'Unable to record meal'
-    );
-
-  }
-
-
-  setTimeout(
-    function() {
-
-      scanLocked = false;
-
-    },
-    1500
-  );
+  sendQrToBackend(qr);
 }
 
 
-/* ==========================================
+/* =========================================
    STOP CAMERA
-========================================== */
+========================================= */
 
 async function stopScanner() {
 
@@ -647,10 +581,11 @@ async function stopScanner() {
 
     }
 
-
     if (html5QrCode) {
 
-      html5QrCode.clear();
+      try {
+        html5QrCode.clear();
+      } catch (e) {}
 
     }
 
@@ -659,7 +594,7 @@ async function stopScanner() {
   catch (error) {
 
     console.log(
-      'Stop camera:',
+      'Camera stop:',
       error
     );
 
@@ -667,59 +602,21 @@ async function stopScanner() {
 
 
   html5QrCode = null;
-
   scannerRunning = false;
 }
 
 
-/* ==========================================
-   DISPLAY RESULT
-========================================== */
+/* =========================================
+   DISPLAY SERVER RESULT
+========================================= */
 
 function showMealResult(data) {
 
   if (!data) {
 
     showError(
-      'No response received'
+      'No response received.'
     );
-
-    return;
-  }
-
-
-  if (data.status === 'ERROR') {
-
-    showError(
-      data.message ||
-      'System error'
-    );
-
-    return;
-  }
-
-
-  if (data.status === 'UNKNOWN QR') {
-
-    document
-      .getElementById('result')
-      .innerHTML =
-
-      '<div class="resultCard" ' +
-        'style="background:#fdecea;color:#b3261e;">' +
-
-        '<div class="statusIcon">🔴</div>' +
-
-        '<div class="statusText">' +
-          'UNKNOWN QR' +
-        '</div>' +
-
-        '<div style="margin-top:8px;">' +
-          'Student not found' +
-        '</div>' +
-
-      '</div>';
-
 
     scheduleNextScan();
 
@@ -727,71 +624,148 @@ function showMealResult(data) {
   }
 
 
+  const status =
+    String(
+      data.status ||
+      data.scanStatus ||
+      ''
+    )
+      .trim()
+      .toUpperCase();
+
+
   const student =
     data.student || {};
 
 
-  let bg =
+  let background =
     '#e6f4ea';
 
-  let color =
+  let textColor =
     '#137333';
 
   let icon =
     '🟢';
 
   let title =
-    'MEAL ALLOWED';
+    status || 'ALLOWED';
 
 
-  if (
-    data.status ===
-    'ALREADY TAKEN'
-  ) {
+  if (status === 'ALLOWED') {
 
-    bg = '#fff4e5';
-    color = '#b06000';
-    icon = '🟠';
-    title = 'ALREADY TAKEN';
+    title =
+      'MEAL ALLOWED';
 
   }
 
-
   else if (
-    data.status ===
-    'MESS NOT ACTIVE'
+    status === 'ALREADY TAKEN'
   ) {
 
-    bg = '#fdecea';
-    color = '#b3261e';
-    icon = '🔴';
-    title = 'MESS NOT ACTIVE';
+    background =
+      '#fff4e5';
+
+    textColor =
+      '#b06000';
+
+    icon =
+      '🟠';
+
+    title =
+      'ALREADY TAKEN';
 
   }
 
-
   else if (
-    data.status ===
-    'MESS STOPPED'
+    status === 'MESS NOT ACTIVE'
   ) {
 
-    bg = '#fdecea';
-    color = '#b3261e';
-    icon = '🔴';
-    title = 'MESS STOPPED';
+    background =
+      '#fdecea';
+
+    textColor =
+      '#b3261e';
+
+    icon =
+      '🔴';
+
+    title =
+      'MESS NOT ACTIVE';
 
   }
 
-
   else if (
-    data.status ===
-    'NOT STARTED'
+    status === 'MESS STOPPED'
   ) {
 
-    bg = '#fdecea';
-    color = '#b3261e';
-    icon = '🔴';
-    title = 'MESS NOT STARTED';
+    background =
+      '#fdecea';
+
+    textColor =
+      '#b3261e';
+
+    icon =
+      '🔴';
+
+    title =
+      'MESS STOPPED';
+
+  }
+
+  else if (
+    status === 'NOT STARTED' ||
+    status === 'MESS NOT STARTED'
+  ) {
+
+    background =
+      '#fdecea';
+
+    textColor =
+      '#b3261e';
+
+    icon =
+      '🔴';
+
+    title =
+      'MESS NOT STARTED';
+
+  }
+
+  else if (
+    status === 'UNKNOWN QR' ||
+    status === 'STUDENT NOT FOUND'
+  ) {
+
+    background =
+      '#fdecea';
+
+    textColor =
+      '#b3261e';
+
+    icon =
+      '🔴';
+
+    title =
+      'STUDENT NOT FOUND';
+
+  }
+
+  else if (
+    status === 'ERROR'
+  ) {
+
+    background =
+      '#fdecea';
+
+    textColor =
+      '#b3261e';
+
+    icon =
+      '🔴';
+
+    title =
+      data.message ||
+      'SYSTEM ERROR';
 
   }
 
@@ -801,82 +775,76 @@ function showMealResult(data) {
 
   if (
     student.photoUrl &&
-    student.photoUrl.length > 100
+    String(
+      student.photoUrl
+    ).length > 100
   ) {
 
     photoHtml =
-
       '<img ' +
-        'class="studentPhoto" ' +
-        'src="' +
-          student.photoUrl +
-        '" ' +
-        'alt="Student Photo"' +
-      '>';
+      'class="studentPhoto" ' +
+      'src="' +
+      student.photoUrl +
+      '" ' +
+      'alt="Student Photo">';
 
   }
 
   else {
 
     photoHtml =
-
       '<div class="placeholder">' +
-        '👤' +
+      '👤' +
       '</div>';
 
   }
 
 
-  document
-    .getElementById('result')
-    .innerHTML =
+  document.getElementById(
+    'result'
+  ).innerHTML =
 
     '<div class="resultCard" ' +
+    'style="background:' +
+    background +
+    ';">' +
 
-      'style="' +
-        'background:' +
-        bg +
-        ';' +
-      '"' +
+    photoHtml +
 
-    '>' +
+    '<div class="studentName">' +
+    escapeHtml(
+      student.name || ''
+    ) +
+    '</div>' +
 
-      photoHtml +
+    '<div>' +
+    'Student ID: <strong>' +
+    escapeHtml(
+      student.id || ''
+    ) +
+    '</strong>' +
+    '</div>' +
 
-      '<div class="studentName">' +
-        escapeHtml(
-          student.name || ''
-        ) +
-      '</div>' +
+    '<div style="margin-top:5px;">' +
+    'Class: <strong>' +
+    escapeHtml(
+      student.className || ''
+    ) +
+    '</strong>' +
+    '</div>' +
 
-      '<div>' +
-        'Student ID: <strong>' +
-        escapeHtml(
-          student.id || ''
-        ) +
-        '</strong>' +
-      '</div>' +
+    '<div class="statusIcon">' +
+    icon +
+    '</div>' +
 
-      '<div style="margin-top:4px;">' +
-        'Class: <strong>' +
-        escapeHtml(
-          student.className || ''
-        ) +
-        '</strong>' +
-      '</div>' +
+    '<div class="statusText" ' +
+    'style="color:' +
+    textColor +
+    ';">' +
 
-      '<div class="statusIcon">' +
-        icon +
-      '</div>' +
+    escapeHtml(title) +
 
-      '<div class="statusText" ' +
-        'style="color:' +
-        color +
-        ';">' +
-
-        title +
-
-      '</div>' +
+    '</div>' +
 
     '</div>';
 
@@ -885,18 +853,20 @@ function showMealResult(data) {
 }
 
 
-/* ==========================================
-   AUTOMATIC NEXT CHILD
-========================================== */
+/* =========================================
+   AUTO START NEXT SCAN
+========================================= */
 
 function scheduleNextScan() {
 
   setTimeout(
     function() {
 
-      document
-        .getElementById('result')
-        .innerHTML = '';
+      scanLocked = false;
+
+      document.getElementById(
+        'result'
+      ).innerHTML = '';
 
 
       if (
@@ -909,66 +879,47 @@ function scheduleNextScan() {
       }
 
     },
-    2500
+    3000
   );
 }
 
 
-/* ==========================================
-   ERROR
-========================================== */
+/* =========================================
+   ERROR DISPLAY
+========================================= */
 
 function showError(message) {
 
-  document
-    .getElementById('result')
-    .innerHTML =
+  document.getElementById(
+    'result'
+  ).innerHTML =
 
     '<div class="resultCard" ' +
-      'style="' +
-        'background:#fdecea;' +
-        'color:#b3261e;' +
-      '">' +
+    'style="' +
+    'background:#fdecea;' +
+    'color:#b3261e;' +
+    '">' +
 
-      '🔴 ' +
-      escapeHtml(message) +
+    '🔴 ' +
+    escapeHtml(message) +
 
     '</div>';
 }
 
 
-/* ==========================================
-   SAFE TEXT
-========================================== */
+/* =========================================
+   SAFE HTML
+========================================= */
 
 function escapeHtml(value) {
 
   return String(value)
 
-    .replaceAll(
-      '&',
-      '&amp;'
-    )
-
-    .replaceAll(
-      '<',
-      '&lt;'
-    )
-
-    .replaceAll(
-      '>',
-      '&gt;'
-    )
-
-    .replaceAll(
-      '"',
-      '&quot;'
-    )
-
-    .replaceAll(
-      "'",
-      '&#039;'
-    );
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
 </script>
