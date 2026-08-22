@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1"
+  >
+
+  <title>NSIS Mess QR Scanner</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+    }
+
+    .header {
+      background: white;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.09);
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    #reader {
+      width: 100%;
+      margin-top: 15px;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .startBtn {
+      background: #1a73e8;
+      color: white;
+      border: 0;
+    }
+
+    .stopBtn {
+      background: white;
+      color: #333;
+      border: 1px solid #ccc;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+      display: none;
+    }
+
+    .success {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    .error {
+      background: #fdecea;
+      color: #b3261e;
+    }
+
+    .qrValue {
+      font-size: 24px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>NSIS Mess Management</h1>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+
+      <h2>📷 Live QR Scanner</h2>
+
+      <button
+        class="startBtn"
+        onclick="startScanner()"
+      >
+        Start Camera
+      </button>
+
+      <div id="reader"></div>
+
+      <button
+        class="stopBtn"
+        onclick="stopScanner()"
+      >
+        Stop Camera
+      </button>
+
+      <div
+        id="result"
+        class="result"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+let html5QrCode = null;
+let scannerRunning = false;
+let scanLocked = false;
+
+
+async function startScanner() {
+
+  if (scannerRunning) {
+    return;
+  }
+
+  const result =
+    document.getElementById('result');
+
+  result.style.display = 'none';
+
+  try {
+
+    html5QrCode =
+      new Html5Qrcode('reader');
+
+    const cameras =
+      await Html5Qrcode.getCameras();
+
+    if (!cameras || cameras.length === 0) {
+      throw new Error('No camera found');
+    }
+
+    let cameraId =
+      cameras[0].id;
+
+    for (let i = 0; i < cameras.length; i++) {
+
+      const label =
+        String(cameras[i].label || '')
+          .toLowerCase();
+
+      if (
+        label.includes('back') ||
+        label.includes('rear') ||
+        label.includes('environment')
+      ) {
+
+        cameraId =
+          cameras[i].id;
+
+        break;
+      }
+    }
+
+
+    const config = {
+
+      fps: 10,
+
+      qrbox: function(
+        viewfinderWidth,
+        viewfinderHeight
+      ) {
+
+        const size =
+          Math.floor(
+            Math.min(
+              viewfinderWidth,
+              viewfinderHeight
+            ) * 0.70
+          );
+
+        return {
+          width: size,
+          height: size
+        };
+      }
+
+    };
+
+
+    await html5QrCode.start(
+
+      cameraId,
+
+      config,
+
+      qrCodeSuccess,
+
+      function() {
+        // Normal scan failures ignored
+      }
+
+    );
+
+
+    scannerRunning = true;
+
+  }
+
+  catch (error) {
+
+    showError(
+      'Camera Error: ' +
+      (
+        error.message ||
+        error
+      )
+    );
+
+    console.log(error);
+  }
+}
+
+
+async function qrCodeSuccess(
+  decodedText
+) {
+
+  if (scanLocked) {
+    return;
+  }
+
+  scanLocked = true;
+
+  const qr =
+    String(decodedText || '')
+      .trim();
+
+  await stopScanner();
+
+  const result =
+    document.getElementById('result');
+
+  result.className =
+    'result success';
+
+  result.style.display =
+    'block';
+
+  result.innerHTML =
+    '✅ QR DETECTED' +
+    '<div class="qrValue">' +
+      escapeHtml(qr) +
+    '</div>';
+
+  setTimeout(function() {
+
+    scanLocked = false;
+
+  }, 1500);
+}
+
+
+async function stopScanner() {
+
+  try {
+
+    if (
+      html5QrCode &&
+      scannerRunning
+    ) {
+
+      await html5QrCode.stop();
+
+    }
+
+    if (html5QrCode) {
+
+      html5QrCode.clear();
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.log(
+      'Stop error:',
+      error
+    );
+
+  }
+
+  html5QrCode = null;
+  scannerRunning = false;
+}
+
+
+function showError(message) {
+
+  const result =
+    document.getElementById('result');
+
+  result.className =
+    'result error';
+
+  result.style.display =
+    'block';
+
+  result.textContent =
+    message;
+}
+
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+</script>
+
+</body>
+</html>
