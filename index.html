@@ -700,7 +700,58 @@ window.addEventListener(
 
       return;
     }
+    /* MANUAL ENTRY RESULT */
 
+    if (
+      message.type ===
+      'MANUAL_RESULT' &&
+      message.requestId ===
+        currentRequestId
+    ) {
+
+      finishRequest();
+
+      const result =
+        message.result || {};
+
+
+      if (
+        result.authRequired === true
+      ) {
+
+        clearSession();
+
+        showLoginScreen();
+
+        showLoginError(
+          'Session expired. Please login again.'
+        );
+
+        return;
+      }
+
+
+      if (
+        result.success !== true
+      ) {
+
+        showError(
+          result.message ||
+          'Manual entry failed.'
+        );
+
+        return;
+      }
+
+
+      closeManualEntry();
+
+      showMealResult(
+        result.meal
+      );
+
+      return;
+    }
 
     /* LOGOUT RESULT */
 
@@ -1018,6 +1069,145 @@ document.getElementById(
    SCREENS
 ========================================== */
 
+function openManualEntry() {
+
+  if (
+    !currentStaff ||
+    currentStaff.canManualEntry !== true
+  ) {
+
+    showError(
+      'Manual Entry permission not allowed.'
+    );
+
+    return;
+  }
+
+  stopScanner();
+
+  document.getElementById(
+    'manualEntryBox'
+  ).style.display = 'block';
+
+  document.getElementById(
+    'result'
+  ).innerHTML = '';
+}
+
+
+function closeManualEntry() {
+
+  document.getElementById(
+    'manualEntryBox'
+  ).style.display = 'none';
+
+  document.getElementById(
+    'manualStudentId'
+  ).value = '';
+
+  document.getElementById(
+    'manualReason'
+  ).value = '';
+}
+
+
+function submitManualEntry() {
+
+  if (!sessionToken) {
+
+    showLoginScreen();
+
+    return;
+  }
+
+
+  if (
+    !currentStaff ||
+    currentStaff.canManualEntry !== true
+  ) {
+
+    showError(
+      'Manual Entry permission not allowed.'
+    );
+
+    return;
+  }
+
+
+  const studentId =
+    document.getElementById(
+      'manualStudentId'
+    )
+      .value
+      .trim()
+      .toUpperCase();
+
+
+  const manualReason =
+    document.getElementById(
+      'manualReason'
+    )
+      .value
+      .trim();
+
+
+  document.getElementById(
+    'manualStudentId'
+  ).value =
+    studentId;
+
+
+  if (!studentId) {
+
+    showError(
+      'Please enter Student ID.'
+    );
+
+    return;
+  }
+
+
+  if (!manualReason) {
+
+    showError(
+      'Please select Manual Entry reason.'
+    );
+
+    return;
+  }
+
+
+  document.getElementById(
+    'result'
+  ).innerHTML =
+
+    '<div class="resultCard" ' +
+    'style="background:#eef3fd;">' +
+
+    '<strong>Student ID: ' +
+    escapeHtml(studentId) +
+    '</strong><br><br>' +
+
+    'Checking Manual Entry...' +
+
+    '</div>';
+
+
+  postToBackend(
+    'manual',
+    {
+      token: sessionToken,
+      studentId: studentId,
+      manualReason: manualReason
+    }
+  );
+}
+
+
+/* ==========================================
+   SCREENS
+========================================== */
+  
 function showScannerScreen() {
 
   if (
@@ -1058,6 +1248,21 @@ function showScannerScreen() {
 
 }
 
+  const manualButton =
+  document.getElementById(
+    'manualEntryButton'
+  );
+
+if (
+  currentStaff.canManualEntry === true
+) {
+  manualButton.style.display =
+    'block';
+}
+else {
+  manualButton.style.display =
+    'none';
+}
 
 function showLoginScreen() {
 
