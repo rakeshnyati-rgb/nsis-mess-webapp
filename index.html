@@ -1254,7 +1254,10 @@ function showScannerScreen() {
   );
 
 if (
-  currentStaff.canManualEntry === true
+  currentStaff.canManualEntry === true ||
+  String(currentStaff.role || '')
+    .trim()
+    .toUpperCase() === 'ADMIN'
 ) {
   manualButton.style.display =
     'block';
