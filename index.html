@@ -20,14 +20,14 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f7fb;
+      background: #f4f7fb;
       color: #202124;
     }
 
     .header {
       background: #ffffff;
+      padding: 18px;
       text-align: center;
-      padding: 18px 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,.08);
     }
 
@@ -38,76 +38,131 @@
 
     .container {
       max-width: 500px;
-      margin: 16px auto;
+      margin: 18px auto;
       padding: 12px;
     }
 
     .card {
       background: #ffffff;
       border-radius: 18px;
-      padding: 18px;
+      padding: 20px;
       box-shadow: 0 4px 18px rgba(0,0,0,.09);
     }
 
-    .title {
+    .center {
       text-align: center;
     }
 
-    .title h2 {
-      margin: 0 0 7px;
-      font-size: 21px;
-    }
-
-    .title p {
-      margin: 0;
+    .subtitle {
       color: #666;
+      margin-top: 5px;
     }
 
-    #backendStatus {
-      margin: 16px 0;
+    .backend {
+      margin: 15px 0;
       padding: 10px;
       border-radius: 10px;
       text-align: center;
-      font-weight: bold;
       font-size: 14px;
+      font-weight: bold;
       background: #fff3cd;
       color: #795500;
     }
 
-    #backendStatus.ready {
+    .backend.ready {
       background: #e6f4ea;
       color: #137333;
     }
 
-    #reader {
+    .formGroup {
+      margin-top: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input {
       width: 100%;
-      overflow: hidden;
-      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid #ccd0d5;
+      border-radius: 10px;
+      font-size: 17px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #1a73e8;
     }
 
     button {
       width: 100%;
-      padding: 15px;
-      margin-top: 12px;
-      border-radius: 11px;
+      padding: 14px;
+      margin-top: 14px;
+      border-radius: 10px;
       font-size: 17px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    #startButton {
+    .primary {
       border: 0;
       background: #1a73e8;
       color: white;
     }
 
-    #startButton:disabled {
+    .primary:disabled {
       opacity: .5;
+      cursor: not-allowed;
     }
 
-    #stopButton {
-      background: white;
+    .secondary {
       border: 1px solid #ccc;
+      background: #ffffff;
+      color: #333;
+    }
+
+    .danger {
+      border: 1px solid #d93025;
+      background: #ffffff;
+      color: #d93025;
+    }
+
+    .error {
+      background: #fdecea;
+      color: #b3261e;
+      border-radius: 10px;
+      padding: 11px;
+      margin-top: 14px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .staffBar {
+      background: #eef3fd;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .staffName {
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .staffRole {
+      color: #555;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    #reader {
+      width: 100%;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 14px;
     }
 
     #result {
@@ -137,8 +192,8 @@
       margin: 0 auto 14px;
       background: #eef1f5;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       font-size: 50px;
     }
 
@@ -156,7 +211,11 @@
     .statusText {
       font-size: 24px;
       font-weight: bold;
-      margin-top: 5px;
+      margin-top: 6px;
+    }
+
+    #scannerScreen {
+      display: none;
     }
 
     #backendFrame {
@@ -175,21 +234,106 @@
 </div>
 
 <div class="container">
-  <div class="card">
 
-    <div class="title">
-      <h2>🍽️ Live Mess QR Entry</h2>
-      <p>Scan Student QR Code</p>
+  <!-- LOGIN SCREEN -->
+  <div
+    id="loginScreen"
+    class="card"
+  >
+
+    <div class="center">
+      <h2>🔐 Staff Login</h2>
+
+      <div class="subtitle">
+        Mess Entry System
+      </div>
     </div>
 
-    <div id="backendStatus">
+    <div
+      id="backendStatus"
+      class="backend"
+    >
       Connecting to Mess System...
+    </div>
+
+    <div class="formGroup">
+      <label>Login ID</label>
+
+      <input
+        id="loginId"
+        type="text"
+        placeholder="Example: ADMIN01"
+        autocomplete="username"
+      >
+    </div>
+
+    <div class="formGroup">
+      <label>6-Digit PIN</label>
+
+      <input
+        id="loginPin"
+        type="password"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="Enter PIN"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <button
+      id="loginButton"
+      class="primary"
+      onclick="loginStaff()"
+      disabled
+    >
+      Login
+    </button>
+
+    <div id="loginMessage"></div>
+
+  </div>
+
+
+  <!-- SCANNER SCREEN -->
+  <div
+    id="scannerScreen"
+    class="card"
+  >
+
+    <div class="staffBar">
+
+      <div>
+        Logged in as
+      </div>
+
+      <div
+        id="staffName"
+        class="staffName"
+      ></div>
+
+      <div
+        id="staffRole"
+        class="staffRole"
+      ></div>
+
+    </div>
+
+    <div class="center">
+
+      <h2 style="margin-bottom:5px;">
+        🍽️ Live Mess QR Entry
+      </h2>
+
+      <div class="subtitle">
+        Scan Student QR Code
+      </div>
+
     </div>
 
     <button
       id="startButton"
+      class="primary"
       onclick="startScanner()"
-      disabled
     >
       📷 Start Camera
     </button>
@@ -197,7 +341,7 @@
     <div id="reader"></div>
 
     <button
-      id="stopButton"
+      class="secondary"
       onclick="stopScanner()"
     >
       Stop Camera
@@ -205,13 +349,32 @@
 
     <div id="result"></div>
 
+    <button
+      class="danger"
+      onclick="logoutStaff()"
+    >
+      Logout
+    </button>
+
   </div>
+
 </div>
+
 
 <iframe
   id="backendFrame"
+  name="backendFrame"
   src="https://script.google.com/macros/s/AKfycbyEwKZwMwd0m3glz0gI10aaJWJt7UOU2Wf7I5S0cCor2kKo3FQDEInPW1LapZcQq8sS/exec?mode=bridge"
 ></iframe>
+
+
+<form
+  id="backendForm"
+  method="POST"
+  target="backendFrame"
+  action="https://script.google.com/macros/s/AKfycbyEwKZwMwd0m3glz0gI10aaJWJt7UOU2Wf7I5S0cCor2kKo3FQDEInPW1LapZcQq8sS/exec"
+  style="display:none;"
+></form>
 
 
 <script>
@@ -219,107 +382,314 @@
 const BACKEND_URL =
   'https://script.google.com/macros/s/AKfycbyEwKZwMwd0m3glz0gI10aaJWJt7UOU2Wf7I5S0cCor2kKo3FQDEInPW1LapZcQq8sS/exec';
 
+let backendReady = false;
+
+let sessionToken =
+  sessionStorage.getItem(
+    'NSIS_MESS_TOKEN'
+  ) || '';
+
+let currentStaff = null;
+
+try {
+
+  currentStaff =
+    JSON.parse(
+      sessionStorage.getItem(
+        'NSIS_MESS_STAFF'
+      ) || 'null'
+    );
+
+}
+catch (e) {
+
+  currentStaff = null;
+
+}
+
 let html5QrCode = null;
 let scannerRunning = false;
 let scanLocked = false;
-let backendReady = false;
+
 let currentRequestId = '';
-
 let responseTimer = null;
+let currentAction = '';
 
 
-/* =========================================
-   RECEIVE MESSAGE FROM APPS SCRIPT
-========================================= */
+/* ==========================================
+   BACKEND MESSAGES
+========================================== */
 
-window.addEventListener('message', function(event) {
+window.addEventListener(
+  'message',
+  function(event) {
 
-  let validGoogleOrigin = false;
+    let validOrigin = false;
 
-  try {
+    try {
 
-    const hostname =
-      new URL(event.origin).hostname;
+      const host =
+        new URL(
+          event.origin
+        ).hostname;
 
-    validGoogleOrigin =
-      hostname === 'script.google.com' ||
-      hostname === 'script.googleusercontent.com' ||
-      hostname.endsWith('.googleusercontent.com');
+      validOrigin =
+        host === 'script.google.com' ||
+        host === 'script.googleusercontent.com' ||
+        host.endsWith(
+          '.googleusercontent.com'
+        );
 
-  } catch (e) {}
+    }
+    catch (e) {}
 
-  if (!validGoogleOrigin) {
+
+    if (!validOrigin) {
+      return;
+    }
+
+
+    const message =
+      event.data || {};
+
+
+    /* BRIDGE READY */
+
+    if (
+      message.type ===
+      'BRIDGE_READY'
+    ) {
+
+      backendReady = true;
+
+      const backendStatus =
+        document.getElementById(
+          'backendStatus'
+        );
+
+      backendStatus.textContent =
+        '✅ Mess System Connected';
+
+      backendStatus.classList.add(
+        'ready'
+      );
+
+      document.getElementById(
+        'loginButton'
+      ).disabled = false;
+
+
+      if (
+        sessionToken &&
+        currentStaff
+      ) {
+
+        showScannerScreen();
+
+      }
+
+      return;
+    }
+
+
+    /* LOGIN RESULT */
+
+    if (
+      message.type ===
+      'LOGIN_RESULT' &&
+      message.requestId ===
+        currentRequestId
+    ) {
+
+      finishRequest();
+
+      const result =
+        message.result || {};
+
+
+      if (
+        result.success === true &&
+        result.token
+      ) {
+
+        sessionToken =
+          result.token;
+
+        currentStaff =
+          result.staff || {};
+
+
+        sessionStorage.setItem(
+          'NSIS_MESS_TOKEN',
+          sessionToken
+        );
+
+        sessionStorage.setItem(
+          'NSIS_MESS_STAFF',
+          JSON.stringify(
+            currentStaff
+          )
+        );
+
+
+        document.getElementById(
+          'loginPin'
+        ).value = '';
+
+        document.getElementById(
+          'loginMessage'
+        ).innerHTML = '';
+
+
+        showScannerScreen();
+
+      }
+
+      else {
+
+        showLoginError(
+          result.message ||
+          'Invalid Login ID or PIN.'
+        );
+
+      }
+
+      return;
+    }
+
+
+    /* SCAN RESULT */
+
+    if (
+      message.type ===
+      'SCAN_RESULT' &&
+      message.requestId ===
+        currentRequestId
+    ) {
+
+      finishRequest();
+
+      const result =
+        message.result || {};
+
+
+      if (
+        result.authRequired === true
+      ) {
+
+        clearSession();
+
+        showLoginScreen();
+
+        showLoginError(
+          'Session expired. Please login again.'
+        );
+
+        return;
+      }
+
+
+      if (
+        result.success !== true
+      ) {
+
+        showError(
+          result.message ||
+          'Unable to record meal.'
+        );
+
+        scheduleNextScan();
+
+        return;
+      }
+
+
+      showMealResult(
+        result.meal
+      );
+
+      return;
+    }
+
+
+    /* LOGOUT RESULT */
+
+    if (
+      message.type ===
+      'LOGOUT_RESULT' &&
+      message.requestId ===
+        currentRequestId
+    ) {
+
+      finishRequest();
+
+      clearSession();
+
+      showLoginScreen();
+
+      return;
+    }
+
+
+    /* BACKEND ERROR */
+
+    if (
+      message.type ===
+      'BACKEND_ERROR' &&
+      message.requestId ===
+        currentRequestId
+    ) {
+
+      finishRequest();
+
+      if (
+        currentAction === 'login'
+      ) {
+
+        showLoginError(
+          message.message ||
+          'Backend error.'
+        );
+
+      }
+
+      else {
+
+        showError(
+          message.message ||
+          'Backend error.'
+        );
+
+      }
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   POST TO APPS SCRIPT
+========================================== */
+
+function postToBackend(
+  action,
+  fields
+) {
+
+  if (!backendReady) {
+
+    if (action === 'login') {
+
+      showLoginError(
+        'Mess System is still connecting.'
+      );
+
+    }
+
     return;
   }
 
-
-  const message =
-    event.data || {};
-
-
-  if (message.type === 'BRIDGE_READY') {
-
-    backendReady = true;
-
-    const status =
-      document.getElementById('backendStatus');
-
-    status.textContent =
-      '✅ Mess System Connected';
-
-    status.classList.add('ready');
-
-    document.getElementById(
-      'startButton'
-    ).disabled = false;
-
-    return;
-  }
-
-
-  if (
-    message.type === 'MEAL_RESULT' &&
-    message.requestId === currentRequestId
-  ) {
-
-    clearTimeout(responseTimer);
-
-    currentRequestId = '';
-
-    showMealResult(
-      message.result
-    );
-
-    return;
-  }
-
-
-  if (
-    message.type === 'MEAL_ERROR' &&
-    message.requestId === currentRequestId
-  ) {
-
-    clearTimeout(responseTimer);
-
-    currentRequestId = '';
-
-    showError(
-      message.message ||
-      'Backend error'
-    );
-
-    scheduleNextScan();
-
-  }
-
-});
-
-
-/* =========================================
-   SEND QR TO APPS SCRIPT
-========================================= */
-
-function sendQrToBackend(qr) {
 
   currentRequestId =
     'REQ_' +
@@ -330,37 +700,81 @@ function sendQrToBackend(qr) {
       .substring(2,8);
 
 
-  const url =
-    BACKEND_URL +
-    '?mode=bridge' +
-    '&requestId=' +
-    encodeURIComponent(
-      currentRequestId
-    ) +
-    '&qr=' +
-    encodeURIComponent(qr) +
-    '&t=' +
-    Date.now();
+  currentAction =
+    action;
 
 
-  document.getElementById(
-    'backendFrame'
-  ).src = url;
+  const form =
+    document.getElementById(
+      'backendForm'
+    );
+
+
+  form.innerHTML = '';
+
+
+  addFormField(
+    form,
+    'action',
+    action
+  );
+
+  addFormField(
+    form,
+    'requestId',
+    currentRequestId
+  );
+
+
+  Object.keys(
+    fields || {}
+  ).forEach(
+    function(key) {
+
+      addFormField(
+        form,
+        key,
+        fields[key]
+      );
+
+    }
+  );
+
+
+  form.submit();
 
 
   responseTimer =
     setTimeout(
       function() {
 
-        if (currentRequestId) {
+        if (
+          currentRequestId
+        ) {
 
-          currentRequestId = '';
+          const actionCopy =
+            currentAction;
 
-          showError(
-            'Server response timeout'
-          );
+          finishRequest();
 
-          scheduleNextScan();
+
+          if (
+            actionCopy === 'login'
+          ) {
+
+            showLoginError(
+              'Server response timeout.'
+            );
+
+          }
+
+          else {
+
+            showError(
+              'Server response timeout.'
+            );
+
+          }
 
         }
 
@@ -370,9 +784,262 @@ function sendQrToBackend(qr) {
 }
 
 
-/* =========================================
+function addFormField(
+  form,
+  name,
+  value
+) {
+
+  const input =
+    document.createElement(
+      'input'
+    );
+
+  input.type =
+    'hidden';
+
+  input.name =
+    name;
+
+  input.value =
+    String(
+      value == null
+        ? ''
+        : value
+    );
+
+  form.appendChild(
+    input
+  );
+}
+
+
+function finishRequest() {
+
+  clearTimeout(
+    responseTimer
+  );
+
+  currentRequestId =
+    '';
+
+  currentAction =
+    '';
+
+}
+
+
+/* ==========================================
+   STAFF LOGIN
+========================================== */
+
+function loginStaff() {
+
+  if (!backendReady) {
+    return;
+  }
+
+
+  const loginId =
+    document.getElementById(
+      'loginId'
+    )
+      .value
+      .trim()
+      .toUpperCase();
+
+
+  const pin =
+    document.getElementById(
+      'loginPin'
+    )
+      .value
+      .trim();
+
+
+  document.getElementById(
+    'loginId'
+  ).value =
+    loginId;
+
+
+  if (!loginId) {
+
+    showLoginError(
+      'Please enter Login ID.'
+    );
+
+    return;
+  }
+
+
+  if (
+    !/^\d{6}$/.test(pin)
+  ) {
+
+    showLoginError(
+      'Please enter valid 6-digit PIN.'
+    );
+
+    return;
+  }
+
+
+  document.getElementById(
+    'loginMessage'
+  ).innerHTML =
+
+    '<div class="backend">' +
+      'Checking Login...' +
+    '</div>';
+
+
+  postToBackend(
+    'login',
+    {
+      loginId: loginId,
+      pin: pin
+    }
+  );
+}
+
+
+/* ENTER KEY LOGIN */
+
+document.getElementById(
+  'loginPin'
+).addEventListener(
+  'keydown',
+  function(event) {
+
+    if (
+      event.key === 'Enter'
+    ) {
+
+      loginStaff();
+
+    }
+
+  }
+);
+
+
+/* ==========================================
+   SCREENS
+========================================== */
+
+function showScannerScreen() {
+
+  if (
+    !sessionToken ||
+    !currentStaff
+  ) {
+
+    showLoginScreen();
+
+    return;
+  }
+
+
+  document.getElementById(
+    'loginScreen'
+  ).style.display =
+    'none';
+
+
+  document.getElementById(
+    'scannerScreen'
+  ).style.display =
+    'block';
+
+
+  document.getElementById(
+    'staffName'
+  ).textContent =
+    currentStaff.name ||
+    currentStaff.loginId ||
+    'Mess Staff';
+
+
+  document.getElementById(
+    'staffRole'
+  ).textContent =
+    currentStaff.role || '';
+
+}
+
+
+function showLoginScreen() {
+
+  stopScanner();
+
+
+  document.getElementById(
+    'scannerScreen'
+  ).style.display =
+    'none';
+
+
+  document.getElementById(
+    'loginScreen'
+  ).style.display =
+    'block';
+
+
+  document.getElementById(
+    'result'
+  ).innerHTML = '';
+
+}
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+async function logoutStaff() {
+
+  await stopScanner();
+
+
+  if (!sessionToken) {
+
+    clearSession();
+
+    showLoginScreen();
+
+    return;
+  }
+
+
+  postToBackend(
+    'logout',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function clearSession() {
+
+  sessionToken = '';
+  currentStaff = null;
+
+  sessionStorage.removeItem(
+    'NSIS_MESS_TOKEN'
+  );
+
+  sessionStorage.removeItem(
+    'NSIS_MESS_STAFF'
+  );
+
+}
+
+
+/* ==========================================
    START CAMERA
-========================================= */
+========================================== */
 
 async function startScanner() {
 
@@ -380,11 +1047,10 @@ async function startScanner() {
     return;
   }
 
-  if (!backendReady) {
 
-    showError(
-      'Mess System is not connected.'
-    );
+  if (!sessionToken) {
+
+    showLoginScreen();
 
     return;
   }
@@ -401,11 +1067,14 @@ async function startScanner() {
   try {
 
     html5QrCode =
-      new Html5Qrcode('reader');
+      new Html5Qrcode(
+        'reader'
+      );
 
 
     const cameras =
-      await Html5Qrcode.getCameras();
+      await Html5Qrcode
+        .getCameras();
 
 
     if (
@@ -438,7 +1107,9 @@ async function startScanner() {
       if (
         label.includes('back') ||
         label.includes('rear') ||
-        label.includes('environment')
+        label.includes(
+          'environment'
+        )
       ) {
 
         cameraId =
@@ -449,56 +1120,53 @@ async function startScanner() {
     }
 
 
-    const config = {
-
-      fps: 12,
-
-      qrbox: function(
-        width,
-        height
-      ) {
-
-        const size =
-          Math.floor(
-            Math.min(
-              width,
-              height
-            ) * 0.70
-          );
-
-        return {
-          width: size,
-          height: size
-        };
-      }
-
-    };
-
-
     await html5QrCode.start(
 
       cameraId,
 
-      config,
+      {
+        fps: 12,
+
+        qrbox: function(
+          width,
+          height
+        ) {
+
+          const size =
+            Math.floor(
+              Math.min(
+                width,
+                height
+              ) * .70
+            );
+
+          return {
+            width: size,
+            height: size
+          };
+
+        }
+      },
 
       onQrDetected,
 
-      function() {
-        // Ignore normal scan failures
-      }
+      function() {}
 
     );
 
 
-    scannerRunning = true;
+    scannerRunning =
+      true;
 
   }
 
   catch (error) {
 
-    scannerRunning = false;
+    scannerRunning =
+      false;
 
-    html5QrCode = null;
+    html5QrCode =
+      null;
 
     showError(
       'Camera Error: ' +
@@ -512,9 +1180,9 @@ async function startScanner() {
 }
 
 
-/* =========================================
+/* ==========================================
    QR DETECTED
-========================================= */
+========================================== */
 
 async function onQrDetected(
   decodedText
@@ -538,7 +1206,8 @@ async function onQrDetected(
   }
 
 
-  scanLocked = true;
+  scanLocked =
+    true;
 
 
   await stopScanner();
@@ -555,18 +1224,27 @@ async function onQrDetected(
     escapeHtml(qr) +
     '</strong><br><br>' +
 
-    'Checking student...' +
+    'Checking Student...' +
 
     '</div>';
 
 
-  sendQrToBackend(qr);
+  postToBackend(
+    'scan',
+    {
+      token:
+        sessionToken,
+
+      qr:
+        qr
+    }
+  );
 }
 
 
-/* =========================================
+/* ==========================================
    STOP CAMERA
-========================================= */
+========================================== */
 
 async function stopScanner() {
 
@@ -581,11 +1259,13 @@ async function stopScanner() {
 
     }
 
+
     if (html5QrCode) {
 
       try {
         html5QrCode.clear();
-      } catch (e) {}
+      }
+      catch (e) {}
 
     }
 
@@ -601,14 +1281,17 @@ async function stopScanner() {
   }
 
 
-  html5QrCode = null;
-  scannerRunning = false;
+  html5QrCode =
+    null;
+
+  scannerRunning =
+    false;
 }
 
 
-/* =========================================
-   DISPLAY SERVER RESULT
-========================================= */
+/* ==========================================
+   DISPLAY MEAL RESULT
+========================================== */
 
 function showMealResult(data) {
 
@@ -648,18 +1331,23 @@ function showMealResult(data) {
     '🟢';
 
   let title =
-    status || 'ALLOWED';
+    status ||
+    'ALLOWED';
 
 
-  if (status === 'ALLOWED') {
+  if (
+    status === 'ALLOWED'
+  ) {
 
     title =
       'MEAL ALLOWED';
 
   }
 
+
   else if (
-    status === 'ALREADY TAKEN'
+    status ===
+    'ALREADY TAKEN'
   ) {
 
     background =
@@ -676,8 +1364,10 @@ function showMealResult(data) {
 
   }
 
+
   else if (
-    status === 'MESS NOT ACTIVE'
+    status ===
+    'MESS NOT ACTIVE'
   ) {
 
     background =
@@ -694,8 +1384,10 @@ function showMealResult(data) {
 
   }
 
+
   else if (
-    status === 'MESS STOPPED'
+    status ===
+    'MESS STOPPED'
   ) {
 
     background =
@@ -712,9 +1404,11 @@ function showMealResult(data) {
 
   }
 
+
   else if (
     status === 'NOT STARTED' ||
-    status === 'MESS NOT STARTED'
+    status ===
+    'MESS NOT STARTED'
   ) {
 
     background =
@@ -731,9 +1425,11 @@ function showMealResult(data) {
 
   }
 
+
   else if (
     status === 'UNKNOWN QR' ||
-    status === 'STUDENT NOT FOUND'
+    status ===
+    'STUDENT NOT FOUND'
   ) {
 
     background =
@@ -749,6 +1445,7 @@ function showMealResult(data) {
       'STUDENT NOT FOUND';
 
   }
+
 
   else if (
     status === 'ERROR'
@@ -781,6 +1478,7 @@ function showMealResult(data) {
   ) {
 
     photoHtml =
+
       '<img ' +
       'class="studentPhoto" ' +
       'src="' +
@@ -793,6 +1491,7 @@ function showMealResult(data) {
   else {
 
     photoHtml =
+
       '<div class="placeholder">' +
       '👤' +
       '</div>';
@@ -853,16 +1552,18 @@ function showMealResult(data) {
 }
 
 
-/* =========================================
-   AUTO START NEXT SCAN
-========================================= */
+/* ==========================================
+   NEXT STUDENT
+========================================== */
 
 function scheduleNextScan() {
 
   setTimeout(
     function() {
 
-      scanLocked = false;
+      scanLocked =
+        false;
+
 
       document.getElementById(
         'result'
@@ -870,7 +1571,7 @@ function scheduleNextScan() {
 
 
       if (
-        backendReady &&
+        sessionToken &&
         !scannerRunning
       ) {
 
@@ -884,42 +1585,73 @@ function scheduleNextScan() {
 }
 
 
-/* =========================================
-   ERROR DISPLAY
-========================================= */
+/* ==========================================
+   MESSAGES
+========================================== */
 
-function showError(message) {
+function showLoginError(
+  message
+) {
+
+  document.getElementById(
+    'loginMessage'
+  ).innerHTML =
+
+    '<div class="error">' +
+    escapeHtml(message) +
+    '</div>';
+}
+
+
+function showError(
+  message
+) {
 
   document.getElementById(
     'result'
   ).innerHTML =
 
-    '<div class="resultCard" ' +
-    'style="' +
-    'background:#fdecea;' +
-    'color:#b3261e;' +
-    '">' +
-
+    '<div class="error">' +
     '🔴 ' +
     escapeHtml(message) +
-
     '</div>';
 }
 
 
-/* =========================================
-   SAFE HTML
-========================================= */
+/* ==========================================
+   SAFE TEXT
+========================================== */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(value)
 
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replaceAll(
+      '&',
+      '&amp;'
+    )
+
+    .replaceAll(
+      '<',
+      '&lt;'
+    )
+
+    .replaceAll(
+      '>',
+      '&gt;'
+    )
+
+    .replaceAll(
+      '"',
+      '&quot;'
+    )
+
+    .replaceAll(
+      "'",
+      '&#039;'
+    );
 }
 
 </script>
