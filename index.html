@@ -340,14 +340,104 @@
 
     <div id="reader"></div>
 
-    <button
-      class="secondary"
-      onclick="stopScanner()"
-    >
-      Stop Camera
-    </button>
+   <button
+  id="manualEntryButton"
+  class="secondary"
+  onclick="openManualEntry()"
+  style="display:none;"
+>
+  ✍️ Manual Entry
+</button>
 
-    <div id="result"></div>
+
+<div
+  id="manualEntryBox"
+  style="
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    background:#f8f9fa;
+    border-radius:12px;
+    border:1px solid #ddd;
+  "
+>
+
+  <h3 style="margin-top:0;">
+    Manual Meal Entry
+  </h3>
+
+  <div class="formGroup">
+
+    <label>Student ID</label>
+
+    <input
+      id="manualStudentId"
+      type="text"
+      placeholder="Example: STU0001"
+    >
+
+  </div>
+
+
+  <div class="formGroup">
+
+    <label>Reason</label>
+
+    <select
+      id="manualReason"
+      style="
+        width:100%;
+        padding:14px;
+        border:1px solid #ccd0d5;
+        border-radius:10px;
+        font-size:16px;
+      "
+    >
+
+      <option value="">
+        Select Reason
+      </option>
+
+      <option value="QR Card Not Available">
+        QR Card Not Available
+      </option>
+
+      <option value="QR Card Damaged">
+        QR Card Damaged
+      </option>
+
+      <option value="Camera / Scan Problem">
+        Camera / Scan Problem
+      </option>
+
+      <option value="Other">
+        Other
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <button
+    class="primary"
+    onclick="submitManualEntry()"
+  >
+    Submit Manual Entry
+  </button>
+
+
+  <button
+    class="secondary"
+    onclick="closeManualEntry()"
+  >
+    Cancel
+  </button>
+
+</div>
+
+
+<div id="result"></div>
 
     <button
       class="danger"
