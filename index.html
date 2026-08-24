@@ -627,6 +627,136 @@
     }
 
 
+
+    .studentManagePanel {
+      margin-bottom: 16px;
+    }
+
+    .studentManageCard {
+      padding: 18px;
+    }
+
+    .studentManageTop {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .studentManageTitle {
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .studentManageBadge {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .studentManageSearch {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 9px;
+      align-items: end;
+    }
+
+    .studentManageSearch .field {
+      margin-top: 10px;
+    }
+
+    .studentManageSearch .btn {
+      width: auto;
+      min-width: 104px;
+      margin-bottom: 0;
+    }
+
+    .managedStudentSummary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fbfcfe;
+    }
+
+    .managedStudentPhoto {
+      width: 66px;
+      height: 66px;
+      flex: 0 0 66px;
+      border-radius: 13px;
+      object-fit: cover;
+      background: #eef2f7;
+      border: 1px solid var(--border);
+    }
+
+    .managedStudentPhotoFallback {
+      width: 66px;
+      height: 66px;
+      flex: 0 0 66px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: var(--info-bg);
+      color: var(--primary);
+      font-size: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .managedStudentName {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .managedStudentMeta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .viewOnlyNotice {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .managedForm {
+      margin-top: 8px;
+    }
+
+    .managedForm input:disabled,
+    .managedForm select:disabled {
+      opacity: .72;
+      background: #f3f5f8;
+      color: #5f6b7a;
+    }
+
+    @media (max-width: 430px) {
+      .studentManageSearch {
+        grid-template-columns: 1fr;
+      }
+
+      .studentManageSearch .btn {
+        width: 100%;
+      }
+    }
+
     .bulkImportPanel {
       margin-top: 16px;
     }
@@ -1292,6 +1422,166 @@
 
       <div class="sectionTitle">Student Management</div>
 
+
+      <!-- EXISTING STUDENT MANAGEMENT -->
+      <div id="studentManagePanel" class="studentManagePanel">
+
+        <div class="card studentManageCard">
+
+          <div class="studentManageTop">
+            <div>
+              <div class="studentManageTitle">Existing Student Search / Edit</div>
+              <div class="helperText" style="margin-top:3px;">
+                Search by Student ID or Admission No. ADMIN can edit; MESS_MANAGER has view access.
+              </div>
+            </div>
+            <div id="studentManageRoleBadge" class="studentManageBadge">VIEW</div>
+          </div>
+
+          <div class="studentManageSearch">
+
+            <div class="field">
+              <label for="manageStudentSearch">Student ID / Admission No.</label>
+              <input
+                id="manageStudentSearch"
+                class="input"
+                type="text"
+                placeholder="Example: STU0001 or ADM001"
+                autocomplete="off"
+              >
+            </div>
+
+            <button
+              id="manageStudentSearchButton"
+              class="btn btnSoft"
+              onclick="lookupManagedStudent()"
+            >
+              🔎 Search
+            </button>
+
+          </div>
+
+          <div id="studentManageResult" class="resultArea"></div>
+
+          <div id="managedStudentFormWrap" style="display:none;">
+
+            <div id="managedStudentSummary" class="managedStudentSummary"></div>
+
+            <div id="managedStudentViewOnly" class="viewOnlyNotice" style="display:none;">
+              View-only access. Only ADMIN can save changes.
+            </div>
+
+            <div class="managedForm">
+
+              <div class="formGrid">
+
+                <div class="field">
+                  <label for="manageAdmissionNo">Admission No. *</label>
+                  <input id="manageAdmissionNo" class="input" type="text" autocomplete="off">
+                </div>
+
+                <div class="field">
+                  <label for="manageStudentName">Student Name *</label>
+                  <input id="manageStudentName" class="input" type="text" autocomplete="off">
+                </div>
+
+              </div>
+
+              <div class="formGrid">
+
+                <div class="field">
+                  <label for="manageClass">Class *</label>
+                  <input id="manageClass" class="input" type="text" autocomplete="off">
+                </div>
+
+                <div class="field">
+                  <label for="manageDivision">Division</label>
+                  <input id="manageDivision" class="input" type="text" autocomplete="off">
+                </div>
+
+              </div>
+
+              <div class="formGrid">
+
+                <div class="field">
+                  <label for="manageRollNo">Roll No.</label>
+                  <input id="manageRollNo" class="input" type="text" autocomplete="off">
+                </div>
+
+                <div class="field">
+                  <label for="manageMessActive">Mess Access</label>
+                  <select id="manageMessActive">
+                    <option value="TRUE">ACTIVE</option>
+                    <option value="FALSE">INACTIVE</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="formGrid">
+
+                <div class="field">
+                  <label for="manageMessStartDate">Mess Start Date</label>
+                  <input id="manageMessStartDate" class="input" type="date">
+                </div>
+
+                <div class="field">
+                  <label for="manageMessStopDate">Mess Stop Date</label>
+                  <input id="manageMessStopDate" class="input" type="date">
+                </div>
+
+              </div>
+
+              <div class="field">
+                <label for="manageParentName">Parent Name</label>
+                <input id="manageParentName" class="input" type="text" autocomplete="off">
+              </div>
+
+              <div class="field">
+                <label for="manageContactNo">Contact No.</label>
+                <input id="manageContactNo" class="input" type="tel" inputmode="tel" autocomplete="off">
+              </div>
+
+              <div class="field">
+                <label for="manageNotes">Notes</label>
+                <input id="manageNotes" class="input" type="text" autocomplete="off">
+              </div>
+
+              <div id="managedStudentAdminFields">
+
+                <div class="field">
+                  <label for="manageChangeReason">Reason for Change *</label>
+                  <input
+                    id="manageChangeReason"
+                    class="input"
+                    type="text"
+                    placeholder="Example: Class correction / Mess stopped by parent"
+                    autocomplete="off"
+                  >
+                </div>
+
+                <button
+                  id="manageStudentSaveButton"
+                  class="btn btnPrimary"
+                  onclick="saveManagedStudent()"
+                >
+                  Save Student Changes
+                </button>
+
+              </div>
+
+              <div class="roleNote">
+                Setting Mess Access to INACTIVE immediately prevents meal allowance on QR scan. All saved changes are recorded in Student_Change_Log.
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
       <div class="card studentRequestCard">
 
         <div class="requestInfo">
@@ -1694,6 +1984,11 @@
         </div>
 
         <div class="profileRow">
+          <div class="profileLabel">Student Management Access</div>
+          <div id="profileStudentManageAccess" class="profileValue">-</div>
+        </div>
+
+        <div class="profileRow">
           <div class="profileLabel">Admin Approval Access</div>
           <div id="profileApprovalAccess" class="profileValue">-</div>
         </div>
@@ -1830,6 +2125,7 @@ let lastApprovedStudent = null;
 let bulkStudentRows = [];
 let bulkStudentFileName = '';
 let bulkImportInProgress = false;
+let managedStudent = null;
 
 
 /* ==========================================
@@ -1894,6 +2190,38 @@ function hasStudentRequestPermission() {
 
 
 function hasAdminApprovalPermission() {
+
+  if (!currentStaff) {
+    return false;
+  }
+
+  return (
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase() === 'ADMIN'
+  );
+}
+
+
+function hasStudentManagePermission() {
+
+  if (!currentStaff) {
+    return false;
+  }
+
+  const role =
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase();
+
+  return (
+    role === 'ADMIN' ||
+    role === 'MESS_MANAGER'
+  );
+}
+
+
+function hasStudentEditPermission() {
 
   if (!currentStaff) {
     return false;
@@ -2104,6 +2432,117 @@ window.addEventListener(
         document.getElementById(
           'manualReason'
         ).value = '';
+      }
+
+      return;
+    }
+
+
+    /* STUDENT MANAGEMENT LOOKUP */
+
+    if (
+      message.type === 'STUDENT_MANAGE_LOOKUP_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setStudentManageLoading(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        managedStudent = null;
+
+        document.getElementById(
+          'managedStudentFormWrap'
+        ).style.display = 'none';
+
+        showError(
+          'studentManageResult',
+          result.message ||
+          'Unable to find student.'
+        );
+
+        return;
+      }
+
+      document.getElementById(
+        'studentManageResult'
+      ).innerHTML = '';
+
+      renderManagedStudent(
+        result.student || {}
+      );
+
+      return;
+    }
+
+
+    /* STUDENT MANAGEMENT UPDATE */
+
+    if (
+      message.type === 'STUDENT_MANAGE_UPDATE_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setStudentManageSaving(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'studentManageResult',
+          result.message ||
+          'Unable to update student.'
+        );
+
+        return;
+      }
+
+      if (result.noChanges === true) {
+
+        document.getElementById(
+          'studentManageResult'
+        ).innerHTML =
+          '<div class="resultCard" style="background:var(--info-bg);color:var(--primary-dark);">' +
+          '<strong>No changes detected.</strong>' +
+          '</div>';
+
+        return;
+      }
+
+      document.getElementById(
+        'studentManageResult'
+      ).innerHTML =
+        '<div class="resultCard" style="background:var(--success-bg);color:var(--success);">' +
+        '<div style="font-size:28px;">✅</div>' +
+        '<div style="font-size:17px;font-weight:900;margin-top:5px;">Student Updated</div>' +
+        '<div style="margin-top:7px;font-size:12px;color:var(--text);">' +
+        escapeHtml(result.message || 'Student details updated successfully.') +
+        '</div>' +
+        '</div>';
+
+      document.getElementById(
+        'manageChangeReason'
+      ).value = '';
+
+      if (result.student) {
+        renderManagedStudent(result.student);
       }
 
       return;
@@ -2539,6 +2978,17 @@ function postToBackend(
       );
 
     }
+    else if (
+      action === 'student_manage_lookup' ||
+      action === 'student_manage_update'
+    ) {
+
+      showError(
+        'studentManageResult',
+        'Mess System is still connecting.'
+      );
+
+    }
     else if (action === 'student_request') {
 
       showError(
@@ -2663,6 +3113,26 @@ function postToBackend(
 
           showError(
             'scanResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'student_manage_lookup') {
+
+          setStudentManageLoading(false);
+
+          showError(
+            'studentManageResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'student_manage_update') {
+
+          setStudentManageSaving(false);
+
+          showError(
+            'studentManageResult',
             'Server response timeout.'
           );
 
@@ -2930,6 +3400,17 @@ async function showLogin() {
     'studentRequestResult'
   ).innerHTML = '';
 
+
+  managedStudent = null;
+
+  document.getElementById(
+    'studentManageResult'
+  ).innerHTML = '';
+
+  document.getElementById(
+    'managedStudentFormWrap'
+  ).style.display = 'none';
+
   document.getElementById(
     'adminApprovalResult'
   ).innerHTML = '';
@@ -3007,6 +3488,25 @@ function updateStaffUI() {
     hasStudentRequestPermission()
       ? 'Allowed'
       : 'Not Allowed';
+
+
+  document.getElementById(
+    'profileStudentManageAccess'
+  ).textContent =
+    hasStudentManagePermission()
+      ? (
+          hasStudentEditPermission()
+            ? 'View + Edit'
+            : 'View Only'
+        )
+      : 'Not Allowed';
+
+  document.getElementById(
+    'studentManageRoleBadge'
+  ).textContent =
+    hasStudentEditPermission()
+      ? 'ADMIN EDIT'
+      : 'VIEW ONLY';
 
   document.getElementById(
     'profileApprovalAccess'
@@ -3567,6 +4067,467 @@ function submitManualEntry() {
     }
   );
 }
+
+
+/* ==========================================
+   EXISTING STUDENT MANAGEMENT
+========================================== */
+
+function setStudentManageLoading(
+  loading
+) {
+
+  const button =
+    document.getElementById(
+      'manageStudentSearchButton'
+    );
+
+  if (!button) {
+    return;
+  }
+
+  button.disabled =
+    loading === true;
+
+  button.textContent =
+    loading
+      ? 'Searching...'
+      : '🔎 Search';
+}
+
+
+function setStudentManageSaving(
+  loading
+) {
+
+  const button =
+    document.getElementById(
+      'manageStudentSaveButton'
+    );
+
+  if (!button) {
+    return;
+  }
+
+  button.disabled =
+    loading === true;
+
+  button.textContent =
+    loading
+      ? 'Saving Changes...'
+      : 'Save Student Changes';
+}
+
+
+function lookupManagedStudent() {
+
+  if (!sessionToken) {
+    showLogin();
+    return;
+  }
+
+  if (!hasStudentManagePermission()) {
+
+    showError(
+      'studentManageResult',
+      'Student Management permission not allowed.'
+    );
+
+    return;
+  }
+
+  const search =
+    document.getElementById(
+      'manageStudentSearch'
+    )
+      .value
+      .trim()
+      .toUpperCase();
+
+  document.getElementById(
+    'manageStudentSearch'
+  ).value = search;
+
+  if (!search) {
+
+    showError(
+      'studentManageResult',
+      'Please enter Student ID or Admission No.'
+    );
+
+    return;
+  }
+
+  managedStudent = null;
+
+  document.getElementById(
+    'managedStudentFormWrap'
+  ).style.display = 'none';
+
+  document.getElementById(
+    'studentManageResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:var(--info-bg);color:var(--primary-dark);">' +
+    '<strong>Searching student...</strong>' +
+    '</div>';
+
+  setStudentManageLoading(true);
+
+  postToBackend(
+    'student_manage_lookup',
+    {
+      token: sessionToken,
+      studentSearch: search
+    }
+  );
+}
+
+
+function renderManagedStudent(
+  student
+) {
+
+  managedStudent =
+    student || {};
+
+  const canEdit =
+    hasStudentEditPermission();
+
+  document.getElementById(
+    'managedStudentFormWrap'
+  ).style.display = 'block';
+
+  document.getElementById(
+    'managedStudentViewOnly'
+  ).style.display =
+    canEdit
+      ? 'none'
+      : 'block';
+
+  document.getElementById(
+    'managedStudentAdminFields'
+  ).style.display =
+    canEdit
+      ? 'block'
+      : 'none';
+
+  const photoHtml =
+    managedStudent.photoUrl
+      ? (
+          '<img class="managedStudentPhoto" src="' +
+          escapeHtml(managedStudent.photoUrl) +
+          '" alt="Student Photo">'
+        )
+      : (
+          '<div class="managedStudentPhotoFallback">🎓</div>'
+        );
+
+  document.getElementById(
+    'managedStudentSummary'
+  ).innerHTML =
+    photoHtml +
+    '<div>' +
+      '<div class="managedStudentName">' +
+        escapeHtml(managedStudent.name || '-') +
+      '</div>' +
+      '<div class="managedStudentMeta">' +
+        'Student ID: <strong>' +
+        escapeHtml(managedStudent.id || '-') +
+        '</strong><br>' +
+        'Admission No.: <strong>' +
+        escapeHtml(managedStudent.admissionNo || '-') +
+        '</strong><br>' +
+        'QR: ' +
+        escapeHtml(managedStudent.qrCode || '-') +
+      '</div>' +
+    '</div>';
+
+  document.getElementById(
+    'manageAdmissionNo'
+  ).value =
+    managedStudent.admissionNo || '';
+
+  document.getElementById(
+    'manageStudentName'
+  ).value =
+    managedStudent.name || '';
+
+  document.getElementById(
+    'manageClass'
+  ).value =
+    managedStudent.className || '';
+
+  document.getElementById(
+    'manageDivision'
+  ).value =
+    managedStudent.division || '';
+
+  document.getElementById(
+    'manageRollNo'
+  ).value =
+    managedStudent.rollNo || '';
+
+  document.getElementById(
+    'manageParentName'
+  ).value =
+    managedStudent.parentName || '';
+
+  document.getElementById(
+    'manageContactNo'
+  ).value =
+    managedStudent.contactNo || '';
+
+  document.getElementById(
+    'manageMessActive'
+  ).value =
+    managedStudent.messActive === true
+      ? 'TRUE'
+      : 'FALSE';
+
+  document.getElementById(
+    'manageMessStartDate'
+  ).value =
+    managedStudent.messStartDate || '';
+
+  document.getElementById(
+    'manageMessStopDate'
+  ).value =
+    managedStudent.messStopDate || '';
+
+  document.getElementById(
+    'manageNotes'
+  ).value =
+    managedStudent.notes || '';
+
+  const editableIds = [
+    'manageAdmissionNo',
+    'manageStudentName',
+    'manageClass',
+    'manageDivision',
+    'manageRollNo',
+    'manageParentName',
+    'manageContactNo',
+    'manageMessActive',
+    'manageMessStartDate',
+    'manageMessStopDate',
+    'manageNotes'
+  ];
+
+  editableIds.forEach(
+    function(id) {
+
+      const element =
+        document.getElementById(id);
+
+      if (element) {
+        element.disabled =
+          !canEdit;
+      }
+    }
+  );
+}
+
+
+function saveManagedStudent() {
+
+  if (!sessionToken) {
+    showLogin();
+    return;
+  }
+
+  if (!hasStudentEditPermission()) {
+
+    showError(
+      'studentManageResult',
+      'Admin permission required to edit student details.'
+    );
+
+    return;
+  }
+
+  if (
+    !managedStudent ||
+    !managedStudent.id
+  ) {
+
+    showError(
+      'studentManageResult',
+      'Please search and load a student first.'
+    );
+
+    return;
+  }
+
+  const admissionNo =
+    document.getElementById(
+      'manageAdmissionNo'
+    ).value.trim().toUpperCase();
+
+  const studentName =
+    document.getElementById(
+      'manageStudentName'
+    ).value.trim();
+
+  const className =
+    document.getElementById(
+      'manageClass'
+    ).value.trim();
+
+  const division =
+    document.getElementById(
+      'manageDivision'
+    ).value.trim().toUpperCase();
+
+  const rollNo =
+    document.getElementById(
+      'manageRollNo'
+    ).value.trim();
+
+  const parentName =
+    document.getElementById(
+      'manageParentName'
+    ).value.trim();
+
+  const contactNo =
+    document.getElementById(
+      'manageContactNo'
+    ).value.trim();
+
+  const messActive =
+    document.getElementById(
+      'manageMessActive'
+    ).value;
+
+  const messStartDate =
+    document.getElementById(
+      'manageMessStartDate'
+    ).value;
+
+  const messStopDate =
+    document.getElementById(
+      'manageMessStopDate'
+    ).value;
+
+  const notes =
+    document.getElementById(
+      'manageNotes'
+    ).value.trim();
+
+  const reason =
+    document.getElementById(
+      'manageChangeReason'
+    ).value.trim();
+
+  if (!admissionNo) {
+
+    showError(
+      'studentManageResult',
+      'Admission No. is required.'
+    );
+
+    return;
+  }
+
+  if (!studentName) {
+
+    showError(
+      'studentManageResult',
+      'Student Name is required.'
+    );
+
+    return;
+  }
+
+  if (!className) {
+
+    showError(
+      'studentManageResult',
+      'Class is required.'
+    );
+
+    return;
+  }
+
+  if (!reason) {
+
+    showError(
+      'studentManageResult',
+      'Reason for change is required.'
+    );
+
+    return;
+  }
+
+  if (
+    messStartDate &&
+    messStopDate &&
+    messStopDate < messStartDate
+  ) {
+
+    showError(
+      'studentManageResult',
+      'Mess Stop Date cannot be before Mess Start Date.'
+    );
+
+    return;
+  }
+
+  if (
+    messActive === 'FALSE'
+  ) {
+
+    const confirmed =
+      confirm(
+        'Mess Access will be set to INACTIVE. This student will not be allowed a meal by QR scan. Continue?'
+      );
+
+    if (!confirmed) {
+      return;
+    }
+  }
+
+  setStudentManageSaving(true);
+
+  document.getElementById(
+    'studentManageResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:var(--info-bg);color:var(--primary-dark);">' +
+    '<strong>Saving student changes...</strong>' +
+    '</div>';
+
+  postToBackend(
+    'student_manage_update',
+    {
+      token: sessionToken,
+      studentId: managedStudent.id,
+      admissionNo: admissionNo,
+      studentName: studentName,
+      className: className,
+      division: division,
+      rollNo: rollNo,
+      parentName: parentName,
+      contactNo: contactNo,
+      messActive: messActive,
+      messStartDate: messStartDate,
+      messStopDate: messStopDate,
+      notes: notes,
+      reason: reason
+    }
+  );
+}
+
+
+document.getElementById(
+  'manageStudentSearch'
+).addEventListener(
+  'keydown',
+  function(event) {
+
+    if (event.key === 'Enter') {
+      lookupManagedStudent();
+    }
+  }
+);
 
 
 /* ==========================================
