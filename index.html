@@ -1995,6 +1995,50 @@
 
     .reportMoneyValue { font-size:22px; }
 
+    .reportExportCard {
+      margin-bottom:14px;
+      padding:14px;
+    }
+
+    .reportExportHead {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .reportExportTitle {
+      font-size:14px;
+      font-weight:950;
+    }
+
+    .reportExportSub {
+      margin-top:3px;
+      color:var(--muted);
+      font-size:10.5px;
+      font-weight:700;
+      line-height:1.4;
+    }
+
+    .reportExportActions {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+
+    .reportExportMeta {
+      margin-top:10px;
+      padding:9px 10px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#f9fbfd;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:750;
+      line-height:1.45;
+    }
+
     #reportCustomDates {
       display:none;
       grid-column:1 / -1;
@@ -2016,6 +2060,9 @@
         grid-template-columns:1fr;
       }
       #reportCustomDates {
+        grid-template-columns:1fr;
+      }
+      .reportExportActions {
         grid-template-columns:1fr;
       }
     }
@@ -3357,16 +3404,53 @@
           <div id="reportCustomDates">
             <div class="field">
               <label for="reportStartDate">Start Date</label>
-              <input id="reportStartDate" class="input" type="date">
+              <input id="reportStartDate" class="input" type="date" onchange="invalidateMisReportSelection()">
             </div>
             <div class="field">
               <label for="reportEndDate">End Date</label>
-              <input id="reportEndDate" class="input" type="date">
+              <input id="reportEndDate" class="input" type="date" onchange="invalidateMisReportSelection()">
             </div>
           </div>
 
         </div>
         <div id="misReportResult" class="resultArea"></div>
+      </div>
+
+      <div class="card reportExportCard">
+        <div class="reportExportHead">
+          <div>
+            <div class="reportExportTitle">Export Center</div>
+            <div class="reportExportSub">
+              Download the selected MIS period in Excel or print the current report as PDF.
+            </div>
+          </div>
+        </div>
+
+        <div class="reportExportActions">
+          <button
+            id="exportExcelButton"
+            class="btn btnPrimary"
+            type="button"
+            onclick="downloadMisExcel()"
+          >
+            📥 Download Excel (.xlsx)
+          </button>
+
+          <button
+            id="printMisPdfButton"
+            class="btn btnSoft"
+            type="button"
+            onclick="printMisReport()"
+          >
+            🖨️ Print / Save PDF
+          </button>
+        </div>
+
+        <div id="misExportPeriodCaption" class="reportExportMeta">
+          Load a report first, then export the same selected period.
+        </div>
+
+        <div id="misExportResult" class="resultArea"></div>
       </div>
 
       <div id="misReportContent" style="display:none;">
@@ -3647,6 +3731,8 @@ let backupStatusData = null;
 let backupHistory = [];
 let misReportBusy = false;
 let misStudentHistoryBusy = false;
+let misExportBusy = false;
+let lastMisReportData = null;
 
 
 /* ==========================================
@@ -4796,6 +4882,36 @@ window.addEventListener(
     }
 
 
+    /* REPORTS / MIS MEAL DETAIL EXPORT */
+
+    if (
+      message.type === 'MIS_MEAL_EXPORT_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setMisExportBusy(false);
+
+      const result = message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+        showError(
+          'misExportResult',
+          result.message || 'Unable to prepare Excel export.'
+        );
+        return;
+      }
+
+      createMisExcelWorkbook(result);
+      return;
+    }
+
+
     /* STUDENT MEAL HISTORY */
 
     if (
@@ -5035,6 +5151,16 @@ window.addEventListener(
         );
 
       }
+      else if (failedAction === 'mis_meal_export') {
+
+        setMisExportBusy(false);
+
+        showError(
+          'misExportResult',
+          message.message || 'Report export backend error.'
+        );
+
+      }
       else if (failedAction === 'dashboard') {
 
         document.getElementById(
@@ -5215,6 +5341,16 @@ function postToBackend(
 
       showError(
         'misStudentHistoryResult',
+        'Mess System is still connecting.'
+      );
+
+    }
+    else if (action === 'mis_meal_export') {
+
+      setMisExportBusy(false);
+
+      showError(
+        'misExportResult',
         'Mess System is still connecting.'
       );
 
@@ -5443,6 +5579,16 @@ function postToBackend(
           showError(
             'misStudentHistoryResult',
             'Student history response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'mis_meal_export') {
+
+          setMisExportBusy(false);
+
+          showError(
+            'misExportResult',
+            'Excel export response timeout.'
           );
 
         }
@@ -10315,6 +10461,577 @@ function runBackupNowFromApp() {
    REPORTS & MIS
 ========================================== */
 
+function setMisExportBusy(isBusy) {
+
+  misExportBusy = isBusy === true;
+
+  const button =
+    document.getElementById('exportExcelButton');
+
+  if (button) {
+    button.disabled = misExportBusy;
+    button.textContent =
+      misExportBusy
+        ? 'Preparing Excel...'
+        : '📥 Download Excel (.xlsx)';
+  }
+}
+
+
+function getCurrentReportSelection() {
+
+  return {
+    period:
+      String(
+        document.getElementById('reportPeriod').value || 'TODAY'
+      )
+        .trim()
+        .toUpperCase(),
+
+    startDate:
+      String(
+        document.getElementById('reportStartDate').value || ''
+      ).trim(),
+
+    endDate:
+      String(
+        document.getElementById('reportEndDate').value || ''
+      ).trim()
+  };
+}
+
+
+function invalidateMisReportSelection() {
+
+  lastMisReportData = null;
+  updateMisExportCaption(null);
+  clearMisExportMessage();
+
+  const content =
+    document.getElementById('misReportContent');
+
+  if (content) {
+    content.style.display = 'none';
+  }
+}
+
+
+function updateMisExportCaption(reportData) {
+
+  const caption =
+    document.getElementById('misExportPeriodCaption');
+
+  if (!caption) return;
+
+  if (!reportData) {
+    caption.textContent =
+      'Load a report first, then export the same selected period.';
+    return;
+  }
+
+  caption.textContent =
+    'Ready to export: ' +
+    String(reportData.startDate || '-') +
+    ' to ' +
+    String(reportData.endDate || '-') +
+    ' · Excel includes detailed meal log rows.';
+}
+
+
+function clearMisExportMessage() {
+
+  const result =
+    document.getElementById('misExportResult');
+
+  if (result) {
+    result.innerHTML = '';
+  }
+}
+
+
+function downloadMisExcel() {
+
+  if (!hasReportsPermission()) return;
+
+  if (!sessionToken) {
+    handleExpiredSession();
+    return;
+  }
+
+  if (misExportBusy) return;
+
+  if (!lastMisReportData) {
+    showError(
+      'misExportResult',
+      'Please load the report first, then download Excel.'
+    );
+    return;
+  }
+
+  if (!window.XLSX) {
+    showError(
+      'misExportResult',
+      'Excel library is not loaded. Please refresh and try again.'
+    );
+    return;
+  }
+
+  const selection =
+    getCurrentReportSelection();
+
+  if (
+    selection.period === 'CUSTOM' &&
+    (!selection.startDate || !selection.endDate)
+  ) {
+    showError(
+      'misExportResult',
+      'Please select Start Date and End Date.'
+    );
+    return;
+  }
+
+  clearMisExportMessage();
+  setMisExportBusy(true);
+
+  postToBackend(
+    'mis_meal_export',
+    {
+      token: sessionToken,
+      period: selection.period,
+      startDate: selection.startDate,
+      endDate: selection.endDate
+    }
+  );
+}
+
+
+function appendReportObjectRows(
+  targetRows,
+  title,
+  objectValue
+) {
+
+  targetRows.push([]);
+  targetRows.push([title, 'Count']);
+
+  const entries =
+    Object.keys(objectValue || {})
+      .map(function(key) {
+        return [
+          key,
+          reportNumber(objectValue[key])
+        ];
+      })
+      .sort(function(a, b) {
+        return b[1] - a[1];
+      });
+
+  if (!entries.length) {
+    targetRows.push(['No Data', 0]);
+    return;
+  }
+
+  entries.forEach(function(row) {
+    targetRows.push(row);
+  });
+}
+
+
+function createMisExcelWorkbook(exportResult) {
+
+  if (!window.XLSX) {
+    showError(
+      'misExportResult',
+      'Excel library is not loaded. Please refresh and try again.'
+    );
+    return;
+  }
+
+  const report =
+    lastMisReportData || {};
+
+  const meals =
+    report.meals || {};
+
+  const students =
+    report.students || {};
+
+  const qr =
+    report.qr || {};
+
+  const summaryRows = [
+    ['NSIS Mess Management - Reports & MIS'],
+    ['Report Period',
+      String(exportResult.startDate || '-') +
+      ' to ' +
+      String(exportResult.endDate || '-')
+    ],
+    ['Generated At',
+      String(
+        exportResult.generatedAt ||
+        report.generatedAt ||
+        '-'
+      )
+    ],
+    [],
+    ['MEAL OPERATIONS', 'VALUE'],
+    ['Total Meals', reportNumber(meals.totalMeals)],
+    ['Allowed', reportNumber(meals.allowed)],
+    ['QR Entries', reportNumber(meals.qrEntries)],
+    ['Manual Entries', reportNumber(meals.manualEntries)],
+    ['Duplicate Attempts', reportNumber(meals.duplicates)],
+    ['Rejected / Not Allowed', reportNumber(meals.rejected)],
+    [],
+    ['STUDENT STATUS', 'VALUE'],
+    ['Total Students', reportNumber(students.totalStudents)],
+    ['Mess Active', reportNumber(students.activeMessStudents)],
+    ['Mess Inactive', reportNumber(students.inactiveMessStudents)],
+    [],
+    ['QR REISSUE & COLLECTION', 'VALUE'],
+    ['QR Reprints', reportNumber(qr.reprints)],
+    ['QR Regenerations', reportNumber(qr.regenerations)],
+    ['Total Charges', reportNumber(qr.chargeTotal)],
+    ['Paid', reportNumber(qr.paidTotal)],
+    ['Pending', reportNumber(qr.pendingTotal)],
+    ['Waived', reportNumber(qr.waivedTotal)]
+  ];
+
+  appendReportObjectRows(
+    summaryRows,
+    'CLASS-WISE MEALS',
+    report.classWise || {}
+  );
+
+  appendReportObjectRows(
+    summaryRows,
+    'DAY-WISE MEALS',
+    report.dayWise || {}
+  );
+
+  appendReportObjectRows(
+    summaryRows,
+    'STAFF-WISE ENTRIES',
+    report.staffWise || {}
+  );
+
+  appendReportObjectRows(
+    summaryRows,
+    'SCAN STATUS SUMMARY',
+    report.statusWise || {}
+  );
+
+  const summarySheet =
+    XLSX.utils.aoa_to_sheet(summaryRows);
+
+  summarySheet['!cols'] = [
+    {wch: 30},
+    {wch: 24}
+  ];
+
+  const headers =
+    Array.isArray(exportResult.headers)
+      ? exportResult.headers
+      : [];
+
+  const rows =
+    Array.isArray(exportResult.rows)
+      ? exportResult.rows
+      : [];
+
+  const detailSheet =
+    XLSX.utils.aoa_to_sheet(
+      [headers].concat(rows)
+    );
+
+  detailSheet['!cols'] = [
+    {wch: 13},
+    {wch: 22},
+    {wch: 13},
+    {wch: 14},
+    {wch: 16},
+    {wch: 26},
+    {wch: 11},
+    {wch: 10},
+    {wch: 10},
+    {wch: 24},
+    {wch: 20},
+    {wch: 12},
+    {wch: 12},
+    {wch: 22},
+    {wch: 28},
+    {wch: 30}
+  ];
+
+  if (headers.length) {
+    detailSheet['!autofilter'] = {
+      ref:
+        'A1:' +
+        XLSX.utils.encode_col(
+          headers.length - 1
+        ) +
+        '1'
+    };
+  }
+
+  const workbook =
+    XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    summarySheet,
+    'MIS_Summary'
+  );
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    detailSheet,
+    'Meal_Detail'
+  );
+
+  const start =
+    String(exportResult.startDate || 'Start')
+      .replace(/[^0-9A-Za-z-]/g, '-');
+
+  const end =
+    String(exportResult.endDate || 'End')
+      .replace(/[^0-9A-Za-z-]/g, '-');
+
+  XLSX.writeFile(
+    workbook,
+    'NSIS_Mess_MIS_' +
+    start +
+    '_to_' +
+    end +
+    '.xlsx'
+  );
+
+  showSuccess(
+    'misExportResult',
+    'Excel downloaded successfully. ' +
+    reportNumber(exportResult.recordCount) +
+    ' meal log record(s) included.'
+  );
+}
+
+
+function printObjectTable(
+  title,
+  objectValue
+) {
+
+  const entries =
+    Object.keys(objectValue || {})
+      .map(function(key) {
+        return [
+          key,
+          reportNumber(objectValue[key])
+        ];
+      })
+      .sort(function(a, b) {
+        return b[1] - a[1];
+      });
+
+  let rows = '';
+
+  if (!entries.length) {
+    rows =
+      '<tr><td colspan="2">No data</td></tr>';
+  }
+  else {
+    rows =
+      entries.map(function(item) {
+        return (
+          '<tr>' +
+            '<td>' +
+              escapeHtml(item[0]) +
+            '</td>' +
+            '<td class="num">' +
+              escapeHtml(String(item[1])) +
+            '</td>' +
+          '</tr>'
+        );
+      }).join('');
+  }
+
+  return (
+    '<div class="printSection">' +
+      '<h3>' + escapeHtml(title) + '</h3>' +
+      '<table>' +
+        '<thead>' +
+          '<tr><th>Particular</th><th>Count</th></tr>' +
+        '</thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table>' +
+    '</div>'
+  );
+}
+
+
+function printMisReport() {
+
+  if (!hasReportsPermission()) return;
+
+  if (!lastMisReportData) {
+    showError(
+      'misExportResult',
+      'Please load the report first, then use Print / Save PDF.'
+    );
+    return;
+  }
+
+  clearMisExportMessage();
+
+  const report =
+    lastMisReportData || {};
+
+  const meals =
+    report.meals || {};
+
+  const students =
+    report.students || {};
+
+  const qr =
+    report.qr || {};
+
+  const printWindow =
+    window.open(
+      '',
+      '_blank',
+      'width=1000,height=760'
+    );
+
+  if (!printWindow) {
+    showError(
+      'misExportResult',
+      'Print window was blocked. Please allow pop-ups and try again.'
+    );
+    return;
+  }
+
+  const printHtml =
+    '<!DOCTYPE html>' +
+    '<html><head><meta charset="UTF-8">' +
+    '<title>NSIS Mess MIS Report</title>' +
+    '<style>' +
+      '@page{size:A4;margin:12mm;}' +
+      '*{box-sizing:border-box;}' +
+      'body{font-family:Arial,Helvetica,sans-serif;color:#172033;margin:0;background:#fff;}' +
+      '.wrap{max-width:900px;margin:0 auto;}' +
+      '.head{border-bottom:2px solid #0b57d0;padding-bottom:10px;margin-bottom:14px;}' +
+      'h1{font-size:22px;margin:0 0 4px;}' +
+      '.sub{font-size:11px;color:#5f6b7a;line-height:1.5;}' +
+      '.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 16px;}' +
+      '.kpi{border:1px solid #dfe5ee;border-radius:8px;padding:9px;page-break-inside:avoid;}' +
+      '.label{font-size:9px;color:#677386;font-weight:700;}' +
+      '.value{font-size:18px;font-weight:800;margin-top:4px;}' +
+      '.printSection{margin:14px 0;page-break-inside:avoid;}' +
+      'h2{font-size:15px;margin:14px 0 8px;}' +
+      'h3{font-size:13px;margin:0 0 6px;}' +
+      'table{width:100%;border-collapse:collapse;font-size:10px;}' +
+      'th,td{border:1px solid #dfe5ee;padding:6px 7px;text-align:left;}' +
+      'th{background:#f2f6fb;font-weight:800;}' +
+      '.num{text-align:right;font-weight:800;}' +
+      '.footer{margin-top:18px;padding-top:8px;border-top:1px solid #dfe5ee;font-size:9px;color:#6b7280;}' +
+      '.actions{margin:0 0 14px;display:flex;gap:8px;}' +
+      '.actions button{padding:8px 12px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer;}' +
+      '.actions button.secondary{background:#eef4ff;color:#0b57d0;}' +
+      '@media print{.actions{display:none;}body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}' +
+    '</style></head><body>' +
+    '<div class="wrap">' +
+
+      '<div class="actions">' +
+        '<button onclick="window.print()">Print / Save PDF</button>' +
+        '<button class="secondary" onclick="window.close()">Close</button>' +
+      '</div>' +
+
+      '<div class="head">' +
+        '<h1>NSIS Mess Management</h1>' +
+        '<div class="sub">' +
+          'Reports & MIS<br>' +
+          'Period: ' +
+          escapeHtml(String(report.startDate || '-')) +
+          ' to ' +
+          escapeHtml(String(report.endDate || '-')) +
+          '<br>Generated: ' +
+          escapeHtml(String(report.generatedAt || '-')) +
+        '</div>' +
+      '</div>' +
+
+      '<h2>Meal Operations</h2>' +
+      '<div class="kpis">' +
+        '<div class="kpi"><div class="label">Total Meals</div><div class="value">' + reportNumber(meals.totalMeals) + '</div></div>' +
+        '<div class="kpi"><div class="label">Allowed</div><div class="value">' + reportNumber(meals.allowed) + '</div></div>' +
+        '<div class="kpi"><div class="label">QR Entries</div><div class="value">' + reportNumber(meals.qrEntries) + '</div></div>' +
+        '<div class="kpi"><div class="label">Manual Entries</div><div class="value">' + reportNumber(meals.manualEntries) + '</div></div>' +
+        '<div class="kpi"><div class="label">Duplicate Attempts</div><div class="value">' + reportNumber(meals.duplicates) + '</div></div>' +
+        '<div class="kpi"><div class="label">Rejected / Not Allowed</div><div class="value">' + reportNumber(meals.rejected) + '</div></div>' +
+      '</div>' +
+
+      '<h2>Student Status</h2>' +
+      '<div class="kpis">' +
+        '<div class="kpi"><div class="label">Total Students</div><div class="value">' + reportNumber(students.totalStudents) + '</div></div>' +
+        '<div class="kpi"><div class="label">Mess Active</div><div class="value">' + reportNumber(students.activeMessStudents) + '</div></div>' +
+        '<div class="kpi"><div class="label">Mess Inactive</div><div class="value">' + reportNumber(students.inactiveMessStudents) + '</div></div>' +
+      '</div>' +
+
+      '<h2>QR Reissue & Collection</h2>' +
+      '<table>' +
+        '<tbody>' +
+          '<tr><td>QR Reprints</td><td class="num">' + reportNumber(qr.reprints) + '</td></tr>' +
+          '<tr><td>QR Regenerations</td><td class="num">' + reportNumber(qr.regenerations) + '</td></tr>' +
+          '<tr><td>Total Charges</td><td class="num">' + escapeHtml(formatReportMoney(qr.chargeTotal)) + '</td></tr>' +
+          '<tr><td>Paid</td><td class="num">' + escapeHtml(formatReportMoney(qr.paidTotal)) + '</td></tr>' +
+          '<tr><td>Pending</td><td class="num">' + escapeHtml(formatReportMoney(qr.pendingTotal)) + '</td></tr>' +
+          '<tr><td>Waived</td><td class="num">' + escapeHtml(formatReportMoney(qr.waivedTotal)) + '</td></tr>' +
+        '</tbody>' +
+      '</table>' +
+
+      printObjectTable(
+        'Class-wise Meals',
+        report.classWise || {}
+      ) +
+
+      printObjectTable(
+        'Day-wise Meals',
+        report.dayWise || {}
+      ) +
+
+      printObjectTable(
+        'Staff-wise Entries',
+        report.staffWise || {}
+      ) +
+
+      printObjectTable(
+        'Scan Status Summary',
+        report.statusWise || {}
+      ) +
+
+      '<div class="footer">' +
+        'Generated from NSIS Mess Management software.' +
+      '</div>' +
+
+    '</div>' +
+    '</body></html>';
+
+  printWindow.document.open();
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+  printWindow.focus();
+
+  setTimeout(
+    function() {
+      try {
+        printWindow.print();
+      }
+      catch (error) {
+        // Visible print button remains available.
+      }
+    },
+    500
+  );
+}
+
+
 function setMisReportBusy(isBusy) {
 
   misReportBusy = isBusy === true;
@@ -10388,6 +11105,8 @@ function toggleReportCustomDates() {
         ? 'grid'
         : 'none';
   }
+
+  invalidateMisReportSelection();
 }
 
 
@@ -10495,6 +11214,10 @@ function setReportText(id, value) {
 
 
 function renderMisReport(result) {
+
+  lastMisReportData = result || null;
+  updateMisExportCaption(lastMisReportData);
+  clearMisExportMessage();
 
   const meals = result.meals || {};
   const students = result.students || {};
