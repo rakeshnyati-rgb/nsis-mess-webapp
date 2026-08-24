@@ -2197,6 +2197,47 @@
 
       <div id="userManagementResult" class="resultArea"></div>
 
+      <!-- SESSION SECURITY -->
+      <div class="card userSectionCard">
+
+        <div class="userSectionHead">
+          <div class="userSectionTitle">Session Security</div>
+          <div id="activeSessionCountBadge" class="userCountBadge">0</div>
+        </div>
+
+        <div class="userTopActions">
+          <button
+            id="refreshSecuritySessionsButton"
+            type="button"
+            class="btn btnSoft"
+            onclick="refreshSecuritySessions()"
+          >
+            ↻ Active Sessions
+          </button>
+
+          <button
+            id="logoutAllSessionsButton"
+            type="button"
+            class="btn btnDanger"
+            onclick="logoutAllActiveSessions()"
+          >
+            ⛔ Logout All
+          </button>
+        </div>
+
+        <div id="securityResult" class="resultArea"></div>
+
+        <div id="securitySessionList" class="userList">
+          <div class="emptyRequests">Open Active Sessions to view secure logins.</div>
+        </div>
+
+        <div class="adminOnlyNotice">
+          Force Logout revokes all active sessions for the selected Login ID. Logout All also revokes this ADMIN session.
+        </div>
+
+      </div>
+
+
       <div class="card userSectionCard">
 
         <div class="userSectionHead">
@@ -2668,6 +2709,8 @@ let managedStudent = null;
 let adminUsers = [];
 let selectedAdminUser = null;
 let userManagementBusy = false;
+let securitySessions = [];
+let securityBusy = false;
 
 
 /* ==========================================
@@ -3307,6 +3350,12 @@ window.addEventListener(
           : [];
 
       renderAdminUsers(adminUsers);
+
+      setTimeout(
+        refreshSecuritySessions,
+        150
+      );
+
       return;
     }
 
@@ -3434,6 +3483,140 @@ window.addEventListener(
       if (pinReason) pinReason.value = '';
 
       setTimeout(refreshUsers, 250);
+      return;
+    }
+
+
+    /* ADMIN ACTIVE SECURITY SESSIONS */
+
+    if (
+      message.type === 'SECURITY_SESSIONS_LIST_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setSecurityBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'securityResult',
+          result.message ||
+          'Unable to load active sessions.'
+        );
+
+        return;
+      }
+
+      document.getElementById(
+        'securityResult'
+      ).innerHTML = '';
+
+      securitySessions =
+        Array.isArray(result.sessions)
+          ? result.sessions
+          : [];
+
+      renderSecuritySessions(
+        securitySessions
+      );
+
+      return;
+    }
+
+
+    /* ADMIN FORCE LOGOUT USER */
+
+    if (
+      message.type === 'SECURITY_LOGOUT_USER_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setSecurityBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'securityResult',
+          result.message ||
+          'Unable to force logout user.'
+        );
+
+        return;
+      }
+
+      document.getElementById(
+        'securityResult'
+      ).innerHTML =
+        '<div class="result success">✅ ' +
+        escapeHtml(
+          result.message ||
+          'User sessions revoked successfully.'
+        ) +
+        '</div>';
+
+      setTimeout(
+        refreshSecuritySessions,
+        250
+      );
+
+      return;
+    }
+
+
+    /* ADMIN LOGOUT ALL SESSIONS */
+
+    if (
+      message.type === 'SECURITY_LOGOUT_ALL_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setSecurityBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'securityResult',
+          result.message ||
+          'Unable to logout all sessions.'
+        );
+
+        return;
+      }
+
+      window.alert(
+        result.message ||
+        'All active sessions have been revoked.'
+      );
+
+      clearSession();
+      showLogin();
       return;
     }
 
@@ -3624,6 +3807,21 @@ window.addEventListener(
         );
 
       }
+      else if (
+        failedAction === 'security_sessions_list' ||
+        failedAction === 'security_logout_user' ||
+        failedAction === 'security_logout_all'
+      ) {
+
+        setSecurityBusy(false);
+
+        showError(
+          'securityResult',
+          message.message ||
+          'Security backend error.'
+        );
+
+      }
 
       else if (failedAction === 'qr_reissue') {
 
@@ -3767,6 +3965,18 @@ function postToBackend(
 
       showError(
         'userManagementResult',
+        'Mess System is still connecting.'
+      );
+
+    }
+    else if (
+      action === 'security_sessions_list' ||
+      action === 'security_logout_user' ||
+      action === 'security_logout_all'
+    ) {
+
+      showError(
+        'securityResult',
         'Mess System is still connecting.'
       );
 
@@ -3944,6 +4154,20 @@ function postToBackend(
 
           showError(
             'userManagementResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (
+          actionCopy === 'security_sessions_list' ||
+          actionCopy === 'security_logout_user' ||
+          actionCopy === 'security_logout_all'
+        ) {
+
+          setSecurityBusy(false);
+
+          showError(
+            'securityResult',
             'Server response timeout.'
           );
 
@@ -7935,6 +8159,430 @@ function resetAdminUserPin() {
 
 
 /* ==========================================
+   SESSION SECURITY
+========================================== */
+
+function setSecurityBusy(
+  isBusy
+) {
+
+  securityBusy =
+    isBusy === true;
+
+  const refreshButton =
+    document.getElementById(
+      'refreshSecuritySessionsButton'
+    );
+
+  const logoutAllButton =
+    document.getElementById(
+      'logoutAllSessionsButton'
+    );
+
+  if (refreshButton) {
+    refreshButton.disabled =
+      securityBusy;
+  }
+
+  if (logoutAllButton) {
+    logoutAllButton.disabled =
+      securityBusy;
+  }
+
+  document
+    .querySelectorAll(
+      '.forceLogoutSessionButton'
+    )
+    .forEach(function(button) {
+      button.disabled =
+        securityBusy ||
+        button.dataset.current === 'true';
+    });
+}
+
+
+function refreshSecuritySessions() {
+
+  if (
+    !hasUserManagementPermission()
+  ) {
+    return;
+  }
+
+  if (!sessionToken) {
+    handleExpiredSession();
+    return;
+  }
+
+  if (securityBusy) {
+    return;
+  }
+
+  setSecurityBusy(true);
+
+  const resultArea =
+    document.getElementById(
+      'securityResult'
+    );
+
+  if (resultArea) {
+    resultArea.innerHTML = '';
+  }
+
+  const list =
+    document.getElementById(
+      'securitySessionList'
+    );
+
+  if (list) {
+    list.innerHTML =
+      '<div class="emptyRequests">Loading active sessions...</div>';
+  }
+
+  postToBackend(
+    'security_sessions_list',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function renderSecuritySessions(
+  sessions
+) {
+
+  const list =
+    document.getElementById(
+      'securitySessionList'
+    );
+
+  const badge =
+    document.getElementById(
+      'activeSessionCountBadge'
+    );
+
+  if (!list || !badge) {
+    return;
+  }
+
+  const safeSessions =
+    Array.isArray(sessions)
+      ? sessions
+      : [];
+
+  badge.textContent =
+    String(
+      safeSessions.length
+    );
+
+  if (
+    safeSessions.length === 0
+  ) {
+
+    list.innerHTML =
+      '<div class="emptyRequests">No active secure sessions found.</div>';
+
+    setSecurityBusy(false);
+    return;
+  }
+
+  const currentLoginId =
+    currentStaff
+      ? String(
+          currentStaff.loginId || ''
+        )
+          .trim()
+          .toUpperCase()
+      : '';
+
+  list.innerHTML =
+    safeSessions
+      .map(function(item) {
+
+        const loginId =
+          String(
+            item.loginId || ''
+          )
+            .trim()
+            .toUpperCase();
+
+        const isCurrent =
+          loginId &&
+          loginId ===
+          currentLoginId;
+
+        return (
+          '<div class="userCard">' +
+
+            '<div class="userCardHead">' +
+              '<div>' +
+                '<div class="userCardName">' +
+                  escapeHtml(
+                    item.staffName ||
+                    loginId ||
+                    'Unknown User'
+                  ) +
+                '</div>' +
+                '<div class="userCardLogin">' +
+                  escapeHtml(
+                    loginId
+                  ) +
+                '</div>' +
+              '</div>' +
+
+              '<span class="userRoleBadge">' +
+                escapeHtml(
+                  item.role || '-'
+                ) +
+              '</span>' +
+            '</div>' +
+
+            '<div class="userMetaGrid">' +
+
+              '<div class="userMetaItem">' +
+                '<strong>Login Time</strong>' +
+                escapeHtml(
+                  item.loginDateTime || '-'
+                ) +
+              '</div>' +
+
+              '<div class="userMetaItem">' +
+                '<strong>Last Seen</strong>' +
+                escapeHtml(
+                  item.lastSeen || '-'
+                ) +
+              '</div>' +
+
+              '<div class="userMetaItem" style="grid-column:1 / -1;">' +
+                '<strong>Session ID</strong>' +
+                escapeHtml(
+                  item.sessionId || '-'
+                ) +
+              '</div>' +
+
+            '</div>' +
+
+            '<button' +
+              ' type="button"' +
+              ' class="btn ' +
+                (
+                  isCurrent
+                    ? 'btnSoft'
+                    : 'btnDanger'
+                ) +
+                ' forceLogoutSessionButton"' +
+              ' data-login="' +
+                escapeHtml(loginId) +
+              '"' +
+              ' data-name="' +
+                escapeHtml(
+                  item.staffName || ''
+                ) +
+              '"' +
+              ' data-current="' +
+                (
+                  isCurrent
+                    ? 'true'
+                    : 'false'
+                ) +
+              '"' +
+              (
+                isCurrent
+                  ? ' disabled'
+                  : ''
+              ) +
+            '>' +
+              (
+                isCurrent
+                  ? 'Current ADMIN Session'
+                  : 'Force Logout User'
+              ) +
+            '</button>' +
+
+          '</div>'
+        );
+      })
+      .join('');
+
+  document
+    .querySelectorAll(
+      '.forceLogoutSessionButton'
+    )
+    .forEach(function(button) {
+
+      if (
+        button.dataset.current ===
+        'true'
+      ) {
+        return;
+      }
+
+      button.addEventListener(
+        'click',
+        function() {
+
+          forceLogoutSecurityUser(
+            button.dataset.login || '',
+            button.dataset.name || ''
+          );
+        }
+      );
+    });
+
+  setSecurityBusy(false);
+}
+
+
+function forceLogoutSecurityUser(
+  loginId,
+  staffName
+) {
+
+  if (
+    !hasUserManagementPermission()
+  ) {
+    return;
+  }
+
+  loginId =
+    String(loginId || '')
+      .trim()
+      .toUpperCase();
+
+  if (!loginId) {
+    showError(
+      'securityResult',
+      'Login ID is required.'
+    );
+    return;
+  }
+
+  const currentLoginId =
+    currentStaff
+      ? String(
+          currentStaff.loginId || ''
+        )
+          .trim()
+          .toUpperCase()
+      : '';
+
+  if (
+    loginId ===
+    currentLoginId
+  ) {
+
+    showError(
+      'securityResult',
+      'Use the normal Logout button for your current ADMIN session.'
+    );
+
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      'Force logout ' +
+      (
+        staffName ||
+        loginId
+      ) +
+      ' from all active sessions?'
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const enteredReason =
+    window.prompt(
+      'Reason for force logout:',
+      'Force logout by Admin.'
+    );
+
+  if (
+    enteredReason === null
+  ) {
+    return;
+  }
+
+  const reason =
+    String(
+      enteredReason ||
+      'Force logout by Admin.'
+    ).trim();
+
+  setSecurityBusy(true);
+
+  postToBackend(
+    'security_logout_user',
+    {
+      token: sessionToken,
+      targetLoginId:
+        loginId,
+      reason: reason
+    }
+  );
+}
+
+
+function logoutAllActiveSessions() {
+
+  if (
+    !hasUserManagementPermission()
+  ) {
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      'Emergency Logout All will revoke EVERY active session, including your current ADMIN session. Continue?'
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  const enteredReason =
+    window.prompt(
+      'Reason for Logout All:',
+      'Emergency logout all by Admin.'
+    );
+
+  if (
+    enteredReason === null
+  ) {
+    return;
+  }
+
+  const reason =
+    String(
+      enteredReason ||
+      'Emergency logout all by Admin.'
+    ).trim();
+
+  const finalConfirm =
+    window.confirm(
+      'Final confirmation: logout all users now?'
+    );
+
+  if (!finalConfirm) {
+    return;
+  }
+
+  setSecurityBusy(true);
+
+  postToBackend(
+    'security_logout_all',
+    {
+      token: sessionToken,
+      reason: reason
+    }
+  );
+}
+
+
+/* ==========================================
    QR MANAGEMENT
 ========================================== */
 
@@ -8858,6 +9506,8 @@ function clearSession() {
   currentStaff = null;
   activeScreen = 'scan';
   lastQrResult = null;
+  securitySessions = [];
+  securityBusy = false;
 
   sessionStorage.removeItem(
     'NSIS_MESS_TOKEN'
