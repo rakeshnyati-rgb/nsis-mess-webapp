@@ -340,7 +340,14 @@
 
     <div id="reader"></div>
 
-   <button
+    <button
+      class="secondary"
+      onclick="stopScanner()"
+    >
+      Stop Camera
+    </button>
+
+    <button
   id="manualEntryButton"
   class="secondary"
   onclick="openManualEntry()"
@@ -700,6 +707,8 @@ window.addEventListener(
 
       return;
     }
+
+
     /* MANUAL ENTRY RESULT */
 
     if (
@@ -781,10 +790,13 @@ window.addEventListener(
         currentRequestId
     ) {
 
+      const failedAction =
+        currentAction;
+
       finishRequest();
 
       if (
-        currentAction === 'login'
+        failedAction === 'login'
       ) {
 
         showLoginError(
@@ -1066,15 +1078,33 @@ document.getElementById(
 
 
 /* ==========================================
-   SCREENS
+   MANUAL ENTRY
 ========================================== */
 
-function openManualEntry() {
+function hasManualPermission() {
 
-  if (
-    !currentStaff ||
-    currentStaff.canManualEntry !== true
-  ) {
+  if (!currentStaff) {
+    return false;
+  }
+
+  const allowed =
+    currentStaff.canManualEntry === true ||
+    String(currentStaff.canManualEntry || '')
+      .trim()
+      .toUpperCase() === 'TRUE';
+
+  const isAdmin =
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase() === 'ADMIN';
+
+  return allowed || isAdmin;
+}
+
+
+async function openManualEntry() {
+
+  if (!hasManualPermission()) {
 
     showError(
       'Manual Entry permission not allowed.'
@@ -1083,7 +1113,7 @@ function openManualEntry() {
     return;
   }
 
-  stopScanner();
+  await stopScanner();
 
   document.getElementById(
     'manualEntryBox'
@@ -1121,10 +1151,7 @@ function submitManualEntry() {
   }
 
 
-  if (
-    !currentStaff ||
-    currentStaff.canManualEntry !== true
-  ) {
+  if (!hasManualPermission()) {
 
     showError(
       'Manual Entry permission not allowed.'
@@ -1246,26 +1273,27 @@ function showScannerScreen() {
   ).textContent =
     currentStaff.role || '';
 
-}
 
   const manualButton =
-  document.getElementById(
-    'manualEntryButton'
-  );
+    document.getElementById(
+      'manualEntryButton'
+    );
 
-if (
-  currentStaff.canManualEntry === true ||
-  String(currentStaff.role || '')
-    .trim()
-    .toUpperCase() === 'ADMIN'
-) {
-  manualButton.style.display =
-    'block';
+
+  if (hasManualPermission()) {
+
+    manualButton.style.display =
+      'block';
+
+  }
+  else {
+
+    manualButton.style.display =
+      'none';
+
+  }
 }
-else {
-  manualButton.style.display =
-    'none';
-}
+
 
 function showLoginScreen() {
 
