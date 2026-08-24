@@ -1160,6 +1160,224 @@
       line-height: 1.45;
     }
 
+
+
+    /* ==========================================
+       ADMIN USER MANAGEMENT
+    ========================================== */
+
+    .fieldGrid.two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .fieldGrid.two .field {
+      margin-top: 12px;
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 88px;
+      padding: 12px 14px;
+      border: 1px solid #cfd6df;
+      border-radius: 13px;
+      outline: none;
+      resize: vertical;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(11,87,208,.10);
+    }
+
+    .miniButton {
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f7f9fc;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .userTopActions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 12px;
+    }
+
+    .userSectionCard {
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .userSectionHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .userSectionTitle {
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .userCountBadge {
+      min-width: 34px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .userList {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .userCard {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .userCardHead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .userCardName {
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .userCardLogin {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .userRoleBadge {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .userRoleBadge.inactive {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .userMetaGrid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .userMetaItem {
+      padding: 8px 9px;
+      border-radius: 10px;
+      background: #f7f9fc;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .userMetaItem strong {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .userCardActions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .userInlineChecks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 8px 0 14px;
+    }
+
+    .checkTile {
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f9fbfd;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .checkTile input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+    }
+
+    .pinResetBox {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .pinResetTitle {
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .adminOnlyNotice {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 11px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 430px) {
+      .fieldGrid.two,
+      .userTopActions,
+      .userInlineChecks,
+      .userMetaGrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     #backendFrame {
       display: none;
       width: 1px;
@@ -1951,6 +2169,310 @@
     </section>
 
 
+
+
+    <!-- ADMIN USER MANAGEMENT SCREEN -->
+    <section id="screenUsers" class="screen">
+
+      <div class="sectionTitle">Staff / User Management</div>
+
+      <div class="userTopActions">
+        <button
+          type="button"
+          class="btn btnSoft"
+          onclick="openScreen('profile')"
+        >
+          ← Back to Profile
+        </button>
+
+        <button
+          id="refreshUsersButton"
+          type="button"
+          class="btn btnSoft"
+          onclick="refreshUsers()"
+        >
+          ↻ Refresh Users
+        </button>
+      </div>
+
+      <div id="userManagementResult" class="resultArea"></div>
+
+      <div class="card userSectionCard">
+
+        <div class="userSectionHead">
+          <div class="userSectionTitle">Users</div>
+          <div id="userCountBadge" class="userCountBadge">0</div>
+        </div>
+
+        <button
+          id="openCreateUserButton"
+          type="button"
+          class="btn btnPrimary"
+          onclick="toggleCreateUserPanel(true)"
+        >
+          + Create New User
+        </button>
+
+        <div id="userList" class="userList">
+          <div class="emptyRequests">Loading users...</div>
+        </div>
+
+      </div>
+
+      <!-- CREATE USER -->
+      <div id="createUserPanel" class="card userSectionCard" style="display:none;">
+
+        <div class="userSectionHead">
+          <div class="userSectionTitle">Create New User</div>
+          <button
+            type="button"
+            class="miniButton"
+            onclick="toggleCreateUserPanel(false)"
+          >
+            Close
+          </button>
+        </div>
+
+        <div class="fieldGrid two">
+
+          <div class="field">
+            <label for="newUserLoginId">Login ID *</label>
+            <input
+              id="newUserLoginId"
+              class="input"
+              type="text"
+              placeholder="e.g. STAFF01"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="newUserStaffName">Staff Name *</label>
+            <input
+              id="newUserStaffName"
+              class="input"
+              type="text"
+              placeholder="Full name"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="newUserEmail">Email</label>
+            <input
+              id="newUserEmail"
+              class="input"
+              type="email"
+              placeholder="name@example.com"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="newUserRole">App Role *</label>
+            <select id="newUserRole" class="select">
+              <option value="MESS_STAFF">MESS_STAFF</option>
+              <option value="MESS_MANAGER">MESS_MANAGER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="newUserPin">6-Digit PIN *</label>
+            <input
+              id="newUserPin"
+              class="input"
+              type="password"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="••••••"
+              autocomplete="new-password"
+            >
+          </div>
+
+        </div>
+
+        <div class="userInlineChecks">
+          <label class="checkTile">
+            <input id="newUserActive" type="checkbox" checked>
+            <span>User Active</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="newUserManual" type="checkbox">
+            <span>Manual Entry Permission</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <label for="newUserNotes">Notes</label>
+          <textarea
+            id="newUserNotes"
+            class="textarea"
+            placeholder="Optional notes"
+          ></textarea>
+        </div>
+
+        <div class="field">
+          <label for="newUserReason">Reason *</label>
+          <textarea
+            id="newUserReason"
+            class="textarea"
+            placeholder="Reason for creating this user"
+          ></textarea>
+        </div>
+
+        <button
+          id="createUserButton"
+          type="button"
+          class="btn btnPrimary"
+          onclick="createAdminUser()"
+        >
+          Create User
+        </button>
+
+        <div class="adminOnlyNotice">
+          PIN is hashed in Apps Script. The plain PIN is not stored in Users or the audit log.
+        </div>
+
+      </div>
+
+      <!-- EDIT USER -->
+      <div id="editUserPanel" class="card userSectionCard" style="display:none;">
+
+        <div class="userSectionHead">
+          <div class="userSectionTitle">Edit User</div>
+          <button
+            type="button"
+            class="miniButton"
+            onclick="closeEditUserPanel()"
+          >
+            Close
+          </button>
+        </div>
+
+        <div class="fieldGrid two">
+
+          <div class="field">
+            <label for="editUserLoginId">Login ID</label>
+            <input
+              id="editUserLoginId"
+              class="input"
+              type="text"
+              readonly
+            >
+          </div>
+
+          <div class="field">
+            <label for="editUserStaffName">Staff Name *</label>
+            <input
+              id="editUserStaffName"
+              class="input"
+              type="text"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="editUserEmail">Email</label>
+            <input
+              id="editUserEmail"
+              class="input"
+              type="email"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="editUserRole">App Role *</label>
+            <select id="editUserRole" class="select">
+              <option value="MESS_STAFF">MESS_STAFF</option>
+              <option value="MESS_MANAGER">MESS_MANAGER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="userInlineChecks">
+          <label class="checkTile">
+            <input id="editUserActive" type="checkbox">
+            <span>User Active</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="editUserManual" type="checkbox">
+            <span>Manual Entry Permission</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <label for="editUserNotes">Notes</label>
+          <textarea
+            id="editUserNotes"
+            class="textarea"
+            placeholder="Optional notes"
+          ></textarea>
+        </div>
+
+        <div class="field">
+          <label for="editUserReason">Change Reason *</label>
+          <textarea
+            id="editUserReason"
+            class="textarea"
+            placeholder="Why are these user details / permissions being changed?"
+          ></textarea>
+        </div>
+
+        <button
+          id="updateUserButton"
+          type="button"
+          class="btn btnPrimary"
+          onclick="updateAdminUser()"
+        >
+          Save User Changes
+        </button>
+
+        <div class="pinResetBox">
+          <div class="pinResetTitle">Reset PIN</div>
+
+          <div class="field">
+            <label for="editUserNewPin">New 6-Digit PIN</label>
+            <input
+              id="editUserNewPin"
+              class="input"
+              type="password"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="••••••"
+              autocomplete="new-password"
+            >
+          </div>
+
+          <div class="field">
+            <label for="editUserPinReason">PIN Reset Reason</label>
+            <textarea
+              id="editUserPinReason"
+              class="textarea"
+              placeholder="Reason for resetting PIN"
+            ></textarea>
+          </div>
+
+          <button
+            id="resetUserPinButton"
+            type="button"
+            class="btn btnSoft"
+            onclick="resetAdminUserPin()"
+          >
+            Reset PIN
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+
     <!-- PROFILE SCREEN -->
     <section id="screenProfile" class="screen">
 
@@ -1997,6 +2519,23 @@
           <div class="profileLabel">QR Management Access</div>
           <div id="profileQrAccess" class="profileValue">-</div>
         </div>
+
+
+
+        <div class="profileRow">
+          <div class="profileLabel">User Management Access</div>
+          <div id="profileUserManagementAccess" class="profileValue">-</div>
+        </div>
+
+        <button
+          id="profileUserManagementButton"
+          class="btn btnSoft"
+          onclick="openScreen('users')"
+          style="display:none; margin-bottom:10px;"
+        >
+          👥 Staff / User Management
+        </button>
+
 
         <button
           class="btn btnDanger"
@@ -2126,6 +2665,9 @@ let bulkStudentRows = [];
 let bulkStudentFileName = '';
 let bulkImportInProgress = false;
 let managedStudent = null;
+let adminUsers = [];
+let selectedAdminUser = null;
+let userManagementBusy = false;
 
 
 /* ==========================================
@@ -2190,6 +2732,20 @@ function hasStudentRequestPermission() {
 
 
 function hasAdminApprovalPermission() {
+
+  if (!currentStaff) {
+    return false;
+  }
+
+  return (
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase() === 'ADMIN'
+  );
+}
+
+
+function hasUserManagementPermission() {
 
   if (!currentStaff) {
     return false;
@@ -2713,6 +3269,175 @@ window.addEventListener(
     }
 
 
+
+    /* ADMIN USER LIST */
+
+    if (
+      message.type === 'USERS_LIST_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setUserManagementBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+        showError(
+          'userManagementResult',
+          result.message ||
+          'Unable to load users.'
+        );
+        return;
+      }
+
+      document.getElementById(
+        'userManagementResult'
+      ).innerHTML = '';
+
+      adminUsers =
+        Array.isArray(result.users)
+          ? result.users
+          : [];
+
+      renderAdminUsers(adminUsers);
+      return;
+    }
+
+
+    /* ADMIN CREATE USER */
+
+    if (
+      message.type === 'USER_CREATE_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setUserManagementBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+        showError(
+          'userManagementResult',
+          result.message ||
+          'Unable to create user.'
+        );
+        return;
+      }
+
+      document.getElementById(
+        'userManagementResult'
+      ).innerHTML =
+        '<div class="result success">✅ ' +
+        escapeHtml(result.message || 'User created successfully.') +
+        '</div>';
+
+      clearCreateUserForm();
+      toggleCreateUserPanel(false);
+
+      setTimeout(refreshUsers, 250);
+      return;
+    }
+
+
+    /* ADMIN UPDATE USER */
+
+    if (
+      message.type === 'USER_UPDATE_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setUserManagementBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+        showError(
+          'userManagementResult',
+          result.message ||
+          'Unable to update user.'
+        );
+        return;
+      }
+
+      document.getElementById(
+        'userManagementResult'
+      ).innerHTML =
+        '<div class="result success">✅ ' +
+        escapeHtml(result.message || 'User updated successfully.') +
+        '</div>';
+
+      closeEditUserPanel();
+      setTimeout(refreshUsers, 250);
+      return;
+    }
+
+
+    /* ADMIN RESET USER PIN */
+
+    if (
+      message.type === 'USER_PIN_RESET_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setUserManagementBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+        showError(
+          'userManagementResult',
+          result.message ||
+          'Unable to reset PIN.'
+        );
+        return;
+      }
+
+      document.getElementById(
+        'userManagementResult'
+      ).innerHTML =
+        '<div class="result success">✅ ' +
+        escapeHtml(result.message || 'PIN reset successfully.') +
+        '</div>';
+
+      const pin = document.getElementById('editUserNewPin');
+      const pinReason = document.getElementById('editUserPinReason');
+
+      if (pin) pin.value = '';
+      if (pinReason) pinReason.value = '';
+
+      setTimeout(refreshUsers, 250);
+      return;
+    }
+
+
     /* QR REISSUE */
 
     if (
@@ -2883,6 +3608,23 @@ window.addEventListener(
         );
 
       }
+      else if (
+        failedAction === 'users_list' ||
+        failedAction === 'user_create' ||
+        failedAction === 'user_update' ||
+        failedAction === 'user_pin_reset'
+      ) {
+
+        setUserManagementBusy(false);
+
+        showError(
+          'userManagementResult',
+          message.message ||
+          'Backend error.'
+        );
+
+      }
+
       else if (failedAction === 'qr_reissue') {
 
         setQrProcessing(false);
@@ -3016,6 +3758,20 @@ function postToBackend(
       );
 
     }
+    else if (
+      action === 'users_list' ||
+      action === 'user_create' ||
+      action === 'user_update' ||
+      action === 'user_pin_reset'
+    ) {
+
+      showError(
+        'userManagementResult',
+        'Mess System is still connecting.'
+      );
+
+    }
+
     else if (action === 'qr_reissue') {
 
       showError(
@@ -3177,6 +3933,22 @@ function postToBackend(
           );
 
         }
+        else if (
+          actionCopy === 'users_list' ||
+          actionCopy === 'user_create' ||
+          actionCopy === 'user_update' ||
+          actionCopy === 'user_pin_reset'
+        ) {
+
+          setUserManagementBusy(false);
+
+          showError(
+            'userManagementResult',
+            'Server response timeout.'
+          );
+
+        }
+
         else if (actionCopy === 'qr_reissue') {
 
           setQrProcessing(false);
@@ -3368,6 +4140,13 @@ function showApp() {
     activeScreen = 'scan';
   }
 
+  if (
+    !hasUserManagementPermission() &&
+    activeScreen === 'users'
+  ) {
+    activeScreen = 'scan';
+  }
+
   openScreen(
     activeScreen || 'scan'
   );
@@ -3429,6 +4208,41 @@ async function showLogin() {
   document.getElementById(
     'adminPendingCount'
   ).textContent = '0';
+
+  adminUsers = [];
+  selectedAdminUser = null;
+  userManagementBusy = false;
+
+  const userResult =
+    document.getElementById(
+      'userManagementResult'
+    );
+
+  if (userResult) {
+    userResult.innerHTML = '';
+  }
+
+  const userList =
+    document.getElementById(
+      'userList'
+    );
+
+  if (userList) {
+    userList.innerHTML =
+      '<div class="emptyRequests">Login as ADMIN to manage users.</div>';
+  }
+
+  const userCount =
+    document.getElementById(
+      'userCountBadge'
+    );
+
+  if (userCount) {
+    userCount.textContent = '0';
+  }
+
+  toggleCreateUserPanel(false);
+  closeEditUserPanel();
 
   document.getElementById(
     'qrResult'
@@ -3521,6 +4335,20 @@ function updateStaffUI() {
     hasQrPermission()
       ? 'Allowed'
       : 'Not Allowed';
+
+  document.getElementById(
+    'profileUserManagementAccess'
+  ).textContent =
+    hasUserManagementPermission()
+      ? 'Allowed'
+      : 'Not Allowed';
+
+  document.getElementById(
+    'profileUserManagementButton'
+  ).style.display =
+    hasUserManagementPermission()
+      ? 'block'
+      : 'none';
 
   document.getElementById(
     'adminApprovalPanel'
@@ -3621,6 +4449,14 @@ async function openScreen(
   }
 
   if (
+    name === 'users' &&
+    !hasUserManagementPermission()
+  ) {
+
+    return;
+  }
+
+  if (
     name !== 'scan'
   ) {
     await stopScanner();
@@ -3635,6 +4471,7 @@ async function openScreen(
     dashboard: 'screenDashboard',
     student: 'screenStudent',
     qr: 'screenQr',
+    users: 'screenUsers',
     profile: 'screenProfile'
   };
 
@@ -3644,6 +4481,7 @@ async function openScreen(
     dashboard: 'navDashboard',
     student: 'navStudent',
     qr: 'navQr',
+    users: 'navProfile',
     profile: 'navProfile'
   };
 
@@ -3695,6 +4533,10 @@ async function openScreen(
     hasAdminApprovalPermission()
   ) {
     refreshStudentRequests();
+  }
+
+  if (name === 'users') {
+    refreshUsers();
   }
 
   if (name === 'profile') {
@@ -6370,6 +7212,725 @@ function printApprovedStudentQr() {
   );
 
   printWindow.document.close();
+}
+
+
+/* ==========================================
+   ADMIN USER MANAGEMENT
+========================================== */
+
+function setUserManagementBusy(
+  isBusy
+) {
+
+  userManagementBusy =
+    isBusy === true;
+
+  const ids = [
+    'refreshUsersButton',
+    'openCreateUserButton',
+    'createUserButton',
+    'updateUserButton',
+    'resetUserPinButton'
+  ];
+
+  ids.forEach(function(id) {
+    const el =
+      document.getElementById(id);
+
+    if (el) {
+      el.disabled =
+        userManagementBusy;
+    }
+  });
+
+  const createButton =
+    document.getElementById(
+      'createUserButton'
+    );
+
+  if (createButton) {
+    createButton.textContent =
+      userManagementBusy
+        ? 'Please Wait...'
+        : 'Create User';
+  }
+
+  const updateButton =
+    document.getElementById(
+      'updateUserButton'
+    );
+
+  if (updateButton) {
+    updateButton.textContent =
+      userManagementBusy
+        ? 'Please Wait...'
+        : 'Save User Changes';
+  }
+
+  const resetButton =
+    document.getElementById(
+      'resetUserPinButton'
+    );
+
+  if (resetButton) {
+    resetButton.textContent =
+      userManagementBusy
+        ? 'Please Wait...'
+        : 'Reset PIN';
+  }
+}
+
+
+function refreshUsers() {
+
+  if (!sessionToken) {
+    showLogin();
+    return;
+  }
+
+  if (!hasUserManagementPermission()) {
+    showError(
+      'userManagementResult',
+      'Admin permission required.'
+    );
+    return;
+  }
+
+  document.getElementById(
+    'userList'
+  ).innerHTML =
+    '<div class="emptyRequests">Loading users...</div>';
+
+  setUserManagementBusy(true);
+
+  postToBackend(
+    'users_list',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function renderAdminUsers(users) {
+
+  const list =
+    document.getElementById(
+      'userList'
+    );
+
+  const count =
+    Array.isArray(users)
+      ? users.length
+      : 0;
+
+  document.getElementById(
+    'userCountBadge'
+  ).textContent =
+    String(count);
+
+  list.innerHTML = '';
+
+  if (!count) {
+    list.innerHTML =
+      '<div class="emptyRequests">No users found.</div>';
+    return;
+  }
+
+  users.forEach(function(user) {
+
+    const card =
+      document.createElement('div');
+
+    card.className =
+      'userCard';
+
+    const head =
+      document.createElement('div');
+
+    head.className =
+      'userCardHead';
+
+    const left =
+      document.createElement('div');
+
+    const name =
+      document.createElement('div');
+
+    name.className =
+      'userCardName';
+
+    name.textContent =
+      user.name ||
+      user.loginId ||
+      'Unnamed User';
+
+    const login =
+      document.createElement('div');
+
+    login.className =
+      'userCardLogin';
+
+    login.textContent =
+      user.loginId || '-';
+
+    left.appendChild(name);
+    left.appendChild(login);
+
+    const badge =
+      document.createElement('div');
+
+    badge.className =
+      'userRoleBadge' +
+      (
+        user.active === true
+          ? ''
+          : ' inactive'
+      );
+
+    badge.textContent =
+      user.active === true
+        ? (user.role || 'NO ROLE')
+        : 'INACTIVE';
+
+    head.appendChild(left);
+    head.appendChild(badge);
+    card.appendChild(head);
+
+    const meta =
+      document.createElement('div');
+
+    meta.className =
+      'userMetaGrid';
+
+    const values = [
+      ['Role', user.role || '-'],
+      ['Active', user.active === true ? 'YES' : 'NO'],
+      ['Manual Entry', user.canManualEntry === true ? 'ALLOWED' : 'NOT ALLOWED'],
+      ['PIN', user.pinSet === true ? 'SET' : 'NOT SET'],
+      ['Email', user.email || '-'],
+      ['Notes', user.notes || '-']
+    ];
+
+    values.forEach(function(item) {
+
+      const box =
+        document.createElement('div');
+
+      box.className =
+        'userMetaItem';
+
+      const label =
+        document.createElement('strong');
+
+      label.textContent =
+        item[0];
+
+      const value =
+        document.createElement('span');
+
+      value.textContent =
+        item[1];
+
+      box.appendChild(label);
+      box.appendChild(value);
+      meta.appendChild(box);
+    });
+
+    card.appendChild(meta);
+
+    const actions =
+      document.createElement('div');
+
+    actions.className =
+      'userCardActions';
+
+    const edit =
+      document.createElement('button');
+
+    edit.type = 'button';
+    edit.className =
+      'btn btnSoft';
+    edit.textContent =
+      'Edit / Permissions / PIN';
+
+    edit.onclick = function() {
+      openEditUserPanel(
+        user.loginId
+      );
+    };
+
+    actions.appendChild(edit);
+    card.appendChild(actions);
+    list.appendChild(card);
+  });
+}
+
+
+function toggleCreateUserPanel(
+  show
+) {
+
+  const panel =
+    document.getElementById(
+      'createUserPanel'
+    );
+
+  if (!panel) {
+    return;
+  }
+
+  panel.style.display =
+    show === true
+      ? 'block'
+      : 'none';
+
+  if (show === true) {
+    closeEditUserPanel();
+
+    setTimeout(function() {
+      panel.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 50);
+  }
+}
+
+
+function clearCreateUserForm() {
+
+  const defaults = {
+    newUserLoginId: '',
+    newUserStaffName: '',
+    newUserEmail: '',
+    newUserPin: '',
+    newUserNotes: '',
+    newUserReason: ''
+  };
+
+  Object.keys(defaults)
+    .forEach(function(id) {
+      const el =
+        document.getElementById(id);
+      if (el) {
+        el.value = defaults[id];
+      }
+    });
+
+  document.getElementById(
+    'newUserRole'
+  ).value = 'MESS_STAFF';
+
+  document.getElementById(
+    'newUserActive'
+  ).checked = true;
+
+  document.getElementById(
+    'newUserManual'
+  ).checked = false;
+}
+
+
+function createAdminUser() {
+
+  if (!hasUserManagementPermission()) {
+    showError(
+      'userManagementResult',
+      'Admin permission required.'
+    );
+    return;
+  }
+
+  const loginId =
+    document.getElementById(
+      'newUserLoginId'
+    ).value
+      .trim()
+      .toUpperCase();
+
+  const staffName =
+    document.getElementById(
+      'newUserStaffName'
+    ).value.trim();
+
+  const email =
+    document.getElementById(
+      'newUserEmail'
+    ).value.trim();
+
+  const role =
+    document.getElementById(
+      'newUserRole'
+    ).value;
+
+  const pin =
+    document.getElementById(
+      'newUserPin'
+    ).value.trim();
+
+  const active =
+    document.getElementById(
+      'newUserActive'
+    ).checked;
+
+  const canManualEntry =
+    document.getElementById(
+      'newUserManual'
+    ).checked;
+
+  const notes =
+    document.getElementById(
+      'newUserNotes'
+    ).value.trim();
+
+  const reason =
+    document.getElementById(
+      'newUserReason'
+    ).value.trim();
+
+  if (!loginId) {
+    showError(
+      'userManagementResult',
+      'Login ID is required.'
+    );
+    return;
+  }
+
+  if (!staffName) {
+    showError(
+      'userManagementResult',
+      'Staff Name is required.'
+    );
+    return;
+  }
+
+  if (!/^\\d{6}$/.test(pin)) {
+    showError(
+      'userManagementResult',
+      'PIN must be exactly 6 digits.'
+    );
+    return;
+  }
+
+  if (!reason) {
+    showError(
+      'userManagementResult',
+      'Reason is required.'
+    );
+    return;
+  }
+
+  setUserManagementBusy(true);
+
+  postToBackend(
+    'user_create',
+    {
+      token: sessionToken,
+      loginId: loginId,
+      staffName: staffName,
+      email: email,
+      role: role,
+      active: active,
+      canManualEntry: canManualEntry,
+      notes: notes,
+      pin: pin,
+      reason: reason
+    }
+  );
+}
+
+
+function openEditUserPanel(
+  loginId
+) {
+
+  if (!hasUserManagementPermission()) {
+    return;
+  }
+
+  const normalized =
+    String(loginId || '')
+      .trim()
+      .toUpperCase();
+
+  selectedAdminUser =
+    adminUsers.find(function(user) {
+      return String(user.loginId || '')
+        .trim()
+        .toUpperCase() === normalized;
+    }) || null;
+
+  if (!selectedAdminUser) {
+    showError(
+      'userManagementResult',
+      'User not found in current list. Refresh users and try again.'
+    );
+    return;
+  }
+
+  toggleCreateUserPanel(false);
+
+  document.getElementById(
+    'editUserLoginId'
+  ).value =
+    selectedAdminUser.loginId || '';
+
+  document.getElementById(
+    'editUserStaffName'
+  ).value =
+    selectedAdminUser.name || '';
+
+  document.getElementById(
+    'editUserEmail'
+  ).value =
+    selectedAdminUser.email || '';
+
+  document.getElementById(
+    'editUserRole'
+  ).value =
+    selectedAdminUser.role ||
+    'MESS_STAFF';
+
+  document.getElementById(
+    'editUserActive'
+  ).checked =
+    selectedAdminUser.active === true;
+
+  document.getElementById(
+    'editUserManual'
+  ).checked =
+    selectedAdminUser.canManualEntry === true;
+
+  document.getElementById(
+    'editUserNotes'
+  ).value =
+    selectedAdminUser.notes || '';
+
+  document.getElementById(
+    'editUserReason'
+  ).value = '';
+
+  document.getElementById(
+    'editUserNewPin'
+  ).value = '';
+
+  document.getElementById(
+    'editUserPinReason'
+  ).value = '';
+
+  const panel =
+    document.getElementById(
+      'editUserPanel'
+    );
+
+  panel.style.display =
+    'block';
+
+  setTimeout(function() {
+    panel.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }, 50);
+}
+
+
+function closeEditUserPanel() {
+
+  selectedAdminUser = null;
+
+  const panel =
+    document.getElementById(
+      'editUserPanel'
+    );
+
+  if (panel) {
+    panel.style.display = 'none';
+  }
+}
+
+
+function updateAdminUser() {
+
+  if (!hasUserManagementPermission()) {
+    showError(
+      'userManagementResult',
+      'Admin permission required.'
+    );
+    return;
+  }
+
+  if (!selectedAdminUser) {
+    showError(
+      'userManagementResult',
+      'Please select a user to edit.'
+    );
+    return;
+  }
+
+  const targetLoginId =
+    document.getElementById(
+      'editUserLoginId'
+    ).value
+      .trim()
+      .toUpperCase();
+
+  const staffName =
+    document.getElementById(
+      'editUserStaffName'
+    ).value.trim();
+
+  const email =
+    document.getElementById(
+      'editUserEmail'
+    ).value.trim();
+
+  const role =
+    document.getElementById(
+      'editUserRole'
+    ).value;
+
+  const active =
+    document.getElementById(
+      'editUserActive'
+    ).checked;
+
+  const canManualEntry =
+    document.getElementById(
+      'editUserManual'
+    ).checked;
+
+  const notes =
+    document.getElementById(
+      'editUserNotes'
+    ).value.trim();
+
+  const reason =
+    document.getElementById(
+      'editUserReason'
+    ).value.trim();
+
+  if (!staffName) {
+    showError(
+      'userManagementResult',
+      'Staff Name is required.'
+    );
+    return;
+  }
+
+  if (!reason) {
+    showError(
+      'userManagementResult',
+      'Change reason is required.'
+    );
+    return;
+  }
+
+  if (
+    active === false ||
+    role !== String(selectedAdminUser.role || '')
+      .trim()
+      .toUpperCase()
+  ) {
+
+    const confirmed =
+      window.confirm(
+        'You are changing this user’s role or active status. Continue?'
+      );
+
+    if (!confirmed) {
+      return;
+    }
+  }
+
+  setUserManagementBusy(true);
+
+  postToBackend(
+    'user_update',
+    {
+      token: sessionToken,
+      targetLoginId: targetLoginId,
+      staffName: staffName,
+      email: email,
+      role: role,
+      active: active,
+      canManualEntry: canManualEntry,
+      notes: notes,
+      reason: reason
+    }
+  );
+}
+
+
+function resetAdminUserPin() {
+
+  if (!hasUserManagementPermission()) {
+    showError(
+      'userManagementResult',
+      'Admin permission required.'
+    );
+    return;
+  }
+
+  if (!selectedAdminUser) {
+    showError(
+      'userManagementResult',
+      'Please select a user first.'
+    );
+    return;
+  }
+
+  const newPin =
+    document.getElementById(
+      'editUserNewPin'
+    ).value.trim();
+
+  const reason =
+    document.getElementById(
+      'editUserPinReason'
+    ).value.trim();
+
+  if (!/^\\d{6}$/.test(newPin)) {
+    showError(
+      'userManagementResult',
+      'New PIN must be exactly 6 digits.'
+    );
+    return;
+  }
+
+  if (!reason) {
+    showError(
+      'userManagementResult',
+      'PIN reset reason is required.'
+    );
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      'Reset PIN for ' +
+      (selectedAdminUser.name || selectedAdminUser.loginId) +
+      '?'
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  setUserManagementBusy(true);
+
+  postToBackend(
+    'user_pin_reset',
+    {
+      token: sessionToken,
+      targetLoginId:
+        selectedAdminUser.loginId,
+      newPin: newPin,
+      reason: reason
+    }
+  );
 }
 
 
