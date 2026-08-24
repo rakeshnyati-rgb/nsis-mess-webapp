@@ -593,6 +593,38 @@
       line-height: 1;
     }
 
+    .studentRequestCard {
+      padding: 18px;
+    }
+
+    .requestInfo {
+      margin-top: 14px;
+      padding: 12px 13px;
+      border-radius: 12px;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .formGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .formGrid .field {
+      margin-top: 16px;
+    }
+
+    @media (max-width: 430px) {
+      .formGrid {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+    }
+
     .qrCard {
       padding: 18px;
     }
@@ -909,6 +941,144 @@
     </section>
 
 
+    <!-- NEW STUDENT REQUEST SCREEN -->
+    <section id="screenStudent" class="screen">
+
+      <div class="sectionTitle">New Student</div>
+
+      <div class="card studentRequestCard">
+
+        <div class="requestInfo">
+          New student details will be submitted as <strong>PENDING</strong>.
+          Student ID and first QR will be created only after ADMIN approval.
+        </div>
+
+        <div class="field">
+          <label for="studentAdmissionNo">Admission No. *</label>
+          <input
+            id="studentAdmissionNo"
+            class="input"
+            type="text"
+            placeholder="Enter Admission No."
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="field">
+          <label for="studentName">Student Name *</label>
+          <input
+            id="studentName"
+            class="input"
+            type="text"
+            placeholder="Enter Student Name"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="formGrid">
+
+          <div class="field">
+            <label for="studentClass">Class *</label>
+            <input
+              id="studentClass"
+              class="input"
+              type="text"
+              placeholder="Example: 5"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="studentDivision">Division</label>
+            <input
+              id="studentDivision"
+              class="input"
+              type="text"
+              placeholder="Example: A"
+              autocomplete="off"
+            >
+          </div>
+
+        </div>
+
+        <div class="formGrid">
+
+          <div class="field">
+            <label for="studentRollNo">Roll No.</label>
+            <input
+              id="studentRollNo"
+              class="input"
+              type="text"
+              inputmode="numeric"
+              placeholder="Roll No."
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="studentMessStartDate">Mess Start Date</label>
+            <input
+              id="studentMessStartDate"
+              class="input"
+              type="date"
+            >
+          </div>
+
+        </div>
+
+        <div class="field">
+          <label for="studentParentName">Parent Name</label>
+          <input
+            id="studentParentName"
+            class="input"
+            type="text"
+            placeholder="Enter Parent Name"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="field">
+          <label for="studentContactNo">Contact No.</label>
+          <input
+            id="studentContactNo"
+            class="input"
+            type="tel"
+            inputmode="tel"
+            placeholder="Parent Contact No."
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="field">
+          <label for="studentNotes">Notes</label>
+          <input
+            id="studentNotes"
+            class="input"
+            type="text"
+            placeholder="Optional remarks"
+            autocomplete="off"
+          >
+        </div>
+
+        <button
+          id="studentSubmitButton"
+          class="btn btnPrimary"
+          onclick="submitStudentRequest()"
+        >
+          Submit for Admin Approval
+        </button>
+
+        <div class="roleNote">
+          Available only to ADMIN and MESS_MANAGER. Duplicate Admission No. requests are blocked by the backend.
+        </div>
+
+        <div id="studentRequestResult" class="resultArea"></div>
+
+      </div>
+
+    </section>
+
+
     <!-- QR MANAGEMENT SCREEN -->
     <section id="screenQr" class="screen">
 
@@ -1063,6 +1233,11 @@
         </div>
 
         <div class="profileRow">
+          <div class="profileLabel">New Student Access</div>
+          <div id="profileStudentAccess" class="profileValue">-</div>
+        </div>
+
+        <div class="profileRow">
           <div class="profileLabel">QR Management Access</div>
           <div id="profileQrAccess" class="profileValue">-</div>
         </div>
@@ -1109,6 +1284,16 @@
     >
       <span class="navIcon">📊</span>
       <span>Dashboard</span>
+    </button>
+
+    <button
+      id="navStudent"
+      class="navBtn"
+      onclick="openScreen('student')"
+      style="display:none;"
+    >
+      <span class="navIcon">🎓</span>
+      <span>Student</span>
     </button>
 
     <button
@@ -1208,6 +1393,24 @@ function hasManualPermission() {
 
 
 function hasQrPermission() {
+
+  if (!currentStaff) {
+    return false;
+  }
+
+  const role =
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase();
+
+  return (
+    role === 'ADMIN' ||
+    role === 'MESS_MANAGER'
+  );
+}
+
+
+function hasStudentRequestPermission() {
 
   if (!currentStaff) {
     return false;
@@ -1428,6 +1631,42 @@ window.addEventListener(
     }
 
 
+    /* NEW STUDENT REQUEST */
+
+    if (
+      message.type === 'STUDENT_REQUEST_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setStudentSubmitting(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'studentRequestResult',
+          result.message ||
+          'Unable to submit student request.'
+        );
+
+        return;
+      }
+
+      renderStudentRequestResult(result);
+      resetStudentRequestForm();
+      return;
+    }
+
+
     /* QR REISSUE */
 
     if (
@@ -1554,6 +1793,17 @@ window.addEventListener(
         );
 
       }
+      else if (failedAction === 'student_request') {
+
+        setStudentSubmitting(false);
+
+        showError(
+          'studentRequestResult',
+          message.message ||
+          'Backend error.'
+        );
+
+      }
       else if (failedAction === 'qr_reissue') {
 
         setQrProcessing(false);
@@ -1649,6 +1899,22 @@ function postToBackend(
       );
 
     }
+    else if (action === 'student_request') {
+
+      showError(
+        'studentRequestResult',
+        'Mess System is still connecting.'
+      );
+
+    }
+    else if (action === 'qr_reissue') {
+
+      showError(
+        'qrResult',
+        'Mess System is still connecting.'
+      );
+
+    }
 
     return;
   }
@@ -1738,6 +2004,16 @@ function postToBackend(
 
           showError(
             'scanResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'student_request') {
+
+          setStudentSubmitting(false);
+
+          showError(
+            'studentRequestResult',
             'Server response timeout.'
           );
 
@@ -1919,6 +2195,20 @@ function showApp() {
     activeScreen = 'scan';
   }
 
+  if (
+    !hasStudentRequestPermission() &&
+    activeScreen === 'student'
+  ) {
+    activeScreen = 'scan';
+  }
+
+  if (
+    !hasQrPermission() &&
+    activeScreen === 'qr'
+  ) {
+    activeScreen = 'scan';
+  }
+
   openScreen(
     activeScreen || 'scan'
   );
@@ -1945,6 +2235,10 @@ async function showLogin() {
 
   document.getElementById(
     'manualResult'
+  ).innerHTML = '';
+
+  document.getElementById(
+    'studentRequestResult'
   ).innerHTML = '';
 
   document.getElementById(
@@ -2000,6 +2294,13 @@ function updateStaffUI() {
       : 'Not Allowed';
 
   document.getElementById(
+    'profileStudentAccess'
+  ).textContent =
+    hasStudentRequestPermission()
+      ? 'Allowed'
+      : 'Not Allowed';
+
+  document.getElementById(
     'profileQrAccess'
   ).textContent =
     hasQrPermission()
@@ -2010,6 +2311,13 @@ function updateStaffUI() {
     'navManual'
   ).style.display =
     hasManualPermission()
+      ? 'flex'
+      : 'none';
+
+  document.getElementById(
+    'navStudent'
+  ).style.display =
+    hasStudentRequestPermission()
       ? 'flex'
       : 'none';
 
@@ -2068,6 +2376,14 @@ async function openScreen(
   }
 
   if (
+    name === 'student' &&
+    !hasStudentRequestPermission()
+  ) {
+
+    return;
+  }
+
+  if (
     name === 'qr' &&
     !hasQrPermission()
   ) {
@@ -2088,6 +2404,7 @@ async function openScreen(
     scan: 'screenScan',
     manual: 'screenManual',
     dashboard: 'screenDashboard',
+    student: 'screenStudent',
     qr: 'screenQr',
     profile: 'screenProfile'
   };
@@ -2096,6 +2413,7 @@ async function openScreen(
     scan: 'navScan',
     manual: 'navManual',
     dashboard: 'navDashboard',
+    student: 'navStudent',
     qr: 'navQr',
     profile: 'navProfile'
   };
@@ -2510,6 +2828,234 @@ function submitManualEntry() {
       token: sessionToken,
       studentId: studentId,
       manualReason: manualReason
+    }
+  );
+}
+
+
+/* ==========================================
+   NEW STUDENT REQUEST
+========================================== */
+
+function setStudentSubmitting(
+  loading
+) {
+
+  const button =
+    document.getElementById(
+      'studentSubmitButton'
+    );
+
+  if (!button) {
+    return;
+  }
+
+  button.disabled =
+    loading === true;
+
+  button.textContent =
+    loading
+      ? 'Submitting Request...'
+      : 'Submit for Admin Approval';
+}
+
+
+function submitStudentRequest() {
+
+  if (!sessionToken) {
+
+    showLogin();
+    return;
+  }
+
+  if (!hasStudentRequestPermission()) {
+
+    showError(
+      'studentRequestResult',
+      'New Student permission not allowed.'
+    );
+
+    return;
+  }
+
+  const admissionNo =
+    document.getElementById(
+      'studentAdmissionNo'
+    ).value.trim().toUpperCase();
+
+  const studentName =
+    document.getElementById(
+      'studentName'
+    ).value.trim();
+
+  const className =
+    document.getElementById(
+      'studentClass'
+    ).value.trim();
+
+  const division =
+    document.getElementById(
+      'studentDivision'
+    ).value.trim().toUpperCase();
+
+  const rollNo =
+    document.getElementById(
+      'studentRollNo'
+    ).value.trim();
+
+  const parentName =
+    document.getElementById(
+      'studentParentName'
+    ).value.trim();
+
+  const contactNo =
+    document.getElementById(
+      'studentContactNo'
+    ).value.trim();
+
+  const messStartDate =
+    document.getElementById(
+      'studentMessStartDate'
+    ).value;
+
+  const notes =
+    document.getElementById(
+      'studentNotes'
+    ).value.trim();
+
+
+  document.getElementById(
+    'studentAdmissionNo'
+  ).value =
+    admissionNo;
+
+  document.getElementById(
+    'studentDivision'
+  ).value =
+    division;
+
+
+  if (!admissionNo) {
+
+    showError(
+      'studentRequestResult',
+      'Admission No. is required.'
+    );
+
+    return;
+  }
+
+  if (!studentName) {
+
+    showError(
+      'studentRequestResult',
+      'Student Name is required.'
+    );
+
+    return;
+  }
+
+  if (!className) {
+
+    showError(
+      'studentRequestResult',
+      'Class is required.'
+    );
+
+    return;
+  }
+
+
+  setStudentSubmitting(true);
+
+  document.getElementById(
+    'studentRequestResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:#eef4ff;">' +
+    '<strong>' +
+    escapeHtml(studentName) +
+    '</strong><br><br>' +
+    'Submitting for Admin approval...' +
+    '</div>';
+
+
+  postToBackend(
+    'student_request',
+    {
+      token: sessionToken,
+      admissionNo: admissionNo,
+      studentName: studentName,
+      className: className,
+      division: division,
+      rollNo: rollNo,
+      photo: '',
+      parentName: parentName,
+      contactNo: contactNo,
+      messStartDate: messStartDate,
+      notes: notes
+    }
+  );
+}
+
+
+function renderStudentRequestResult(
+  result
+) {
+
+  const student =
+    result.student || {};
+
+  document.getElementById(
+    'studentRequestResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:var(--success-bg);color:var(--success);">' +
+    '<div style="font-size:30px;">✅</div>' +
+    '<div style="font-size:18px;font-weight:900;margin-top:5px;">Request Submitted</div>' +
+    '<div style="margin-top:8px;font-size:14px;color:var(--text);">' +
+    escapeHtml(student.name || '') +
+    '</div>' +
+    '<div style="margin-top:6px;font-size:13px;color:var(--text);">' +
+    'Admission No.: <strong>' +
+    escapeHtml(student.admissionNo || '') +
+    '</strong>' +
+    '</div>' +
+    '<div style="margin-top:5px;font-size:13px;color:var(--text);">' +
+    'Request ID: <strong>' +
+    escapeHtml(result.requestId || '') +
+    '</strong>' +
+    '</div>' +
+    '<div style="margin-top:8px;font-size:13px;font-weight:900;">' +
+    'Status: ' +
+    escapeHtml(result.approvalStatus || 'PENDING') +
+    '</div>' +
+    '<div style="margin-top:8px;font-size:12px;color:var(--muted);">' +
+    'Student ID and first QR will be created after ADMIN approval.' +
+    '</div>' +
+    '</div>';
+}
+
+
+function resetStudentRequestForm() {
+
+  [
+    'studentAdmissionNo',
+    'studentName',
+    'studentClass',
+    'studentDivision',
+    'studentRollNo',
+    'studentParentName',
+    'studentContactNo',
+    'studentMessStartDate',
+    'studentNotes'
+  ].forEach(
+    function(id) {
+
+      const element =
+        document.getElementById(id);
+
+      if (element) {
+        element.value = '';
+      }
     }
   );
 }
