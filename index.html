@@ -16,6 +16,7 @@
 
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     :root {
@@ -622,6 +623,147 @@
       .formGrid {
         grid-template-columns: 1fr;
         gap: 0;
+      }
+    }
+
+
+    .bulkImportPanel {
+      margin-top: 16px;
+    }
+
+    .bulkImportCard {
+      padding: 18px;
+    }
+
+    .bulkImportHead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .bulkImportTitle {
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .bulkImportBadge {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .bulkImportActions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .filePicker {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px dashed #b9c4d3;
+      border-radius: 12px;
+      background: #fbfcfe;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .bulkPreview {
+      margin-top: 14px;
+    }
+
+    .bulkSummaryGrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .bulkSummaryItem {
+      padding: 10px 8px;
+      border-radius: 11px;
+      background: #f7f9fc;
+      text-align: center;
+    }
+
+    .bulkSummaryLabel {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .bulkSummaryValue {
+      margin-top: 3px;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .bulkTableWrap {
+      margin-top: 12px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .bulkTable {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .bulkTable th,
+    .bulkTable td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    .bulkTable th {
+      background: #f7f9fc;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .2px;
+    }
+
+    .bulkTable tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .bulkRowError {
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .bulkResultDetails {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f7f9fc;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 430px) {
+      .bulkImportActions {
+        grid-template-columns: 1fr;
+      }
+
+      .bulkSummaryGrid {
+        grid-template-columns: 1fr 1fr 1fr;
       }
     }
 
@@ -1280,6 +1422,78 @@
 
       </div>
 
+
+      <!-- ADMIN BULK STUDENT IMPORT -->
+      <div
+        id="bulkImportPanel"
+        class="bulkImportPanel"
+        style="display:none;"
+      >
+
+        <div class="card bulkImportCard">
+
+          <div class="bulkImportHead">
+            <div>
+              <div class="bulkImportTitle">Excel / CSV Student Import</div>
+              <div class="helperText" style="margin-top:3px;">
+                ADMIN only. Imported students are added as PENDING requests for approval.
+              </div>
+            </div>
+            <div class="bulkImportBadge">ADMIN</div>
+          </div>
+
+          <button
+            class="btn btnSoft"
+            onclick="downloadStudentImportTemplate()"
+          >
+            ⬇️ Download Excel Template
+          </button>
+
+          <div class="field">
+            <label for="bulkStudentFile">Select Excel / CSV File</label>
+            <input
+              id="bulkStudentFile"
+              class="filePicker"
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              onchange="handleBulkStudentFile(event)"
+            >
+          </div>
+
+          <div class="helperText">
+            Required columns: Admission_No, Student_Name, Class. Maximum 1000 rows per import.
+          </div>
+
+          <div id="bulkImportPreview" class="bulkPreview">
+            <div class="emptyRequests">Select an Excel or CSV file to preview.</div>
+          </div>
+
+          <div class="bulkImportActions">
+            <button
+              id="bulkImportButton"
+              class="btn btnPrimary"
+              onclick="submitBulkStudentImport()"
+              disabled
+            >
+              Import as Pending Requests
+            </button>
+
+            <button
+              id="bulkClearButton"
+              class="btn btnSoft"
+              onclick="clearBulkStudentImport()"
+            >
+              Clear File
+            </button>
+          </div>
+
+          <div id="bulkImportResult" class="resultArea"></div>
+
+        </div>
+
+      </div>
+
+
       <div
         id="adminApprovalPanel"
         class="adminApprovalPanel"
@@ -1613,6 +1827,9 @@ let responseTimer = null;
 let activeScreen = 'scan';
 let lastQrResult = null;
 let lastApprovedStudent = null;
+let bulkStudentRows = [];
+let bulkStudentFileName = '';
+let bulkImportInProgress = false;
 
 
 /* ==========================================
@@ -1934,6 +2151,48 @@ window.addEventListener(
     }
 
 
+
+    /* ADMIN BULK STUDENT IMPORT */
+
+    if (
+      message.type === 'STUDENT_BULK_IMPORT_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setBulkImporting(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'bulkImportResult',
+          result.message ||
+          'Bulk student import failed.'
+        );
+
+        return;
+      }
+
+      renderBulkImportResult(result);
+
+      // Imported rows are now pending, so refresh Admin Approvals.
+      setTimeout(
+        refreshStudentRequests,
+        350
+      );
+
+      return;
+    }
+
+
     /* ADMIN STUDENT REQUEST LIST */
 
     if (
@@ -2152,6 +2411,17 @@ window.addEventListener(
         );
 
       }
+      else if (failedAction === 'student_bulk_import') {
+
+        setBulkImporting(false);
+
+        showError(
+          'bulkImportResult',
+          message.message ||
+          'Backend error.'
+        );
+
+      }
       else if (failedAction === 'student_requests_list') {
 
         setAdminRequestsLoading(false);
@@ -2277,6 +2547,14 @@ function postToBackend(
       );
 
     }
+    else if (action === 'student_bulk_import') {
+
+      showError(
+        'bulkImportResult',
+        'Mess System is still connecting.'
+      );
+
+    }
     else if (
       action === 'student_requests_list' ||
       action === 'student_request_review'
@@ -2395,6 +2673,16 @@ function postToBackend(
 
           showError(
             'studentRequestResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'student_bulk_import') {
+
+          setBulkImporting(false);
+
+          showError(
+            'bulkImportResult',
             'Server response timeout.'
           );
 
@@ -2646,6 +2934,12 @@ async function showLogin() {
     'adminApprovalResult'
   ).innerHTML = '';
 
+  clearBulkStudentImport();
+
+  document.getElementById(
+    'bulkImportResult'
+  ).innerHTML = '';
+
   document.getElementById(
     'adminRequestsList'
   ).innerHTML =
@@ -2730,6 +3024,13 @@ function updateStaffUI() {
 
   document.getElementById(
     'adminApprovalPanel'
+  ).style.display =
+    hasAdminApprovalPermission()
+      ? 'block'
+      : 'none';
+
+  document.getElementById(
+    'bulkImportPanel'
   ).style.display =
     hasAdminApprovalPermission()
       ? 'block'
@@ -3535,6 +3836,997 @@ function setAdminReviewButtonsDisabled(
         disabled === true;
     }
   );
+}
+
+
+
+/* ==========================================
+   ADMIN BULK STUDENT IMPORT
+========================================== */
+
+function normalizeImportHeader_(value) {
+
+  return String(value || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '');
+}
+
+
+function canonicalImportHeader_(value) {
+
+  const key =
+    normalizeImportHeader_(value);
+
+  const map = {
+    ADMISSIONNO: 'Admission_No',
+    ADMISSIONNUMBER: 'Admission_No',
+    STUDENTNAME: 'Student_Name',
+    NAME: 'Student_Name',
+    CLASS: 'Class',
+    STANDARD: 'Class',
+    DIVISION: 'Division',
+    SECTION: 'Division',
+    ROLLNO: 'Roll_No',
+    ROLLNUMBER: 'Roll_No',
+    PHOTO: 'Photo',
+    PHOTOPATH: 'Photo',
+    PARENTNAME: 'Parent_Name',
+    FATHERNAME: 'Parent_Name',
+    GUARDIANNAME: 'Parent_Name',
+    CONTACTNO: 'Contact_No',
+    CONTACTNUMBER: 'Contact_No',
+    MOBILE: 'Contact_No',
+    MOBILENO: 'Contact_No',
+    MOBILENUMBER: 'Contact_No',
+    MESSSTARTDATE: 'Mess_Start_Date',
+    STARTDATE: 'Mess_Start_Date',
+    NOTES: 'Notes',
+    REMARKS: 'Notes'
+  };
+
+  return map[key] || '';
+}
+
+
+function excelDateToText_(value) {
+
+  if (value === null || value === undefined || value === '') {
+    return '';
+  }
+
+  if (
+    Object.prototype.toString.call(value) === '[object Date]' &&
+    !isNaN(value.getTime())
+  ) {
+
+    const year =
+      value.getFullYear();
+
+    const month =
+      String(value.getMonth() + 1)
+        .padStart(2, '0');
+
+    const day =
+      String(value.getDate())
+        .padStart(2, '0');
+
+    return (
+      year +
+      '-' +
+      month +
+      '-' +
+      day
+    );
+  }
+
+  if (
+    typeof value === 'number' &&
+    window.XLSX &&
+    XLSX.SSF
+  ) {
+
+    const parsed =
+      XLSX.SSF.parse_date_code(
+        value
+      );
+
+    if (parsed) {
+
+      return (
+        String(parsed.y).padStart(4, '0') +
+        '-' +
+        String(parsed.m).padStart(2, '0') +
+        '-' +
+        String(parsed.d).padStart(2, '0')
+      );
+    }
+  }
+
+  return String(value || '').trim();
+}
+
+
+function downloadStudentImportTemplate() {
+
+  if (!window.XLSX) {
+
+    alert(
+      'Excel library is not loaded. Please refresh and try again.'
+    );
+
+    return;
+  }
+
+  const templateRows = [
+    {
+      Admission_No: 'ADM001',
+      Student_Name: 'Sample Student',
+      Class: '5',
+      Division: 'A',
+      Roll_No: '1',
+      Photo: '',
+      Parent_Name: 'Sample Parent',
+      Contact_No: '9876543210',
+      Mess_Start_Date: '2026-08-25',
+      Notes: ''
+    }
+  ];
+
+  const worksheet =
+    XLSX.utils.json_to_sheet(
+      templateRows,
+      {
+        header: [
+          'Admission_No',
+          'Student_Name',
+          'Class',
+          'Division',
+          'Roll_No',
+          'Photo',
+          'Parent_Name',
+          'Contact_No',
+          'Mess_Start_Date',
+          'Notes'
+        ]
+      }
+    );
+
+  worksheet['!cols'] = [
+    {wch: 16},
+    {wch: 24},
+    {wch: 10},
+    {wch: 10},
+    {wch: 10},
+    {wch: 24},
+    {wch: 24},
+    {wch: 16},
+    {wch: 18},
+    {wch: 28}
+  ];
+
+  const workbook =
+    XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    'Student_Import'
+  );
+
+  XLSX.writeFile(
+    workbook,
+    'NSIS_Student_Import_Template.xlsx'
+  );
+}
+
+
+function handleBulkStudentFile(event) {
+
+  if (!hasAdminApprovalPermission()) {
+
+    showError(
+      'bulkImportResult',
+      'Admin permission required.'
+    );
+
+    return;
+  }
+
+  const file =
+    event &&
+    event.target &&
+    event.target.files
+      ? event.target.files[0]
+      : null;
+
+  if (!file) {
+    clearBulkStudentImport();
+    return;
+  }
+
+  if (!window.XLSX) {
+
+    showError(
+      'bulkImportResult',
+      'Excel library is not loaded. Please refresh the app.'
+    );
+
+    return;
+  }
+
+  const validExtension =
+    /\.(xlsx|xls|csv)$/i.test(
+      file.name || ''
+    );
+
+  if (!validExtension) {
+
+    showError(
+      'bulkImportResult',
+      'Please select an .xlsx, .xls or .csv file.'
+    );
+
+    clearBulkStudentImport(false);
+    return;
+  }
+
+  bulkStudentFileName =
+    file.name || '';
+
+  bulkStudentRows = [];
+
+  document.getElementById(
+    'bulkImportResult'
+  ).innerHTML = '';
+
+  document.getElementById(
+    'bulkImportButton'
+  ).disabled = true;
+
+  document.getElementById(
+    'bulkImportPreview'
+  ).innerHTML =
+    '<div class="emptyRequests">Reading file...</div>';
+
+  const reader =
+    new FileReader();
+
+  reader.onload =
+    function(loadEvent) {
+
+      try {
+
+        const data =
+          loadEvent.target.result;
+
+        const workbook =
+          XLSX.read(
+            data,
+            {
+              type: 'array',
+              cellDates: true
+            }
+          );
+
+        if (
+          !workbook.SheetNames ||
+          workbook.SheetNames.length === 0
+        ) {
+          throw new Error(
+            'No worksheet found in file.'
+          );
+        }
+
+        const sheet =
+          workbook.Sheets[
+            workbook.SheetNames[0]
+          ];
+
+        const matrix =
+          XLSX.utils.sheet_to_json(
+            sheet,
+            {
+              header: 1,
+              defval: '',
+              raw: true
+            }
+          );
+
+        if (
+          !matrix ||
+          matrix.length < 2
+        ) {
+          throw new Error(
+            'The file does not contain student rows.'
+          );
+        }
+
+        const rawHeaders =
+          matrix[0] || [];
+
+        const canonicalHeaders =
+          rawHeaders.map(
+            canonicalImportHeader_
+          );
+
+        const requiredHeaders = [
+          'Admission_No',
+          'Student_Name',
+          'Class'
+        ];
+
+        const missing =
+          requiredHeaders.filter(
+            function(name) {
+              return (
+                canonicalHeaders.indexOf(
+                  name
+                ) === -1
+              );
+            }
+          );
+
+        if (missing.length > 0) {
+
+          throw new Error(
+            'Missing required column(s): ' +
+            missing.join(', ')
+          );
+        }
+
+        const rows = [];
+
+        for (
+          let r = 1;
+          r < matrix.length;
+          r++
+        ) {
+
+          const sourceRow =
+            matrix[r] || [];
+
+          const hasAnyValue =
+            sourceRow.some(
+              function(value) {
+                return String(
+                  value == null
+                    ? ''
+                    : value
+                ).trim() !== '';
+              }
+            );
+
+          if (!hasAnyValue) {
+            continue;
+          }
+
+          const obj = {
+            __rowNumber: r + 1,
+            Admission_No: '',
+            Student_Name: '',
+            Class: '',
+            Division: '',
+            Roll_No: '',
+            Photo: '',
+            Parent_Name: '',
+            Contact_No: '',
+            Mess_Start_Date: '',
+            Notes: ''
+          };
+
+          for (
+            let c = 0;
+            c < canonicalHeaders.length;
+            c++
+          ) {
+
+            const header =
+              canonicalHeaders[c];
+
+            if (!header) {
+              continue;
+            }
+
+            let value =
+              sourceRow[c];
+
+            if (
+              header ===
+              'Mess_Start_Date'
+            ) {
+              value =
+                excelDateToText_(
+                  value
+                );
+            }
+            else {
+              value =
+                String(
+                  value == null
+                    ? ''
+                    : value
+                ).trim();
+            }
+
+            obj[header] =
+              value;
+          }
+
+          rows.push(obj);
+        }
+
+        if (rows.length === 0) {
+          throw new Error(
+            'No student rows found after the header row.'
+          );
+        }
+
+        if (rows.length > 1000) {
+          throw new Error(
+            'Maximum 1000 rows are allowed in one import.'
+          );
+        }
+
+        bulkStudentRows =
+          rows;
+
+        renderBulkStudentPreview(
+          rows,
+          bulkStudentFileName
+        );
+
+        document.getElementById(
+          'bulkImportButton'
+        ).disabled = false;
+
+      }
+      catch (error) {
+
+        bulkStudentRows = [];
+
+        document.getElementById(
+          'bulkImportButton'
+        ).disabled = true;
+
+        document.getElementById(
+          'bulkImportPreview'
+        ).innerHTML =
+          '<div class="emptyRequests bulkRowError">' +
+          escapeHtml(
+            error && error.message
+              ? error.message
+              : String(error)
+          ) +
+          '</div>';
+      }
+    };
+
+  reader.onerror =
+    function() {
+
+      bulkStudentRows = [];
+
+      document.getElementById(
+        'bulkImportButton'
+      ).disabled = true;
+
+      showError(
+        'bulkImportResult',
+        'Unable to read selected file.'
+      );
+    };
+
+  reader.readAsArrayBuffer(
+    file
+  );
+}
+
+
+function validateBulkPreviewRow_(
+  row,
+  seenAdmissions
+) {
+
+  const errors = [];
+
+  const admissionNo =
+    String(row.Admission_No || '')
+      .trim()
+      .toUpperCase();
+
+  if (!admissionNo) {
+    errors.push('Admission No. missing');
+  }
+
+  if (
+    !String(
+      row.Student_Name || ''
+    ).trim()
+  ) {
+    errors.push('Student Name missing');
+  }
+
+  if (
+    !String(
+      row.Class || ''
+    ).trim()
+  ) {
+    errors.push('Class missing');
+  }
+
+  if (
+    admissionNo &&
+    seenAdmissions.has(
+      admissionNo
+    )
+  ) {
+    errors.push(
+      'Duplicate in file'
+    );
+  }
+
+  if (admissionNo) {
+    seenAdmissions.add(
+      admissionNo
+    );
+  }
+
+  return errors;
+}
+
+
+function renderBulkStudentPreview(
+  rows,
+  fileName
+) {
+
+  const seenAdmissions =
+    new Set();
+
+  let validCount = 0;
+  let issueCount = 0;
+
+  const previewRows =
+    rows.slice(0, 10);
+
+  const bodyHtml =
+    previewRows.map(
+      function(row) {
+
+        const errors =
+          validateBulkPreviewRow_(
+            row,
+            seenAdmissions
+          );
+
+        if (errors.length > 0) {
+          issueCount++;
+        }
+        else {
+          validCount++;
+        }
+
+        return (
+          '<tr>' +
+            '<td>' +
+              escapeHtml(
+                row.__rowNumber || ''
+              ) +
+            '</td>' +
+            '<td>' +
+              escapeHtml(
+                row.Admission_No || ''
+              ) +
+            '</td>' +
+            '<td>' +
+              escapeHtml(
+                row.Student_Name || ''
+              ) +
+            '</td>' +
+            '<td>' +
+              escapeHtml(
+                row.Class || ''
+              ) +
+            '</td>' +
+            '<td>' +
+              escapeHtml(
+                row.Division || ''
+              ) +
+            '</td>' +
+            '<td>' +
+              (
+                errors.length
+                  ? '<span class="bulkRowError">' +
+                    escapeHtml(
+                      errors.join(', ')
+                    ) +
+                    '</span>'
+                  : 'Ready'
+              ) +
+            '</td>' +
+          '</tr>'
+        );
+      }
+    )
+    .join('');
+
+  // Validate all rows for summary
+  const seenAll =
+    new Set();
+
+  let allIssues = 0;
+
+  rows.forEach(
+    function(row) {
+
+      const errors =
+        validateBulkPreviewRow_(
+          row,
+          seenAll
+        );
+
+      if (errors.length > 0) {
+        allIssues++;
+      }
+    }
+  );
+
+  const allValid =
+    rows.length - allIssues;
+
+  document.getElementById(
+    'bulkImportPreview'
+  ).innerHTML =
+    '<div class="requestInfo">' +
+      '<strong>' +
+      escapeHtml(fileName || 'Selected file') +
+      '</strong><br>' +
+      'Previewing first ' +
+      Math.min(rows.length, 10) +
+      ' of ' +
+      rows.length +
+      ' row(s). Backend will perform the final duplicate check.' +
+    '</div>' +
+
+    '<div class="bulkSummaryGrid">' +
+      '<div class="bulkSummaryItem">' +
+        '<div class="bulkSummaryLabel">Rows</div>' +
+        '<div class="bulkSummaryValue">' +
+          rows.length +
+        '</div>' +
+      '</div>' +
+      '<div class="bulkSummaryItem">' +
+        '<div class="bulkSummaryLabel">Ready</div>' +
+        '<div class="bulkSummaryValue">' +
+          allValid +
+        '</div>' +
+      '</div>' +
+      '<div class="bulkSummaryItem">' +
+        '<div class="bulkSummaryLabel">Issues</div>' +
+        '<div class="bulkSummaryValue">' +
+          allIssues +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="bulkTableWrap">' +
+      '<table class="bulkTable">' +
+        '<thead>' +
+          '<tr>' +
+            '<th>Row</th>' +
+            '<th>Admission No.</th>' +
+            '<th>Student</th>' +
+            '<th>Class</th>' +
+            '<th>Division</th>' +
+            '<th>Preview Status</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody>' +
+          bodyHtml +
+        '</tbody>' +
+      '</table>' +
+    '</div>';
+}
+
+
+function setBulkImporting(
+  isLoading
+) {
+
+  bulkImportInProgress =
+    isLoading === true;
+
+  const button =
+    document.getElementById(
+      'bulkImportButton'
+    );
+
+  const fileInput =
+    document.getElementById(
+      'bulkStudentFile'
+    );
+
+  const clearButton =
+    document.getElementById(
+      'bulkClearButton'
+    );
+
+  if (button) {
+
+    button.disabled =
+      isLoading === true ||
+      bulkStudentRows.length === 0;
+
+    button.textContent =
+      isLoading === true
+        ? 'Importing Students...'
+        : 'Import as Pending Requests';
+  }
+
+  if (fileInput) {
+    fileInput.disabled =
+      isLoading === true;
+  }
+
+  if (clearButton) {
+    clearButton.disabled =
+      isLoading === true;
+  }
+}
+
+
+function submitBulkStudentImport() {
+
+  if (!hasAdminApprovalPermission()) {
+
+    showError(
+      'bulkImportResult',
+      'Admin permission required for Excel import.'
+    );
+
+    return;
+  }
+
+  if (
+    !bulkStudentRows ||
+    bulkStudentRows.length === 0
+  ) {
+
+    showError(
+      'bulkImportResult',
+      'Please select and preview an Excel/CSV file first.'
+    );
+
+    return;
+  }
+
+  if (bulkStudentRows.length > 1000) {
+
+    showError(
+      'bulkImportResult',
+      'Maximum 1000 rows are allowed in one import.'
+    );
+
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      'Import ' +
+      bulkStudentRows.length +
+      ' student row(s) as PENDING requests?'
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  document.getElementById(
+    'bulkImportResult'
+  ).innerHTML =
+    '<div class="result info">Uploading and validating students...</div>';
+
+  setBulkImporting(true);
+
+  postToBackend(
+    'student_bulk_import',
+    {
+      token:
+        sessionToken,
+      rowsJson:
+        JSON.stringify(
+          bulkStudentRows
+        )
+    }
+  );
+}
+
+
+function renderBulkImportResult(
+  result
+) {
+
+  const imported =
+    Number(result.imported || 0);
+
+  const skipped =
+    Number(result.skipped || 0);
+
+  const errors =
+    Number(result.errors || 0);
+
+  const skippedRows =
+    Array.isArray(
+      result.skippedRows
+    )
+      ? result.skippedRows
+      : [];
+
+  const errorRows =
+    Array.isArray(
+      result.errorRows
+    )
+      ? result.errorRows
+      : [];
+
+  const detailItems = [];
+
+  skippedRows
+    .slice(0, 20)
+    .forEach(
+      function(item) {
+
+        detailItems.push(
+          'Row ' +
+          escapeHtml(item.row || '') +
+          ' — ' +
+          escapeHtml(
+            item.admissionNo || ''
+          ) +
+          ': ' +
+          escapeHtml(
+            item.message || 'Skipped'
+          )
+        );
+      }
+    );
+
+  errorRows
+    .slice(0, 20)
+    .forEach(
+      function(item) {
+
+        detailItems.push(
+          'Row ' +
+          escapeHtml(item.row || '') +
+          ' — ' +
+          escapeHtml(
+            item.admissionNo || ''
+          ) +
+          ': ' +
+          escapeHtml(
+            item.message || 'Error'
+          )
+        );
+      }
+    );
+
+  document.getElementById(
+    'bulkImportResult'
+  ).innerHTML =
+    '<div class="result success">' +
+      '<div style="font-size:16px;font-weight:900;">Bulk Import Completed</div>' +
+      '<div style="margin-top:5px;">' +
+        'Imported: <strong>' +
+        imported +
+        '</strong> &nbsp; | &nbsp; ' +
+        'Skipped: <strong>' +
+        skipped +
+        '</strong> &nbsp; | &nbsp; ' +
+        'Errors: <strong>' +
+        errors +
+        '</strong>' +
+      '</div>' +
+      (
+        detailItems.length
+          ? '<div class="bulkResultDetails">' +
+            detailItems.join('<br>') +
+            (
+              skippedRows.length +
+              errorRows.length >
+              detailItems.length
+                ? '<br>…additional rows not shown.'
+                : ''
+            ) +
+            '</div>'
+          : ''
+      ) +
+    '</div>';
+
+  // Clear source file after a successful backend response.
+  bulkStudentRows = [];
+  bulkStudentFileName = '';
+
+  const fileInput =
+    document.getElementById(
+      'bulkStudentFile'
+    );
+
+  if (fileInput) {
+    fileInput.value = '';
+  }
+
+  document.getElementById(
+    'bulkImportButton'
+  ).disabled = true;
+
+  document.getElementById(
+    'bulkImportPreview'
+  ).innerHTML =
+    '<div class="emptyRequests">Import complete. Select another file if required.</div>';
+}
+
+
+function clearBulkStudentImport(
+  clearResult
+) {
+
+  bulkStudentRows = [];
+  bulkStudentFileName = '';
+  bulkImportInProgress = false;
+
+  const fileInput =
+    document.getElementById(
+      'bulkStudentFile'
+    );
+
+  if (fileInput) {
+    fileInput.value = '';
+    fileInput.disabled = false;
+  }
+
+  const button =
+    document.getElementById(
+      'bulkImportButton'
+    );
+
+  if (button) {
+    button.disabled = true;
+    button.textContent =
+      'Import as Pending Requests';
+  }
+
+  const clearButton =
+    document.getElementById(
+      'bulkClearButton'
+    );
+
+  if (clearButton) {
+    clearButton.disabled = false;
+  }
+
+  const preview =
+    document.getElementById(
+      'bulkImportPreview'
+    );
+
+  if (preview) {
+    preview.innerHTML =
+      '<div class="emptyRequests">Select an Excel or CSV file to preview.</div>';
+  }
+
+  if (clearResult !== false) {
+
+    const result =
+      document.getElementById(
+        'bulkImportResult'
+      );
+
+    if (result) {
+      result.innerHTML = '';
+    }
+  }
 }
 
 
