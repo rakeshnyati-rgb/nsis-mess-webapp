@@ -8825,19 +8825,30 @@ async function logoutStaff() {
 
   await stopScanner();
 
-  if (!sessionToken) {
+  // Keep a copy only for backend session/audit cleanup.
+  const tokenToLogout =
+    String(sessionToken || '').trim();
 
-    clearSession();
-    showLogin();
-    return;
+  // IMPORTANT:
+  // Logout the device immediately.
+  // Do not wait for Apps Script / network response.
+  clearSession();
+  showLogin();
+
+  // Backend cleanup is best-effort.
+  // Even if internet/backend is slow, the user is already logged out locally.
+  if (
+    tokenToLogout &&
+    backendReady
+  ) {
+
+    postToBackend(
+      'logout',
+      {
+        token: tokenToLogout
+      }
+    );
   }
-
-  postToBackend(
-    'logout',
-    {
-      token: sessionToken
-    }
-  );
 }
 
 
