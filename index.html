@@ -2238,6 +2238,81 @@
       </div>
 
 
+      <!-- BACKUP & RECOVERY -->
+      <div class="card userSectionCard">
+
+        <div class="userSectionHead">
+          <div class="userSectionTitle">Backup & Recovery</div>
+          <div id="backupStatusBadge" class="userCountBadge">—</div>
+        </div>
+
+        <div class="userTopActions">
+          <button
+            id="refreshBackupButton"
+            type="button"
+            class="btn btnSoft"
+            onclick="refreshBackupAdmin()"
+          >
+            ↻ Refresh Backup
+          </button>
+
+          <button
+            id="backupNowButton"
+            type="button"
+            class="btn btnPrimary"
+            onclick="runBackupNowFromApp()"
+          >
+            💾 Backup Now
+          </button>
+        </div>
+
+        <div id="backupResult" class="resultArea"></div>
+
+        <div class="userMetaGrid">
+
+          <div class="userMetaItem">
+            <strong>Last Backup</strong>
+            <span id="backupLastTime">—</span>
+          </div>
+
+          <div class="userMetaItem">
+            <strong>Last Status</strong>
+            <span id="backupLastStatus">—</span>
+          </div>
+
+          <div class="userMetaItem">
+            <strong>Automatic Backup</strong>
+            <span id="backupFrequency">—</span>
+          </div>
+
+          <div class="userMetaItem">
+            <strong>Retention</strong>
+            <span id="backupRetention">—</span>
+          </div>
+
+          <div class="userMetaItem" style="grid-column:1 / -1;">
+            <strong>Backup Folder</strong>
+            <span id="backupFolderName">—</span>
+          </div>
+
+        </div>
+
+        <div class="userSectionHead" style="margin-top:18px;">
+          <div class="userSectionTitle" style="font-size:15px;">Recent Backup History</div>
+          <div id="backupHistoryCountBadge" class="userCountBadge">0</div>
+        </div>
+
+        <div id="backupHistoryList" class="userList">
+          <div class="emptyRequests">Refresh Backup to load history.</div>
+        </div>
+
+        <div class="adminOnlyNotice">
+          Daily backup is configured by Apps Script trigger. Backup Now creates a full Google Sheet copy immediately.
+        </div>
+
+      </div>
+
+
       <div class="card userSectionCard">
 
         <div class="userSectionHead">
@@ -2711,6 +2786,9 @@ let selectedAdminUser = null;
 let userManagementBusy = false;
 let securitySessions = [];
 let securityBusy = false;
+let backupBusy = false;
+let backupStatusData = null;
+let backupHistory = [];
 
 
 /* ==========================================
@@ -3529,6 +3607,11 @@ window.addEventListener(
         securitySessions
       );
 
+      setTimeout(
+        refreshBackupAdmin,
+        150
+      );
+
       return;
     }
 
@@ -3617,6 +3700,153 @@ window.addEventListener(
 
       clearSession();
       showLogin();
+      return;
+    }
+
+
+    /* ADMIN BACKUP STATUS */
+
+    if (
+      message.type === 'BACKUP_STATUS_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        setBackupBusy(false);
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        setBackupBusy(false);
+
+        showError(
+          'backupResult',
+          result.message ||
+          'Unable to load backup status.'
+        );
+
+        return;
+      }
+
+      backupStatusData =
+        result;
+
+      renderBackupStatus(
+        result
+      );
+
+      postToBackend(
+        'backup_history',
+        {
+          token: sessionToken,
+          limit: 10
+        }
+      );
+
+      return;
+    }
+
+
+    /* ADMIN BACKUP HISTORY */
+
+    if (
+      message.type === 'BACKUP_HISTORY_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setBackupBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'backupResult',
+          result.message ||
+          'Unable to load backup history.'
+        );
+
+        return;
+      }
+
+      backupHistory =
+        Array.isArray(result.history)
+          ? result.history
+          : [];
+
+      renderBackupHistory(
+        backupHistory
+      );
+
+      return;
+    }
+
+
+    /* ADMIN BACKUP NOW */
+
+    if (
+      message.type === 'BACKUP_NOW_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setBackupBusy(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'backupResult',
+          result.message ||
+          'Backup failed.'
+        );
+
+        return;
+      }
+
+      document.getElementById(
+        'backupResult'
+      ).innerHTML =
+        '<div class="result success">✅ ' +
+        escapeHtml(
+          result.message ||
+          'Backup created successfully.'
+        ) +
+        (
+          result.fileName
+            ? '<br><small>' +
+              escapeHtml(result.fileName) +
+              '</small>'
+            : ''
+        ) +
+        '</div>';
+
+      setTimeout(
+        refreshBackupAdmin,
+        300
+      );
+
       return;
     }
 
@@ -3822,6 +4052,21 @@ window.addEventListener(
         );
 
       }
+      else if (
+        failedAction === 'backup_status' ||
+        failedAction === 'backup_history' ||
+        failedAction === 'backup_now'
+      ) {
+
+        setBackupBusy(false);
+
+        showError(
+          'backupResult',
+          message.message ||
+          'Backup backend error.'
+        );
+
+      }
 
       else if (failedAction === 'qr_reissue') {
 
@@ -3977,6 +4222,18 @@ function postToBackend(
 
       showError(
         'securityResult',
+        'Mess System is still connecting.'
+      );
+
+    }
+    else if (
+      action === 'backup_status' ||
+      action === 'backup_history' ||
+      action === 'backup_now'
+    ) {
+
+      showError(
+        'backupResult',
         'Mess System is still connecting.'
       );
 
@@ -4172,6 +4429,20 @@ function postToBackend(
           );
 
         }
+        else if (
+          actionCopy === 'backup_status' ||
+          actionCopy === 'backup_history' ||
+          actionCopy === 'backup_now'
+        ) {
+
+          setBackupBusy(false);
+
+          showError(
+            'backupResult',
+            'Backup response timeout.'
+          );
+
+        }
 
         else if (actionCopy === 'qr_reissue') {
 
@@ -4193,7 +4464,9 @@ function postToBackend(
         }
 
       },
-      20000
+      action === 'backup_now'
+        ? 45000
+        : 20000
     );
 }
 
@@ -8577,6 +8850,347 @@ function logoutAllActiveSessions() {
     {
       token: sessionToken,
       reason: reason
+    }
+  );
+}
+
+
+/* ==========================================
+   BACKUP & RECOVERY ADMIN UI
+========================================== */
+
+function setBackupBusy(
+  isBusy
+) {
+
+  backupBusy =
+    isBusy === true;
+
+  const refreshButton =
+    document.getElementById(
+      'refreshBackupButton'
+    );
+
+  const backupNowButton =
+    document.getElementById(
+      'backupNowButton'
+    );
+
+  if (refreshButton) {
+    refreshButton.disabled =
+      backupBusy;
+  }
+
+  if (backupNowButton) {
+    backupNowButton.disabled =
+      backupBusy;
+
+    backupNowButton.textContent =
+      backupBusy
+        ? 'Working...'
+        : '💾 Backup Now';
+  }
+}
+
+
+function refreshBackupAdmin() {
+
+  if (
+    !hasUserManagementPermission()
+  ) {
+    return;
+  }
+
+  if (!sessionToken) {
+    handleExpiredSession();
+    return;
+  }
+
+  if (backupBusy) {
+    return;
+  }
+
+  setBackupBusy(true);
+
+  const resultArea =
+    document.getElementById(
+      'backupResult'
+    );
+
+  if (resultArea) {
+    resultArea.innerHTML = '';
+  }
+
+  postToBackend(
+    'backup_status',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function renderBackupStatus(
+  result
+) {
+
+  const status =
+    String(
+      result.lastBackupStatus || ''
+    )
+      .trim()
+      .toUpperCase();
+
+  const badge =
+    document.getElementById(
+      'backupStatusBadge'
+    );
+
+  if (badge) {
+    badge.textContent =
+      status || 'NOT RUN';
+  }
+
+  const lastTime =
+    document.getElementById(
+      'backupLastTime'
+    );
+
+  if (lastTime) {
+    lastTime.textContent =
+      result.lastBackupDateTime ||
+      'Not available';
+  }
+
+  const lastStatus =
+    document.getElementById(
+      'backupLastStatus'
+    );
+
+  if (lastStatus) {
+    lastStatus.textContent =
+      status ||
+      'Not available';
+  }
+
+  const frequency =
+    document.getElementById(
+      'backupFrequency'
+    );
+
+  if (frequency) {
+
+    const enabled =
+      result.backupEnabled === true;
+
+    frequency.textContent =
+      enabled
+        ? (
+            String(
+              result.backupFrequency ||
+              'DAILY'
+            ) +
+            ' · approx ' +
+            String(
+              result.backupHour ||
+              '02'
+            ).padStart(2, '0') +
+            ':00'
+          )
+        : 'DISABLED';
+  }
+
+  const retention =
+    document.getElementById(
+      'backupRetention'
+    );
+
+  if (retention) {
+    retention.textContent =
+      String(
+        result.retentionDays ||
+        '30'
+      ) +
+      ' days';
+  }
+
+  const folder =
+    document.getElementById(
+      'backupFolderName'
+    );
+
+  if (folder) {
+    folder.textContent =
+      result.folderName ||
+      'NSIS_Mess_Backups';
+  }
+}
+
+
+function renderBackupHistory(
+  history
+) {
+
+  const list =
+    document.getElementById(
+      'backupHistoryList'
+    );
+
+  const badge =
+    document.getElementById(
+      'backupHistoryCountBadge'
+    );
+
+  if (!list || !badge) {
+    return;
+  }
+
+  const rows =
+    Array.isArray(history)
+      ? history
+      : [];
+
+  badge.textContent =
+    String(rows.length);
+
+  if (!rows.length) {
+
+    list.innerHTML =
+      '<div class="emptyRequests">No backup history found.</div>';
+
+    return;
+  }
+
+  list.innerHTML =
+    rows.map(function(item) {
+
+      const status =
+        String(
+          item.status || ''
+        )
+          .trim()
+          .toUpperCase();
+
+      const statusClass =
+        status === 'SUCCESS'
+          ? 'userRoleBadge'
+          : 'userRoleBadge inactive';
+
+      return (
+        '<div class="userCard">' +
+
+          '<div class="userCardHead">' +
+
+            '<div>' +
+              '<div class="userCardName">' +
+                escapeHtml(
+                  item.fileName ||
+                  item.backupId ||
+                  'Backup'
+                ) +
+              '</div>' +
+              '<div class="userCardLogin">' +
+                escapeHtml(
+                  item.dateTime || '-'
+                ) +
+              '</div>' +
+            '</div>' +
+
+            '<span class="' +
+              statusClass +
+            '">' +
+              escapeHtml(
+                status || 'UNKNOWN'
+              ) +
+            '</span>' +
+
+          '</div>' +
+
+          '<div class="userMetaGrid">' +
+
+            '<div class="userMetaItem">' +
+              '<strong>Type</strong>' +
+              '<span>' +
+                escapeHtml(
+                  item.backupType || '-'
+                ) +
+              '</span>' +
+            '</div>' +
+
+            '<div class="userMetaItem">' +
+              '<strong>Triggered By</strong>' +
+              '<span>' +
+                escapeHtml(
+                  item.triggeredBy || '-'
+                ) +
+              '</span>' +
+            '</div>' +
+
+            (
+              item.errorMessage
+                ? (
+                    '<div class="userMetaItem" style="grid-column:1 / -1;">' +
+                      '<strong>Error</strong>' +
+                      '<span>' +
+                        escapeHtml(
+                          item.errorMessage
+                        ) +
+                      '</span>' +
+                    '</div>'
+                  )
+                : ''
+            ) +
+
+          '</div>' +
+
+        '</div>'
+      );
+    }).join('');
+}
+
+
+function runBackupNowFromApp() {
+
+  if (
+    !hasUserManagementPermission()
+  ) {
+    return;
+  }
+
+  if (!sessionToken) {
+    handleExpiredSession();
+    return;
+  }
+
+  if (backupBusy) {
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      'Create a full backup copy of the NSIS Mess Google Sheet now?'
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  setBackupBusy(true);
+
+  const resultArea =
+    document.getElementById(
+      'backupResult'
+    );
+
+  if (resultArea) {
+    resultArea.innerHTML =
+      '<div class="resultCard" style="background:#eef4ff;">Creating backup... Please wait.</div>';
+  }
+
+  postToBackend(
+    'backup_now',
+    {
+      token: sessionToken
     }
   );
 }
