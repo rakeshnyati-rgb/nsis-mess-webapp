@@ -15,6 +15,7 @@
   <title>NSIS Mess Management</title>
 
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     :root {
@@ -592,6 +593,65 @@
       line-height: 1;
     }
 
+    .qrCard {
+      padding: 18px;
+    }
+
+    .qrWarning {
+      margin-top: 12px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .qrPreviewCard {
+      margin-top: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      text-align: center;
+    }
+
+    #generatedQr {
+      width: 230px;
+      max-width: 100%;
+      min-height: 220px;
+      margin: 14px auto;
+      display: grid;
+      place-items: center;
+      padding: 5px;
+      background: #fff;
+    }
+
+    #generatedQr img,
+    #generatedQr canvas {
+      max-width: 100%;
+      height: auto !important;
+    }
+
+    .qrCodeText {
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f6f8fb;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      font-weight: 800;
+      word-break: break-all;
+    }
+
+    .roleNote {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
     #backendFrame {
       display: none;
       width: 1px;
@@ -849,6 +909,132 @@
     </section>
 
 
+    <!-- QR MANAGEMENT SCREEN -->
+    <section id="screenQr" class="screen">
+
+      <div class="sectionTitle">QR Management</div>
+
+      <div class="card qrCard">
+
+        <div class="field" style="margin-top:0;">
+          <label for="qrStudentSearch">Student ID / Admission No.</label>
+          <input
+            id="qrStudentSearch"
+            class="input"
+            type="text"
+            placeholder="Example: STU0001 or ADM001"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="field">
+          <label for="qrActionType">QR Action</label>
+          <select id="qrActionType" onchange="updateQrActionWarning()">
+            <option value="REPRINT">REPRINT — Same QR</option>
+            <option value="REGENERATE">REGENERATE — New QR</option>
+          </select>
+        </div>
+
+        <div id="qrActionWarning" class="qrWarning" style="display:none;">
+          Regenerate creates a new QR code and the old QR will stop working.
+        </div>
+
+        <div class="field">
+          <label for="qrReason">Reason</label>
+          <select id="qrReason">
+            <option value="">Select Reason</option>
+            <option value="QR Card Lost">QR Card Lost</option>
+            <option value="QR Card Damaged">QR Card Damaged</option>
+            <option value="QR Print Faded">QR Print Faded</option>
+            <option value="Student Details Correction">Student Details Correction</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="qrChargeAmount">Charge Amount (₹)</label>
+          <input
+            id="qrChargeAmount"
+            class="input"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            step="1"
+            value="0"
+            placeholder="0"
+          >
+        </div>
+
+        <div class="field">
+          <label for="qrPaymentStatus">Payment Status</label>
+          <select id="qrPaymentStatus" onchange="updateQrPaymentFields()">
+            <option value="">Select Payment Status</option>
+            <option value="PAID">PAID</option>
+            <option value="PENDING">PENDING</option>
+            <option value="WAIVED">WAIVED</option>
+          </select>
+        </div>
+
+        <div id="qrPaidFields" style="display:none;">
+
+          <div class="field">
+            <label for="qrPaymentMode">Payment Mode</label>
+            <select id="qrPaymentMode">
+              <option value="">Select Payment Mode</option>
+              <option value="CASH">CASH</option>
+              <option value="UPI">UPI</option>
+              <option value="CARD">CARD</option>
+              <option value="BANK">BANK</option>
+              <option value="OTHER">OTHER</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="qrPaymentReference">Payment Reference</label>
+            <input
+              id="qrPaymentReference"
+              class="input"
+              type="text"
+              placeholder="Receipt / UPI / Transaction Ref."
+              autocomplete="off"
+            >
+          </div>
+
+        </div>
+
+        <button
+          id="qrProcessButton"
+          class="btn btnPrimary"
+          onclick="submitQrReissue()"
+        >
+          Generate / Reissue QR
+        </button>
+
+        <div class="roleNote">
+          Available only to ADMIN and MESS_MANAGER. REPRINT keeps the same QR; REGENERATE invalidates the old QR.
+        </div>
+
+        <div id="qrResult" class="resultArea"></div>
+
+        <div id="qrPreviewCard" class="qrPreviewCard" style="display:none;">
+          <div id="qrStudentName" class="studentName"></div>
+          <div id="qrStudentMeta" class="studentMeta"></div>
+          <div id="generatedQr"></div>
+          <div id="generatedQrText" class="qrCodeText"></div>
+          <button
+            id="printQrButton"
+            class="btn btnSoft"
+            onclick="printGeneratedQr()"
+          >
+            🖨️ Print QR Card
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+
     <!-- PROFILE SCREEN -->
     <section id="screenProfile" class="screen">
 
@@ -876,6 +1062,11 @@
           <div id="profileManual" class="profileValue">-</div>
         </div>
 
+        <div class="profileRow">
+          <div class="profileLabel">QR Management Access</div>
+          <div id="profileQrAccess" class="profileValue">-</div>
+        </div>
+
         <button
           class="btn btnDanger"
           onclick="logoutStaff()"
@@ -891,7 +1082,7 @@
 
 
   <!-- BOTTOM NAV -->
-  <nav class="bottomNav">
+  <nav id="bottomNav" class="bottomNav">
 
     <button
       id="navScan"
@@ -918,6 +1109,16 @@
     >
       <span class="navIcon">📊</span>
       <span>Dashboard</span>
+    </button>
+
+    <button
+      id="navQr"
+      class="navBtn"
+      onclick="openScreen('qr')"
+      style="display:none;"
+    >
+      <span class="navIcon">▦</span>
+      <span>QR</span>
     </button>
 
     <button
@@ -978,6 +1179,7 @@ let currentAction = '';
 let responseTimer = null;
 
 let activeScreen = 'scan';
+let lastQrResult = null;
 
 
 /* ==========================================
@@ -1002,6 +1204,24 @@ function hasManualPermission() {
       .toUpperCase() === 'ADMIN';
 
   return explicitPermission || isAdmin;
+}
+
+
+function hasQrPermission() {
+
+  if (!currentStaff) {
+    return false;
+  }
+
+  const role =
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase();
+
+  return (
+    role === 'ADMIN' ||
+    role === 'MESS_MANAGER'
+  );
 }
 
 
@@ -1208,6 +1428,45 @@ window.addEventListener(
     }
 
 
+    /* QR REISSUE */
+
+    if (
+      message.type === 'QR_REISSUE_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setQrProcessing(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'qrResult',
+          result.message ||
+          'Unable to process QR.'
+        );
+
+        document.getElementById(
+          'qrPreviewCard'
+        ).style.display = 'none';
+
+        return;
+      }
+
+      renderQrReissueResult(result);
+      return;
+    }
+
+
     /* DASHBOARD */
 
     if (
@@ -1290,6 +1549,17 @@ window.addEventListener(
 
         showError(
           'scanResult',
+          message.message ||
+          'Backend error.'
+        );
+
+      }
+      else if (failedAction === 'qr_reissue') {
+
+        setQrProcessing(false);
+
+        showError(
+          'qrResult',
           message.message ||
           'Backend error.'
         );
@@ -1468,6 +1738,16 @@ function postToBackend(
 
           showError(
             'scanResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'qr_reissue') {
+
+          setQrProcessing(false);
+
+          showError(
+            'qrResult',
             'Server response timeout.'
           );
 
@@ -1666,6 +1946,14 @@ async function showLogin() {
   document.getElementById(
     'manualResult'
   ).innerHTML = '';
+
+  document.getElementById(
+    'qrResult'
+  ).innerHTML = '';
+
+  document.getElementById(
+    'qrPreviewCard'
+  ).style.display = 'none';
 }
 
 
@@ -1712,11 +2000,54 @@ function updateStaffUI() {
       : 'Not Allowed';
 
   document.getElementById(
+    'profileQrAccess'
+  ).textContent =
+    hasQrPermission()
+      ? 'Allowed'
+      : 'Not Allowed';
+
+  document.getElementById(
     'navManual'
   ).style.display =
     hasManualPermission()
       ? 'flex'
       : 'none';
+
+  document.getElementById(
+    'navQr'
+  ).style.display =
+    hasQrPermission()
+      ? 'flex'
+      : 'none';
+
+  updateBottomNavColumns();
+}
+
+
+function updateBottomNavColumns() {
+
+  const nav =
+    document.getElementById(
+      'bottomNav'
+    );
+
+  if (!nav) {
+    return;
+  }
+
+  const visibleCount =
+    Array.from(
+      nav.querySelectorAll('.navBtn')
+    ).filter(
+      function(button) {
+        return button.style.display !== 'none';
+      }
+    ).length;
+
+  nav.style.gridTemplateColumns =
+    'repeat(' +
+    Math.max(visibleCount, 1) +
+    ', 1fr)';
 }
 
 
@@ -1737,6 +2068,14 @@ async function openScreen(
   }
 
   if (
+    name === 'qr' &&
+    !hasQrPermission()
+  ) {
+
+    return;
+  }
+
+  if (
     name !== 'scan'
   ) {
     await stopScanner();
@@ -1749,6 +2088,7 @@ async function openScreen(
     scan: 'screenScan',
     manual: 'screenManual',
     dashboard: 'screenDashboard',
+    qr: 'screenQr',
     profile: 'screenProfile'
   };
 
@@ -1756,6 +2096,7 @@ async function openScreen(
     scan: 'navScan',
     manual: 'navManual',
     dashboard: 'navDashboard',
+    qr: 'navQr',
     profile: 'navProfile'
   };
 
@@ -2171,6 +2512,481 @@ function submitManualEntry() {
       manualReason: manualReason
     }
   );
+}
+
+
+/* ==========================================
+   QR MANAGEMENT
+========================================== */
+
+function updateQrActionWarning() {
+
+  const action =
+    document.getElementById(
+      'qrActionType'
+    ).value;
+
+  document.getElementById(
+    'qrActionWarning'
+  ).style.display =
+    action === 'REGENERATE'
+      ? 'block'
+      : 'none';
+}
+
+
+function updateQrPaymentFields() {
+
+  const status =
+    document.getElementById(
+      'qrPaymentStatus'
+    ).value;
+
+  const paid =
+    status === 'PAID';
+
+  document.getElementById(
+    'qrPaidFields'
+  ).style.display =
+    paid
+      ? 'block'
+      : 'none';
+
+  if (!paid) {
+
+    document.getElementById(
+      'qrPaymentMode'
+    ).value = '';
+
+    document.getElementById(
+      'qrPaymentReference'
+    ).value = '';
+  }
+}
+
+
+function setQrProcessing(
+  loading
+) {
+
+  const button =
+    document.getElementById(
+      'qrProcessButton'
+    );
+
+  if (!button) {
+    return;
+  }
+
+  button.disabled =
+    loading === true;
+
+  button.textContent =
+    loading
+      ? 'Processing QR...'
+      : 'Generate / Reissue QR';
+}
+
+
+function submitQrReissue() {
+
+  if (!sessionToken) {
+
+    showLogin();
+    return;
+  }
+
+  if (!hasQrPermission()) {
+
+    showError(
+      'qrResult',
+      'QR Management permission not allowed.'
+    );
+
+    return;
+  }
+
+  const studentSearch =
+    document.getElementById(
+      'qrStudentSearch'
+    )
+      .value
+      .trim()
+      .toUpperCase();
+
+  const actionType =
+    document.getElementById(
+      'qrActionType'
+    ).value;
+
+  const reason =
+    document.getElementById(
+      'qrReason'
+    ).value;
+
+  const chargeAmount =
+    document.getElementById(
+      'qrChargeAmount'
+    ).value
+      .trim();
+
+  const paymentStatus =
+    document.getElementById(
+      'qrPaymentStatus'
+    ).value;
+
+  const paymentMode =
+    document.getElementById(
+      'qrPaymentMode'
+    ).value;
+
+  const paymentReference =
+    document.getElementById(
+      'qrPaymentReference'
+    ).value
+      .trim();
+
+
+  document.getElementById(
+    'qrStudentSearch'
+  ).value =
+    studentSearch;
+
+
+  if (!studentSearch) {
+
+    showError(
+      'qrResult',
+      'Please enter Student ID or Admission No.'
+    );
+
+    return;
+  }
+
+  if (!reason) {
+
+    showError(
+      'qrResult',
+      'Please select QR reissue reason.'
+    );
+
+    return;
+  }
+
+  if (
+    chargeAmount === '' ||
+    Number(chargeAmount) < 0 ||
+    Number.isNaN(Number(chargeAmount))
+  ) {
+
+    showError(
+      'qrResult',
+      'Please enter valid charge amount.'
+    );
+
+    return;
+  }
+
+  if (!paymentStatus) {
+
+    showError(
+      'qrResult',
+      'Please select payment status.'
+    );
+
+    return;
+  }
+
+  if (
+    paymentStatus === 'PAID' &&
+    !paymentMode
+  ) {
+
+    showError(
+      'qrResult',
+      'Please select payment mode.'
+    );
+
+    return;
+  }
+
+  if (
+    actionType === 'REGENERATE'
+  ) {
+
+    const confirmed =
+      window.confirm(
+        'REGENERATE will create a new QR and the old QR will stop working. Continue?'
+      );
+
+    if (!confirmed) {
+      return;
+    }
+  }
+
+  setQrProcessing(true);
+
+  document.getElementById(
+    'qrPreviewCard'
+  ).style.display = 'none';
+
+  document.getElementById(
+    'qrResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:#eef4ff;">' +
+    '<strong>' +
+    escapeHtml(studentSearch) +
+    '</strong><br><br>' +
+    'Processing QR...' +
+    '</div>';
+
+
+  postToBackend(
+    'qr_reissue',
+    {
+      token: sessionToken,
+      studentSearch: studentSearch,
+      actionType: actionType,
+      reason: reason,
+      chargeAmount: chargeAmount,
+      paymentStatus: paymentStatus,
+      paymentMode: paymentMode,
+      paymentReference: paymentReference
+    }
+  );
+}
+
+
+function renderQrReissueResult(
+  result
+) {
+
+  lastQrResult =
+    result;
+
+  const student =
+    result.student || {};
+
+  const qrText =
+    String(
+      result.newQr || ''
+    ).trim();
+
+  const action =
+    String(
+      result.actionType || ''
+    ).toUpperCase();
+
+  const statusText =
+    action === 'REGENERATE'
+      ? 'New QR Generated'
+      : 'QR Ready for Reprint';
+
+  document.getElementById(
+    'qrResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:var(--success-bg);color:var(--success);">' +
+    '<div style="font-size:30px;">✅</div>' +
+    '<div style="font-size:18px;font-weight:900;margin-top:5px;">' +
+    escapeHtml(statusText) +
+    '</div>' +
+    '<div style="margin-top:7px;font-size:13px;">Charge ₹' +
+    escapeHtml(result.chargeAmount || 0) +
+    ' · ' +
+    escapeHtml(result.paymentStatus || '') +
+    '</div>' +
+    '</div>';
+
+
+  document.getElementById(
+    'qrStudentName'
+  ).textContent =
+    student.name ||
+    student.id ||
+    'Student';
+
+  document.getElementById(
+    'qrStudentMeta'
+  ).textContent =
+    'Student ID: ' +
+    (student.id || '-') +
+    ' · Class: ' +
+    (student.className || '-');
+
+  document.getElementById(
+    'generatedQrText'
+  ).textContent =
+    qrText;
+
+
+  const qrContainer =
+    document.getElementById(
+      'generatedQr'
+    );
+
+  qrContainer.innerHTML = '';
+
+
+  if (
+    typeof QRCode !== 'undefined' &&
+    qrText
+  ) {
+
+    new QRCode(
+      qrContainer,
+      {
+        text: qrText,
+        width: 220,
+        height: 220,
+        correctLevel:
+          QRCode.CorrectLevel.H
+      }
+    );
+
+  }
+  else {
+
+    qrContainer.textContent =
+      'QR preview unavailable';
+  }
+
+
+  document.getElementById(
+    'qrPreviewCard'
+  ).style.display =
+    'block';
+}
+
+
+function printGeneratedQr() {
+
+  if (
+    !lastQrResult ||
+    !lastQrResult.newQr
+  ) {
+
+    showError(
+      'qrResult',
+      'Generate QR first.'
+    );
+
+    return;
+  }
+
+  const student =
+    lastQrResult.student || {};
+
+  const qrContainer =
+    document.getElementById(
+      'generatedQr'
+    );
+
+  const canvas =
+    qrContainer.querySelector(
+      'canvas'
+    );
+
+  const image =
+    qrContainer.querySelector(
+      'img'
+    );
+
+  let imageSource = '';
+
+  if (canvas) {
+
+    imageSource =
+      canvas.toDataURL(
+        'image/png'
+      );
+
+  }
+  else if (image) {
+
+    imageSource =
+      image.src || '';
+  }
+
+
+  if (!imageSource) {
+
+    showError(
+      'qrResult',
+      'QR image is not ready yet.'
+    );
+
+    return;
+  }
+
+
+  const printWindow =
+    window.open(
+      '',
+      '_blank',
+      'width=480,height=650'
+    );
+
+  if (!printWindow) {
+
+    showError(
+      'qrResult',
+      'Allow pop-ups to print QR.'
+    );
+
+    return;
+  }
+
+
+  const safeName =
+    escapeHtml(
+      student.name || ''
+    );
+
+  const safeId =
+    escapeHtml(
+      student.id || ''
+    );
+
+  const safeClass =
+    escapeHtml(
+      student.className || ''
+    );
+
+  const safeQr =
+    escapeHtml(
+      lastQrResult.newQr || ''
+    );
+
+
+  printWindow.document.write(
+    '<!DOCTYPE html>' +
+    '<html><head><meta charset="UTF-8">' +
+    '<title>NSIS Student QR</title>' +
+    '<style>' +
+    'body{font-family:Arial;text-align:center;padding:28px;color:#172033;}' +
+    '.card{width:320px;margin:auto;border:2px solid #172033;border-radius:18px;padding:20px;}' +
+    'h2{margin:0 0 5px;font-size:19px;}' +
+    '.school{font-size:12px;margin-bottom:15px;}' +
+    '.name{font-size:20px;font-weight:700;margin-top:12px;}' +
+    '.meta{font-size:13px;margin-top:5px;}' +
+    '.qrtext{font-size:10px;margin-top:9px;word-break:break-all;}' +
+    'img{width:220px;height:220px;}' +
+    '@media print{button{display:none;}}' +
+    '</style></head><body>' +
+    '<div class="card">' +
+    '<h2>NSIS Mess Management</h2>' +
+    '<div class="school">Nyati Samata International School</div>' +
+    '<img src="' + imageSource + '">' +
+    '<div class="name">' + safeName + '</div>' +
+    '<div class="meta">Student ID: ' + safeId + '</div>' +
+    '<div class="meta">Class: ' + safeClass + '</div>' +
+    '<div class="qrtext">' + safeQr + '</div>' +
+    '</div>' +
+    '<button onclick="window.print()" style="margin-top:18px;padding:12px 22px;font-size:16px;">Print</button>' +
+    '</body></html>'
+  );
+
+  printWindow.document.close();
 }
 
 
@@ -2611,6 +3427,7 @@ function clearSession() {
   sessionToken = '';
   currentStaff = null;
   activeScreen = 'scan';
+  lastQrResult = null;
 
   sessionStorage.removeItem(
     'NSIS_MESS_TOKEN'
