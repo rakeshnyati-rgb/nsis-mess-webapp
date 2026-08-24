@@ -356,6 +356,108 @@
   ✍️ Manual Entry
 </button>
 
+    <button
+  id="dashboardButton"
+  class="secondary"
+  onclick="openDashboard()"
+>
+  📊 Today Dashboard
+</button>
+
+
+<div
+  id="dashboardBox"
+  style="
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    background:#f8f9fa;
+    border-radius:12px;
+    border:1px solid #ddd;
+  "
+>
+
+  <h3 style="margin-top:0;text-align:center;">
+    📊 Today's Mess Dashboard
+  </h3>
+
+  <div
+    id="dashboardUpdated"
+    style="
+      text-align:center;
+      font-size:13px;
+      color:#666;
+      margin-bottom:12px;
+    "
+  ></div>
+
+
+  <div
+    style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    "
+  >
+
+    <div class="resultCard" style="background:#e6f4ea;">
+      <div style="font-size:13px;">Total Meals</div>
+      <div id="dashTotal" style="font-size:28px;font-weight:bold;">0</div>
+    </div>
+
+    <div class="resultCard" style="background:#e6f4ea;">
+      <div style="font-size:13px;">Allowed</div>
+      <div id="dashAllowed" style="font-size:28px;font-weight:bold;">0</div>
+    </div>
+
+    <div class="resultCard" style="background:#fff4e5;">
+      <div style="font-size:13px;">Duplicates</div>
+      <div id="dashDuplicates" style="font-size:28px;font-weight:bold;">0</div>
+    </div>
+
+    <div class="resultCard" style="background:#eef3fd;">
+      <div style="font-size:13px;">Manual Entries</div>
+      <div id="dashManual" style="font-size:28px;font-weight:bold;">0</div>
+    </div>
+
+    <div
+      class="resultCard"
+      style="
+        background:#fdecea;
+        grid-column:1 / -1;
+      "
+    >
+      <div style="font-size:13px;">Rejected / Not Allowed</div>
+      <div id="dashRejected" style="font-size:28px;font-weight:bold;">0</div>
+    </div>
+
+  </div>
+
+
+  <h4 style="margin-bottom:8px;">
+    Class-wise Meals
+  </h4>
+
+  <div id="dashboardClasses">
+    No data
+  </div>
+
+
+  <button
+    class="primary"
+    onclick="refreshDashboard()"
+  >
+    🔄 Refresh Dashboard
+  </button>
+
+  <button
+    class="secondary"
+    onclick="closeDashboard()"
+  >
+    Close Dashboard
+  </button>
+
+</div>
 
 <div
   id="manualEntryBox"
@@ -762,6 +864,48 @@ window.addEventListener(
       return;
     }
 
+    /* DASHBOARD RESULT */
+
+    if (
+      message.type === 'DASHBOARD_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+
+      const result =
+        message.result || {};
+
+
+      if (result.authRequired === true) {
+
+        clearSession();
+        showLoginScreen();
+
+        showLoginError(
+          'Session expired. Please login again.'
+        );
+
+        return;
+      }
+
+
+      if (result.success !== true) {
+
+        showError(
+          result.message ||
+          'Unable to load dashboard.'
+        );
+
+        return;
+      }
+
+
+      renderDashboard(result);
+
+      return;
+    }
+    
     /* LOGOUT RESULT */
 
     if (
@@ -1230,7 +1374,232 @@ function submitManualEntry() {
   );
 }
 
+/* ==========================================
+   TODAY DASHBOARD
+========================================== */
 
+async function openDashboard() {
+
+  if (!sessionToken) {
+    showLoginScreen();
+    return;
+  }
+
+  await stopScanner();
+
+  // Manual Entry बंद करें
+  const manualBox =
+    document.getElementById(
+      'manualEntryBox'
+    );
+
+  if (manualBox) {
+    manualBox.style.display =
+      'none';
+  }
+
+
+  document.getElementById(
+    'dashboardBox'
+  ).style.display =
+    'block';
+
+
+  document.getElementById(
+    'result'
+  ).innerHTML = '';
+
+
+  refreshDashboard();
+}
+
+
+function refreshDashboard() {
+
+  if (!sessionToken) {
+    showLoginScreen();
+    return;
+  }
+
+
+  document.getElementById(
+    'dashboardUpdated'
+  ).textContent =
+    'Loading dashboard...';
+
+
+  postToBackend(
+    'dashboard',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function renderDashboard(data) {
+
+  document.getElementById(
+    'dashTotal'
+  ).textContent =
+    data.totalMeals || 0;
+
+
+  document.getElementById(
+    'dashAllowed'
+  ).textContent =
+    data.allowed || 0;
+
+
+  document.getElementById(
+    'dashDuplicates'
+  ).textContent =
+    data.duplicates || 0;
+
+
+  document.getElementById(
+    'dashManual'
+  ).textContent =
+    data.manualEntries || 0;
+
+
+  document.getElementById(
+    'dashRejected'
+  ).textContent =
+    data.rejected || 0;
+
+
+  document.getElementById(
+    'dashboardUpdated'
+  ).textContent =
+    data.generatedAt
+      ? 'Updated: ' + data.generatedAt
+      : 'Updated';
+
+
+  const container =
+    document.getElementById(
+      'dashboardClasses'
+    );
+
+
+  container.innerHTML = '';
+
+
+  const classWise =
+    data.classWise || {};
+
+
+  const classNames =
+    Object.keys(
+      classWise
+    );
+
+
+  if (
+    classNames.length === 0
+  ) {
+
+    container.textContent =
+      'No meals recorded today.';
+
+    return;
+  }
+
+
+  classNames
+    .sort(
+      function(a, b) {
+
+        return String(a)
+          .localeCompare(
+            String(b),
+            undefined,
+            {
+              numeric: true,
+              sensitivity: 'base'
+            }
+          );
+
+      }
+    )
+    .forEach(
+      function(className) {
+
+        const row =
+          document.createElement(
+            'div'
+          );
+
+
+        row.style.display =
+          'flex';
+
+        row.style.justifyContent =
+          'space-between';
+
+        row.style.alignItems =
+          'center';
+
+        row.style.padding =
+          '10px 12px';
+
+        row.style.marginBottom =
+          '7px';
+
+        row.style.background =
+          '#ffffff';
+
+        row.style.border =
+          '1px solid #e0e0e0';
+
+        row.style.borderRadius =
+          '9px';
+
+
+        const name =
+          document.createElement(
+            'strong'
+          );
+
+        name.textContent =
+          className;
+
+
+        const count =
+          document.createElement(
+            'strong'
+          );
+
+        count.textContent =
+          classWise[className];
+
+
+        row.appendChild(
+          name
+        );
+
+        row.appendChild(
+          count
+        );
+
+        container.appendChild(
+          row
+        );
+
+      }
+    );
+}
+
+
+function closeDashboard() {
+
+  document.getElementById(
+    'dashboardBox'
+  ).style.display =
+    'none';
+}
+  
 /* ==========================================
    SCREENS
 ========================================== */
