@@ -1397,6 +1397,386 @@
         border-right: 1px solid var(--border);
       }
     }
+  
+
+    /* =====================================================
+       SOFTWARE APP UI — 2026 REDESIGN
+    ====================================================== */
+    :root {
+      --app-max: 760px;
+    }
+
+    body {
+      background: #f4f7fb;
+    }
+
+    #appShell .page {
+      width: min(100%, var(--app-max));
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+
+    #appShell .staffStrip {
+      position: sticky;
+      top: 70px;
+      z-index: 30;
+      padding: 9px 12px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 18px rgba(28,44,74,.07);
+    }
+
+    .softwarePageHead {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin: 4px 2px 14px;
+    }
+
+    .softwarePageTitle {
+      font-size: 24px;
+      line-height: 1.1;
+      font-weight: 950;
+      color: var(--text);
+      letter-spacing: -.4px;
+    }
+
+    .softwarePageSub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .homeHero {
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #143a69, #215b9a);
+      color: #fff;
+      box-shadow: 0 12px 26px rgba(20,58,105,.20);
+      margin-bottom: 14px;
+    }
+
+    .homeHeroTop {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .homeGreeting {
+      font-size: 12px;
+      opacity:.78;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.7px;
+    }
+
+    .homeName {
+      margin-top:4px;
+      font-size:21px;
+      font-weight:950;
+    }
+
+    .homeRoleBadge {
+      padding:7px 10px;
+      border:1px solid rgba(255,255,255,.25);
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      font-size:10px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .quickActionGrid,
+    .moduleHubGrid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .quickAction,
+    .moduleTile {
+      appearance:none;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:17px;
+      min-height:88px;
+      padding:14px;
+      text-align:left;
+      cursor:pointer;
+      box-shadow:0 5px 16px rgba(31,47,75,.06);
+      color:var(--text);
+    }
+
+    .quickAction:active,
+    .moduleTile:active {
+      transform:scale(.985);
+    }
+
+    .quickActionIcon,
+    .moduleTileIcon {
+      display:block;
+      font-size:24px;
+      line-height:1;
+      margin-bottom:9px;
+    }
+
+    .quickActionTitle,
+    .moduleTileTitle {
+      display:block;
+      font-size:13px;
+      font-weight:950;
+    }
+
+    .quickActionSub,
+    .moduleTileSub {
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:10.5px;
+      line-height:1.35;
+      font-weight:650;
+    }
+
+    .moduleTile.primaryTile {
+      border-color:#c9daf0;
+      background:#f7fbff;
+    }
+
+    .moduleTile.adminTile {
+      border-color:#e7d8b3;
+      background:#fffcf3;
+    }
+
+    .moduleSubHeader {
+      display:none;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .moduleBackButton {
+      width:38px;
+      height:38px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      font-size:18px;
+      cursor:pointer;
+    }
+
+    .moduleSubTitle {
+      font-size:16px;
+      font-weight:950;
+    }
+
+    /* Scan is a dedicated operator screen */
+    #screenScan .scannerCard {
+      padding: 14px;
+      border-radius: 20px;
+    }
+
+    #screenScan #reader {
+      border-radius:18px;
+      overflow:hidden;
+      background:#0f1720;
+    }
+
+    #screenScan .showingResult #reader,
+    #screenScan .showingResult #cameraPlaceholder,
+    #screenScan .showingResult > .twoButtons {
+      display:none !important;
+    }
+
+    #screenScan .showingResult .scanHero {
+      margin-bottom: 8px;
+    }
+
+    .scanResultCard {
+      border-radius:22px;
+      padding:18px 15px;
+      text-align:center;
+      border:1px solid rgba(0,0,0,.05);
+      box-shadow:0 10px 28px rgba(22,35,55,.10);
+      animation:scanResultIn .18s ease-out;
+    }
+
+    @keyframes scanResultIn {
+      from { opacity:0; transform:translateY(8px) scale(.99); }
+      to { opacity:1; transform:none; }
+    }
+
+    .scanResultPhotoWrap {
+      width:112px;
+      height:112px;
+      margin:2px auto 12px;
+      border-radius:22px;
+      overflow:hidden;
+      background:#fff;
+      border:4px solid rgba(255,255,255,.85);
+      box-shadow:0 7px 18px rgba(0,0,0,.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .scanResultPhotoWrap img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .scanResultPhotoPlaceholder {
+      font-size:52px;
+    }
+
+    .scanResultName {
+      font-size:22px;
+      font-weight:950;
+      line-height:1.15;
+    }
+
+    .scanResultDetails {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+      margin:14px 0;
+      text-align:left;
+    }
+
+    .scanDetailItem {
+      padding:9px 10px;
+      border-radius:12px;
+      background:rgba(255,255,255,.70);
+      border:1px solid rgba(0,0,0,.04);
+    }
+
+    .scanDetailLabel {
+      display:block;
+      font-size:9px;
+      font-weight:900;
+      color:#667085;
+      text-transform:uppercase;
+      letter-spacing:.45px;
+    }
+
+    .scanDetailValue {
+      display:block;
+      margin-top:3px;
+      font-size:12px;
+      font-weight:900;
+      color:#1d2735;
+      overflow-wrap:anywhere;
+    }
+
+    .scanStatusPill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:10px 15px;
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      font-size:14px;
+      font-weight:950;
+      margin:1px auto 10px;
+    }
+
+    .scanNextButton {
+      width:100%;
+      min-height:48px;
+      margin-top:5px;
+      border:0;
+      border-radius:14px;
+      background:#173f70;
+      color:#fff;
+      font-weight:950;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    /* Bottom navigation: fixed 5-tab software layout */
+    .bottomNav {
+      display:grid !important;
+      width:min(100%, var(--app-max));
+      padding-left:5px;
+      padding-right:5px;
+    }
+
+    .navBtn {
+      min-width:0;
+      padding:4px 2px;
+    }
+
+    .navBtn .navIcon {
+      font-size:20px;
+    }
+
+    .navBtn span:last-child {
+      font-size:10px;
+    }
+
+    #navManual { display:none !important; }
+    #profileUserManagementButton { display:none !important; }
+
+    /* More / admin menus */
+    .moreMenuCard {
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    .moreMenuList {
+      display:grid;
+      gap:8px;
+    }
+
+    .moreMenuItem {
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      padding:13px 12px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-align:left;
+      color:var(--text);
+      cursor:pointer;
+    }
+
+    .moreMenuIcon {
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border-radius:11px;
+      background:var(--info-bg);
+      font-size:20px;
+      flex:0 0 auto;
+    }
+
+    .moreMenuText { flex:1; min-width:0; }
+    .moreMenuTitle { font-size:13px; font-weight:950; }
+    .moreMenuSub { margin-top:2px; font-size:10.5px; color:var(--muted); font-weight:650; }
+    .moreMenuArrow { color:#98a2b3; font-weight:900; }
+
+    #screenUsers .userTopActions #refreshUsersButton {
+      display:none;
+    }
+
+    @media (min-width:700px) {
+      .quickActionGrid,
+      .moduleHubGrid {
+        grid-template-columns:repeat(4,minmax(0,1fr));
+      }
+      .scanResultDetails {
+        grid-template-columns:repeat(4,minmax(0,1fr));
+      }
+    }
+
   </style>
 </head>
 
@@ -1483,9 +1863,14 @@
     <!-- SCAN SCREEN -->
     <section id="screenScan" class="screen active">
 
-      <div class="sectionTitle">QR Meal Entry</div>
+      <div class="softwarePageHead">
+        <div>
+          <div class="softwarePageTitle">Scan QR</div>
+          <div class="softwarePageSub">Student details appear here immediately after scan</div>
+        </div>
+      </div>
 
-      <div class="card scannerCard">
+      <div id="scannerCard" class="card scannerCard">
 
         <div class="scanHero">
           <div>
@@ -1494,6 +1879,8 @@
           </div>
           <div style="font-size:30px;">📷</div>
         </div>
+
+        <div id="scanResult" class="resultArea"></div>
 
         <div id="cameraPlaceholder" class="cameraHint">
           <div class="cameraHintIcon">▣</div>
@@ -1520,7 +1907,6 @@
           </button>
         </div>
 
-        <div id="scanResult" class="resultArea"></div>
 
       </div>
 
@@ -1578,7 +1964,47 @@
     <!-- DASHBOARD SCREEN -->
     <section id="screenDashboard" class="screen">
 
-      <div class="sectionTitle">Today's Dashboard</div>
+      <div class="softwarePageHead">
+        <div>
+          <div class="softwarePageTitle">Home</div>
+          <div class="softwarePageSub">Today's mess operations at a glance</div>
+        </div>
+      </div>
+
+      <div class="homeHero">
+        <div class="homeHeroTop">
+          <div>
+            <div class="homeGreeting">Welcome</div>
+            <div id="homeStaffName" class="homeName">Mess Staff</div>
+          </div>
+          <div id="homeRoleBadge" class="homeRoleBadge">STAFF</div>
+        </div>
+      </div>
+
+      <div class="quickActionGrid">
+        <button class="quickAction" onclick="openScreen('scan')">
+          <span class="quickActionIcon">📷</span>
+          <span class="quickActionTitle">Scan QR</span>
+          <span class="quickActionSub">Record meal entry</span>
+        </button>
+        <button id="homeManualAction" class="quickAction" onclick="openScreen('manual')">
+          <span class="quickActionIcon">✍️</span>
+          <span class="quickActionTitle">Manual Entry</span>
+          <span class="quickActionSub">Use when QR is unavailable</span>
+        </button>
+        <button id="homeStudentAction" class="quickAction" onclick="openScreen('student')">
+          <span class="quickActionIcon">🎓</span>
+          <span class="quickActionTitle">Students</span>
+          <span class="quickActionSub">Search, add and approvals</span>
+        </button>
+        <button id="homeQrAction" class="quickAction" onclick="openScreen('qr')">
+          <span class="quickActionIcon">▦</span>
+          <span class="quickActionTitle">QR Management</span>
+          <span class="quickActionSub">Reprint or regenerate</span>
+        </button>
+      </div>
+
+      <div class="sectionTitle">Today's Overview</div>
 
       <div class="card dashboardCard">
 
@@ -1638,11 +2064,43 @@
     <!-- NEW STUDENT REQUEST SCREEN -->
     <section id="screenStudent" class="screen">
 
-      <div class="sectionTitle">Student Management</div>
+      <div class="softwarePageHead">
+        <div>
+          <div class="softwarePageTitle">Students</div>
+          <div class="softwarePageSub">Choose one student operation</div>
+        </div>
+      </div>
 
+      <div id="studentModuleHub" class="moduleHubGrid">
+        <button class="moduleTile primaryTile" onclick="openStudentModule('manage')">
+          <span class="moduleTileIcon">🔎</span>
+          <span class="moduleTileTitle">Search / Edit</span>
+          <span class="moduleTileSub">Find existing student and manage mess access</span>
+        </button>
+        <button id="studentAddAction" class="moduleTile" onclick="openStudentModule('add')">
+          <span class="moduleTileIcon">➕</span>
+          <span class="moduleTileTitle">Add Student</span>
+          <span class="moduleTileSub">Submit a new student for approval</span>
+        </button>
+        <button id="studentBulkAction" class="moduleTile adminTile" onclick="openStudentModule('bulk')">
+          <span class="moduleTileIcon">📄</span>
+          <span class="moduleTileTitle">Excel Import</span>
+          <span class="moduleTileSub">Bulk import students as pending requests</span>
+        </button>
+        <button id="studentApprovalAction" class="moduleTile adminTile" onclick="openStudentModule('approvals')">
+          <span class="moduleTileIcon">✅</span>
+          <span class="moduleTileTitle">Approvals</span>
+          <span class="moduleTileSub">Review pending student requests</span>
+        </button>
+      </div>
+
+      <div id="studentModuleSubHeader" class="moduleSubHeader">
+        <button class="moduleBackButton" onclick="openStudentModule('hub')">←</button>
+        <div id="studentModuleSubTitle" class="moduleSubTitle">Student Module</div>
+      </div>
 
       <!-- EXISTING STUDENT MANAGEMENT -->
-      <div id="studentManagePanel" class="studentManagePanel">
+      <div id="studentManagePanel" class="studentManagePanel" style="display:none;">
 
         <div class="card studentManageCard">
 
@@ -1800,7 +2258,7 @@
 
       </div>
 
-      <div class="card studentRequestCard">
+      <div id="studentAddPanel" class="card studentRequestCard" style="display:none;">
 
         <div class="requestInfo">
           New student details will be submitted as <strong>PENDING</strong>.
@@ -2046,7 +2504,12 @@
     <!-- QR MANAGEMENT SCREEN -->
     <section id="screenQr" class="screen">
 
-      <div class="sectionTitle">QR Management</div>
+      <div class="softwarePageHead">
+        <div>
+          <div class="softwarePageTitle">QR Management</div>
+          <div class="softwarePageSub">Reprint the same QR or securely regenerate a new one</div>
+        </div>
+      </div>
 
       <div class="card qrCard">
 
@@ -2174,7 +2637,12 @@
     <!-- ADMIN USER MANAGEMENT SCREEN -->
     <section id="screenUsers" class="screen">
 
-      <div class="sectionTitle">Staff / User Management</div>
+      <div class="softwarePageHead">
+        <div>
+          <div class="softwarePageTitle">Admin Console</div>
+          <div class="softwarePageSub">Open one administrative module at a time</div>
+        </div>
+      </div>
 
       <div class="userTopActions">
         <button
@@ -2182,7 +2650,7 @@
           class="btn btnSoft"
           onclick="openScreen('profile')"
         >
-          ← Back to Profile
+          ← Back to More
         </button>
 
         <button
@@ -2197,8 +2665,31 @@
 
       <div id="userManagementResult" class="resultArea"></div>
 
+      <div id="adminModuleHub" class="moduleHubGrid">
+        <button class="moduleTile primaryTile" onclick="openAdminModule('users')">
+          <span class="moduleTileIcon">👥</span>
+          <span class="moduleTileTitle">Staff & Users</span>
+          <span class="moduleTileSub">Create users, roles, permissions and PIN</span>
+        </button>
+        <button class="moduleTile" onclick="openAdminModule('security')">
+          <span class="moduleTileIcon">🛡️</span>
+          <span class="moduleTileTitle">Session Security</span>
+          <span class="moduleTileSub">Active sessions and force logout</span>
+        </button>
+        <button class="moduleTile" onclick="openAdminModule('backup')">
+          <span class="moduleTileIcon">💾</span>
+          <span class="moduleTileTitle">Backup & Recovery</span>
+          <span class="moduleTileSub">Backup status, history and Backup Now</span>
+        </button>
+      </div>
+
+      <div id="adminModuleSubHeader" class="moduleSubHeader">
+        <button class="moduleBackButton" onclick="openAdminModule('hub')">←</button>
+        <div id="adminModuleSubTitle" class="moduleSubTitle">Admin Module</div>
+      </div>
+
       <!-- SESSION SECURITY -->
-      <div class="card userSectionCard">
+      <div id="adminSecurityPanel" class="card userSectionCard" style="display:none;">
 
         <div class="userSectionHead">
           <div class="userSectionTitle">Session Security</div>
@@ -2239,7 +2730,7 @@
 
 
       <!-- BACKUP & RECOVERY -->
-      <div class="card userSectionCard">
+      <div id="adminBackupPanel" class="card userSectionCard" style="display:none;">
 
         <div class="userSectionHead">
           <div class="userSectionTitle">Backup & Recovery</div>
@@ -2313,7 +2804,7 @@
       </div>
 
 
-      <div class="card userSectionCard">
+      <div id="adminUsersPanel" class="card userSectionCard" style="display:none;">
 
         <div class="userSectionHead">
           <div class="userSectionTitle">Users</div>
@@ -2592,7 +3083,39 @@
     <!-- PROFILE SCREEN -->
     <section id="screenProfile" class="screen">
 
-      <div class="sectionTitle">Profile</div>
+      <div class="softwarePageHead">
+        <div>
+          <div class="softwarePageTitle">More</div>
+          <div class="softwarePageSub">Operations, administration and account</div>
+        </div>
+      </div>
+
+      <div class="card moreMenuCard">
+        <div class="moreMenuList">
+          <button id="moreManualAction" class="moreMenuItem" onclick="openScreen('manual')">
+            <span class="moreMenuIcon">✍️</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Manual Meal Entry</span><span class="moreMenuSub">Record a meal without QR scan</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
+          <button id="moreAdminAction" class="moreMenuItem" onclick="openScreen('users')">
+            <span class="moreMenuIcon">⚙️</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Admin Console</span><span class="moreMenuSub">Staff, security and backups</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
+          <button class="moreMenuItem" type="button" onclick="openScreen('dashboard')">
+            <span class="moreMenuIcon">📊</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Today's Dashboard</span><span class="moreMenuSub">Meal totals and class-wise summary</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
+          <button class="moreMenuItem" type="button" disabled style="opacity:.55;cursor:default;">
+            <span class="moreMenuIcon">📈</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Reports & MIS</span><span class="moreMenuSub">Next module</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sectionTitle">My Account</div>
 
       <div class="card profileCard">
 
@@ -2670,60 +3193,28 @@
   <!-- BOTTOM NAV -->
   <nav id="bottomNav" class="bottomNav">
 
-    <button
-      id="navScan"
-      class="navBtn active"
-      onclick="openScreen('scan')"
-    >
-      <span class="navIcon">📷</span>
-      <span>Scan</span>
+    <button id="navDashboard" class="navBtn active" onclick="openScreen('dashboard')">
+      <span class="navIcon">🏠</span><span>Home</span>
     </button>
 
-    <button
-      id="navManual"
-      class="navBtn"
-      onclick="openScreen('manual')"
-    >
-      <span class="navIcon">✍️</span>
-      <span>Manual</span>
+    <button id="navScan" class="navBtn" onclick="openScreen('scan')">
+      <span class="navIcon">📷</span><span>Scan</span>
     </button>
 
-    <button
-      id="navDashboard"
-      class="navBtn"
-      onclick="openScreen('dashboard')"
-    >
-      <span class="navIcon">📊</span>
-      <span>Dashboard</span>
+    <button id="navStudent" class="navBtn" onclick="openScreen('student')" style="display:none;">
+      <span class="navIcon">🎓</span><span>Students</span>
     </button>
 
-    <button
-      id="navStudent"
-      class="navBtn"
-      onclick="openScreen('student')"
-      style="display:none;"
-    >
-      <span class="navIcon">🎓</span>
-      <span>Student</span>
+    <button id="navQr" class="navBtn" onclick="openScreen('qr')" style="display:none;">
+      <span class="navIcon">▦</span><span>QR</span>
     </button>
 
-    <button
-      id="navQr"
-      class="navBtn"
-      onclick="openScreen('qr')"
-      style="display:none;"
-    >
-      <span class="navIcon">▦</span>
-      <span>QR</span>
+    <button id="navProfile" class="navBtn" onclick="openScreen('profile')">
+      <span class="navIcon">☰</span><span>More</span>
     </button>
 
-    <button
-      id="navProfile"
-      class="navBtn"
-      onclick="openScreen('profile')"
-    >
-      <span class="navIcon">👤</span>
-      <span>Profile</span>
+    <button id="navManual" class="navBtn" onclick="openScreen('manual')" style="display:none;">
+      <span class="navIcon">✍️</span><span>Manual</span>
     </button>
 
   </nav>
@@ -2774,7 +3265,7 @@ let currentRequestId = '';
 let currentAction = '';
 let responseTimer = null;
 
-let activeScreen = 'scan';
+let activeScreen = 'dashboard';
 let lastQrResult = null;
 let lastApprovedStudent = null;
 let bulkStudentRows = [];
@@ -3055,7 +3546,7 @@ window.addEventListener(
       showMealResult(
         result.meal,
         'scanResult',
-        true
+        false
       );
 
       return;
@@ -4620,32 +5111,32 @@ function showApp() {
     !hasManualPermission() &&
     activeScreen === 'manual'
   ) {
-    activeScreen = 'scan';
+    activeScreen = 'dashboard';
   }
 
   if (
     !hasStudentRequestPermission() &&
     activeScreen === 'student'
   ) {
-    activeScreen = 'scan';
+    activeScreen = 'dashboard';
   }
 
   if (
     !hasQrPermission() &&
     activeScreen === 'qr'
   ) {
-    activeScreen = 'scan';
+    activeScreen = 'dashboard';
   }
 
   if (
     !hasUserManagementPermission() &&
     activeScreen === 'users'
   ) {
-    activeScreen = 'scan';
+    activeScreen = 'dashboard';
   }
 
   openScreen(
-    activeScreen || 'scan'
+    activeScreen || 'dashboard'
   );
 }
 
@@ -4847,26 +5338,31 @@ function updateStaffUI() {
       ? 'block'
       : 'none';
 
-  document.getElementById(
-    'adminApprovalPanel'
-  ).style.display =
-    hasAdminApprovalPermission()
-      ? 'block'
-      : 'none';
+  // Student submodules are opened from the Student hub, not stacked.
+  document.getElementById('adminApprovalPanel').style.display = 'none';
+  document.getElementById('bulkImportPanel').style.display = 'none';
+  document.getElementById('navManual').style.display = 'none';
 
-  document.getElementById(
-    'bulkImportPanel'
-  ).style.display =
-    hasAdminApprovalPermission()
-      ? 'block'
-      : 'none';
+  const studentBulkAction = document.getElementById('studentBulkAction');
+  const studentApprovalAction = document.getElementById('studentApprovalAction');
+  const homeManualAction = document.getElementById('homeManualAction');
+  const homeStudentAction = document.getElementById('homeStudentAction');
+  const homeQrAction = document.getElementById('homeQrAction');
+  const moreManualAction = document.getElementById('moreManualAction');
+  const moreAdminAction = document.getElementById('moreAdminAction');
 
-  document.getElementById(
-    'navManual'
-  ).style.display =
-    hasManualPermission()
-      ? 'flex'
-      : 'none';
+  if (studentBulkAction) studentBulkAction.style.display = hasAdminApprovalPermission() ? 'block' : 'none';
+  if (studentApprovalAction) studentApprovalAction.style.display = hasAdminApprovalPermission() ? 'block' : 'none';
+  if (homeManualAction) homeManualAction.style.display = hasManualPermission() ? 'block' : 'none';
+  if (homeStudentAction) homeStudentAction.style.display = hasStudentRequestPermission() ? 'block' : 'none';
+  if (homeQrAction) homeQrAction.style.display = hasQrPermission() ? 'block' : 'none';
+  if (moreManualAction) moreManualAction.style.display = hasManualPermission() ? 'flex' : 'none';
+  if (moreAdminAction) moreAdminAction.style.display = hasUserManagementPermission() ? 'flex' : 'none';
+
+  const homeStaffName = document.getElementById('homeStaffName');
+  const homeRoleBadge = document.getElementById('homeRoleBadge');
+  if (homeStaffName) homeStaffName.textContent = name;
+  if (homeRoleBadge) homeRoleBadge.textContent = role || 'STAFF';
 
   document.getElementById(
     'navStudent'
@@ -4888,28 +5384,19 @@ function updateStaffUI() {
 
 function updateBottomNavColumns() {
 
-  const nav =
-    document.getElementById(
-      'bottomNav'
-    );
+  const nav = document.getElementById('bottomNav');
+  if (!nav) return;
 
-  if (!nav) {
-    return;
-  }
-
-  const visibleCount =
-    Array.from(
-      nav.querySelectorAll('.navBtn')
-    ).filter(
-      function(button) {
-        return button.style.display !== 'none';
-      }
-    ).length;
+  const visibleCount = Array.from(
+    nav.querySelectorAll('.navBtn')
+  ).filter(function(button) {
+    return button.id !== 'navManual' &&
+      button.style.display !== 'none' &&
+      getComputedStyle(button).display !== 'none';
+  }).length;
 
   nav.style.gridTemplateColumns =
-    'repeat(' +
-    Math.max(visibleCount, 1) +
-    ', 1fr)';
+    'repeat(' + Math.max(visibleCount, 1) + ', 1fr)';
 }
 
 
@@ -4974,7 +5461,7 @@ async function openScreen(
 
   const navMap = {
     scan: 'navScan',
-    manual: 'navManual',
+    manual: 'navProfile',
     dashboard: 'navDashboard',
     student: 'navStudent',
     qr: 'navQr',
@@ -5025,15 +5512,12 @@ async function openScreen(
     refreshDashboard();
   }
 
-  if (
-    name === 'student' &&
-    hasAdminApprovalPermission()
-  ) {
-    refreshStudentRequests();
+  if (name === 'student') {
+    openStudentModule('hub');
   }
 
   if (name === 'users') {
-    refreshUsers();
+    openAdminModule('hub');
   }
 
   if (name === 'profile') {
@@ -5044,6 +5528,108 @@ async function openScreen(
     top: 0,
     behavior: 'smooth'
   });
+}
+
+
+/* ==========================================
+   SOFTWARE MODULE NAVIGATION
+========================================== */
+
+function openStudentModule(name) {
+
+  const hub = document.getElementById('studentModuleHub');
+  const subHeader = document.getElementById('studentModuleSubHeader');
+  const subTitle = document.getElementById('studentModuleSubTitle');
+
+  const panels = {
+    manage: document.getElementById('studentManagePanel'),
+    add: document.getElementById('studentAddPanel'),
+    bulk: document.getElementById('bulkImportPanel'),
+    approvals: document.getElementById('adminApprovalPanel')
+  };
+
+  Object.keys(panels).forEach(function(key) {
+    if (panels[key]) panels[key].style.display = 'none';
+  });
+
+  if (name === 'hub') {
+    if (hub) hub.style.display = 'grid';
+    if (subHeader) subHeader.style.display = 'none';
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+
+  if ((name === 'bulk' || name === 'approvals') && !hasAdminApprovalPermission()) return;
+  if (name === 'add' && !hasStudentRequestPermission()) return;
+  if (name === 'manage' && !hasStudentManagePermission()) return;
+
+  if (hub) hub.style.display = 'none';
+  if (subHeader) subHeader.style.display = 'flex';
+
+  const titles = {
+    manage: 'Search / Edit Student',
+    add: 'Add New Student',
+    bulk: 'Excel / CSV Import',
+    approvals: 'Pending Approvals'
+  };
+
+  if (subTitle) subTitle.textContent = titles[name] || 'Student Module';
+  if (panels[name]) panels[name].style.display = 'block';
+
+  if (name === 'approvals') refreshStudentRequests();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+
+function openAdminModule(name) {
+
+  if (!hasUserManagementPermission()) return;
+
+  const hub = document.getElementById('adminModuleHub');
+  const subHeader = document.getElementById('adminModuleSubHeader');
+  const subTitle = document.getElementById('adminModuleSubTitle');
+
+  const usersPanel = document.getElementById('adminUsersPanel');
+  const securityPanel = document.getElementById('adminSecurityPanel');
+  const backupPanel = document.getElementById('adminBackupPanel');
+  const createPanel = document.getElementById('createUserPanel');
+  const editPanel = document.getElementById('editUserPanel');
+
+  [usersPanel, securityPanel, backupPanel, createPanel, editPanel].forEach(function(panel) {
+    if (panel) panel.style.display = 'none';
+  });
+
+  if (name === 'hub') {
+    if (hub) hub.style.display = 'grid';
+    if (subHeader) subHeader.style.display = 'none';
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+
+  if (hub) hub.style.display = 'none';
+  if (subHeader) subHeader.style.display = 'flex';
+
+  const titles = {
+    users: 'Staff & Users',
+    security: 'Session Security',
+    backup: 'Backup & Recovery'
+  };
+  if (subTitle) subTitle.textContent = titles[name] || 'Admin Module';
+
+  if (name === 'users') {
+    if (usersPanel) usersPanel.style.display = 'block';
+    refreshUsers();
+  }
+  else if (name === 'security') {
+    if (securityPanel) securityPanel.style.display = 'block';
+    refreshSecuritySessions();
+  }
+  else if (name === 'backup') {
+    if (backupPanel) backupPanel.style.display = 'block';
+    refreshBackupAdmin();
+  }
+
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 
@@ -5067,6 +5653,9 @@ async function startScanner() {
   document.getElementById(
     'scanResult'
   ).innerHTML = '';
+
+  const scannerCard = document.getElementById('scannerCard');
+  if (scannerCard) scannerCard.classList.remove('showingResult');
 
   scanLocked = false;
 
@@ -9830,229 +10419,106 @@ function showMealResult(
 ) {
 
   if (!data) {
+    showError(targetId, 'No response received.');
+    if (autoNext) scheduleNextScan();
+    return;
+  }
 
-    showError(
-      targetId,
-      'No response received.'
-    );
+  const status = String(data.status || data.scanStatus || '').trim().toUpperCase();
+  const student = data.student || {};
 
-    if (autoNext) {
-      scheduleNextScan();
-    }
+  let background = 'var(--success-bg)';
+  let textColor = 'var(--success)';
+  let icon = '✅';
+  let title = status || 'ALLOWED';
+
+  if (status === 'ALLOWED') {
+    title = 'MEAL ALLOWED';
+  }
+  else if (status === 'ALREADY TAKEN') {
+    background = 'var(--warning-bg)'; textColor = 'var(--warning)'; icon = '⚠️'; title = 'ALREADY TAKEN';
+  }
+  else if (status === 'MESS NOT ACTIVE') {
+    background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '⛔'; title = 'MESS NOT ACTIVE';
+  }
+  else if (status === 'MESS STOPPED') {
+    background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '⛔'; title = 'MESS STOPPED';
+  }
+  else if (status === 'NOT STARTED' || status === 'MESS NOT STARTED') {
+    background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '⏳'; title = 'MESS NOT STARTED';
+  }
+  else if (status === 'UNKNOWN QR' || status === 'STUDENT NOT FOUND') {
+    background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '❓'; title = 'STUDENT NOT FOUND';
+  }
+  else if (status === 'ERROR') {
+    background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '⚠️'; title = data.message || 'SYSTEM ERROR';
+  }
+
+  const hasPhoto = student.photoUrl && String(student.photoUrl).length > 100;
+  const photoHtml = hasPhoto
+    ? '<img src="' + student.photoUrl + '" alt="Student Photo">'
+    : '<div class="scanResultPhotoPlaceholder">👤</div>';
+
+  const nowText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+
+  const detail = function(label, value) {
+    if (value === undefined || value === null || String(value).trim() === '') return '';
+    return '<div class="scanDetailItem"><span class="scanDetailLabel">' + escapeHtml(label) + '</span><span class="scanDetailValue">' + escapeHtml(value) + '</span></div>';
+  };
+
+  if (targetId === 'scanResult') {
+
+    const scannerCard = document.getElementById('scannerCard');
+    if (scannerCard) scannerCard.classList.add('showingResult');
+
+    document.getElementById(targetId).innerHTML =
+      '<div class="scanResultCard" style="background:' + background + ';">' +
+        '<div class="scanResultPhotoWrap">' + photoHtml + '</div>' +
+        '<div class="scanResultName">' + escapeHtml(student.name || 'Student') + '</div>' +
+        '<div class="scanResultDetails">' +
+          detail('Student ID', student.id || '') +
+          detail('Admission No.', student.admissionNo || '') +
+          detail('Class', student.className || '') +
+          detail('Division', student.division || '') +
+          detail('Roll No.', student.rollNo || '') +
+          detail('Scan Time', nowText) +
+        '</div>' +
+        '<div class="scanStatusPill" style="color:' + textColor + ';">' + icon + ' ' + escapeHtml(title) + '</div>' +
+        '<button class="scanNextButton" type="button" onclick="prepareNextScan()">📷 Scan Next Student</button>' +
+      '</div>';
 
     return;
   }
 
-
-  const status =
-    String(
-      data.status ||
-      data.scanStatus ||
-      ''
-    )
-      .trim()
-      .toUpperCase();
-
-  const student =
-    data.student || {};
-
-
-  let background =
-    'var(--success-bg)';
-
-  let textColor =
-    'var(--success)';
-
-  let icon =
-    '🟢';
-
-  let title =
-    status || 'ALLOWED';
-
-
-  if (status === 'ALLOWED') {
-
-    title =
-      'MEAL ALLOWED';
-
-  }
-  else if (
-    status === 'ALREADY TAKEN'
-  ) {
-
-    background =
-      'var(--warning-bg)';
-
-    textColor =
-      'var(--warning)';
-
-    icon =
-      '🟠';
-
-    title =
-      'ALREADY TAKEN';
-
-  }
-  else if (
-    status === 'MESS NOT ACTIVE'
-  ) {
-
-    background =
-      'var(--danger-bg)';
-
-    textColor =
-      'var(--danger)';
-
-    icon =
-      '🔴';
-
-    title =
-      'MESS NOT ACTIVE';
-
-  }
-  else if (
-    status === 'MESS STOPPED'
-  ) {
-
-    background =
-      'var(--danger-bg)';
-
-    textColor =
-      'var(--danger)';
-
-    icon =
-      '🔴';
-
-    title =
-      'MESS STOPPED';
-
-  }
-  else if (
-    status === 'NOT STARTED' ||
-    status === 'MESS NOT STARTED'
-  ) {
-
-    background =
-      'var(--danger-bg)';
-
-    textColor =
-      'var(--danger)';
-
-    icon =
-      '🔴';
-
-    title =
-      'MESS NOT STARTED';
-
-  }
-  else if (
-    status === 'UNKNOWN QR' ||
-    status === 'STUDENT NOT FOUND'
-  ) {
-
-    background =
-      'var(--danger-bg)';
-
-    textColor =
-      'var(--danger)';
-
-    icon =
-      '🔴';
-
-    title =
-      'STUDENT NOT FOUND';
-
-  }
-  else if (
-    status === 'ERROR'
-  ) {
-
-    background =
-      'var(--danger-bg)';
-
-    textColor =
-      'var(--danger)';
-
-    icon =
-      '🔴';
-
-    title =
-      data.message ||
-      'SYSTEM ERROR';
-
-  }
-
-
-  let photoHtml = '';
-
-
-  if (
-    student.photoUrl &&
-    String(
-      student.photoUrl
-    ).length > 100
-  ) {
-
-    photoHtml =
-      '<img class="studentPhoto" ' +
-      'src="' +
-      student.photoUrl +
-      '" alt="Student Photo">';
-
-  }
-  else {
-
-    photoHtml =
-      '<div class="placeholder">👤</div>';
-  }
-
-
-  document.getElementById(
-    targetId
-  ).innerHTML =
-    '<div class="resultCard" style="background:' +
-    background +
-    ';">' +
-
-    photoHtml +
-
-    '<div class="studentName">' +
-    escapeHtml(
-      student.name || ''
-    ) +
-    '</div>' +
-
-    '<div class="studentMeta">' +
-    'Student ID: <strong>' +
-    escapeHtml(
-      student.id || ''
-    ) +
-    '</strong>' +
-    '</div>' +
-
-    '<div class="studentMeta">' +
-    'Class: <strong>' +
-    escapeHtml(
-      student.className || ''
-    ) +
-    '</strong>' +
-    '</div>' +
-
-    '<div class="statusIcon">' +
-    icon +
-    '</div>' +
-
-    '<div class="statusText" style="color:' +
-    textColor +
-    ';">' +
-    escapeHtml(title) +
-    '</div>' +
-
+  // Manual entry keeps the compact result card.
+  document.getElementById(targetId).innerHTML =
+    '<div class="resultCard" style="background:' + background + ';">' +
+      (hasPhoto
+        ? '<img class="studentPhoto" src="' + student.photoUrl + '" alt="Student Photo">'
+        : '<div class="placeholder">👤</div>') +
+      '<div class="studentName">' + escapeHtml(student.name || '') + '</div>' +
+      '<div class="studentMeta">Student ID: <strong>' + escapeHtml(student.id || '') + '</strong></div>' +
+      '<div class="studentMeta">Class: <strong>' + escapeHtml(student.className || '') + '</strong></div>' +
+      '<div class="statusIcon">' + icon + '</div>' +
+      '<div class="statusText" style="color:' + textColor + ';">' + escapeHtml(title) + '</div>' +
     '</div>';
 
+  if (autoNext) scheduleNextScan();
+}
 
-  if (autoNext) {
-    scheduleNextScan();
+
+function prepareNextScan() {
+
+  scanLocked = false;
+
+  const result = document.getElementById('scanResult');
+  if (result) result.innerHTML = '';
+
+  const scannerCard = document.getElementById('scannerCard');
+  if (scannerCard) scannerCard.classList.remove('showingResult');
+
+  if (activeScreen === 'scan' && sessionToken) {
+    startScanner();
   }
 }
 
@@ -10118,7 +10584,7 @@ function clearSession() {
 
   sessionToken = '';
   currentStaff = null;
-  activeScreen = 'scan';
+  activeScreen = 'dashboard';
   lastQrResult = null;
   securitySessions = [];
   securityBusy = false;
