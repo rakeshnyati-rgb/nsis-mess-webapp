@@ -1,221 +1,595 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
   >
+
+  <meta name="theme-color" content="#0b57d0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NSIS Mess">
 
   <title>NSIS Mess Management</title>
 
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <style>
+    :root {
+      --primary: #0b57d0;
+      --primary-dark: #0842a0;
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --text: #172033;
+      --muted: #6b7280;
+      --border: #e3e8f0;
+      --success-bg: #e8f5ec;
+      --success: #137333;
+      --warning-bg: #fff4e5;
+      --warning: #a15c00;
+      --danger-bg: #fdecea;
+      --danger: #b3261e;
+      --info-bg: #eef4ff;
+      --shadow: 0 10px 30px rgba(22, 34, 51, .08);
+      --radius: 18px;
+      --nav-height: 76px;
+    }
+
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Arial, Helvetica, sans-serif;
     }
 
     body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      touch-action: manipulation;
+    }
+
+    .appBar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 64px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brandWrap {
+      min-width: 0;
+    }
+
+    .brand {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #202124;
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -.2px;
     }
 
-    .header {
-      background: #ffffff;
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    .brandSub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .header h1 {
-      margin: 0;
-      font-size: 22px;
+    .connectionBadge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      flex: 0 0 auto;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      font-size: 12px;
+      font-weight: 800;
     }
 
-    .container {
-      max-width: 500px;
-      margin: 18px auto;
-      padding: 12px;
+    .connectionBadge.ready {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .page {
+      width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .loginWrap {
+      display: grid;
+      min-height: calc(100vh - 100px);
+      align-items: center;
+      padding-bottom: 40px;
     }
 
     .card {
-      background: #ffffff;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .loginCard {
+      padding: 22px;
+    }
+
+    .loginIcon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 14px;
+      display: grid;
+      place-items: center;
       border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 4px 18px rgba(0,0,0,.09);
+      background: var(--info-bg);
+      font-size: 28px;
     }
 
     .center {
       text-align: center;
     }
 
+    .title {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 800;
+    }
+
     .subtitle {
-      color: #666;
-      margin-top: 5px;
-    }
-
-    .backend {
-      margin: 15px 0;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
+      margin-top: 6px;
+      color: var(--muted);
       font-size: 14px;
-      font-weight: bold;
-      background: #fff3cd;
-      color: #795500;
     }
 
-    .backend.ready {
-      background: #e6f4ea;
-      color: #137333;
+    .field {
+      margin-top: 16px;
     }
 
-    .formGroup {
-      margin-top: 15px;
-    }
-
-    label {
+    .field label {
       display: block;
-      font-weight: bold;
       margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 800;
     }
 
-    input {
+    .input,
+    select {
       width: 100%;
-      padding: 14px;
-      border: 1px solid #ccd0d5;
-      border-radius: 10px;
-      font-size: 17px;
+      min-height: 52px;
+      padding: 0 14px;
+      border: 1px solid #cfd6df;
+      border-radius: 13px;
       outline: none;
+      background: #fff;
+      color: var(--text);
+      font-size: 16px;
     }
 
-    input:focus {
-      border-color: #1a73e8;
+    .input:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(11,87,208,.10);
     }
 
-    button {
+    .btn {
       width: 100%;
-      padding: 14px;
+      min-height: 52px;
       margin-top: 14px;
-      border-radius: 10px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .primary {
+      padding: 0 16px;
       border: 0;
-      background: #1a73e8;
-      color: white;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 16px;
     }
 
-    .primary:disabled {
-      opacity: .5;
+    .btn:disabled {
+      opacity: .55;
       cursor: not-allowed;
     }
 
-    .secondary {
-      border: 1px solid #ccc;
-      background: #ffffff;
-      color: #333;
+    .btnPrimary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(11,87,208,.20);
     }
 
-    .danger {
-      border: 1px solid #d93025;
-      background: #ffffff;
-      color: #d93025;
+    .btnPrimary:active {
+      background: var(--primary-dark);
     }
 
-    .error {
-      background: #fdecea;
-      color: #b3261e;
-      border-radius: 10px;
-      padding: 11px;
+    .btnSoft {
+      background: #eef3fb;
+      color: var(--text);
+      border: 1px solid #dde5f0;
+    }
+
+    .btnDanger {
+      background: #fff;
+      color: var(--danger);
+      border: 1px solid #efc1bd;
+    }
+
+    .loginMessage,
+    .message {
       margin-top: 14px;
-      text-align: center;
-      font-weight: bold;
     }
 
-    .staffBar {
-      background: #eef3fd;
+    .errorBox {
+      padding: 12px 14px;
       border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 15px;
+      background: var(--danger-bg);
+      color: var(--danger);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    #appShell {
+      display: none;
+      min-height: calc(100vh - 64px);
+      padding-bottom: calc(var(--nav-height) + 24px);
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .sectionTitle {
+      margin: 4px 0 14px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .staffStrip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      margin-bottom: 14px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--info-bg);
+      font-size: 22px;
+    }
+
+    .staffText {
+      min-width: 0;
+      flex: 1;
     }
 
     .staffName {
-      font-weight: bold;
-      font-size: 17px;
+      font-size: 15px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .staffRole {
-      color: #555;
-      font-size: 13px;
       margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .scannerCard {
+      padding: 14px;
+    }
+
+    .scanHero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .scanHeroTitle {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .scanHeroSub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
     }
 
     #reader {
       width: 100%;
-      margin-top: 12px;
       overflow: hidden;
-      border-radius: 14px;
-    }
-
-    #result {
-      margin-top: 18px;
-    }
-
-    .resultCard {
       border-radius: 16px;
-      padding: 20px;
+      background: #111827;
+    }
+
+    #reader video {
+      border-radius: 16px;
+    }
+
+    .cameraHint {
+      padding: 26px 16px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 16px;
+      background: #f8fafc;
+      color: var(--muted);
       text-align: center;
     }
 
+    .cameraHintIcon {
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .twoButtons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .resultArea {
+      margin-top: 14px;
+    }
+
+    .resultCard {
+      padding: 18px;
+      border-radius: 17px;
+      text-align: center;
+      border: 1px solid transparent;
+    }
+
     .studentPhoto {
-      width: 135px;
-      height: 135px;
+      width: 116px;
+      height: 116px;
       object-fit: cover;
-      border-radius: 16px;
       display: block;
-      margin: 0 auto 14px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.18);
+      margin: 0 auto 12px;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
     }
 
     .placeholder {
-      width: 135px;
-      height: 135px;
-      border-radius: 16px;
-      margin: 0 auto 14px;
-      background: #eef1f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 50px;
+      width: 116px;
+      height: 116px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 12px;
+      border-radius: 20px;
+      background: #fff;
+      font-size: 48px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.08);
     }
 
     .studentName {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 7px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .studentMeta {
+      margin-top: 5px;
+      font-size: 13px;
     }
 
     .statusIcon {
-      font-size: 42px;
-      margin-top: 15px;
+      margin-top: 12px;
+      font-size: 34px;
     }
 
     .statusText {
-      font-size: 24px;
-      font-weight: bold;
-      margin-top: 6px;
+      margin-top: 3px;
+      font-size: 20px;
+      font-weight: 900;
     }
 
-    #scannerScreen {
-      display: none;
+    .manualCard,
+    .dashboardCard,
+    .profileCard {
+      padding: 18px;
+    }
+
+    .helperText {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .dashboardGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .kpi {
+      min-height: 106px;
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .kpi.full {
+      grid-column: 1 / -1;
+    }
+
+    .kpiLabel {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .kpiValue {
+      margin-top: 7px;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -.5px;
+    }
+
+    .kpi.success {
+      background: var(--success-bg);
+      border-color: #cde8d5;
+    }
+
+    .kpi.warning {
+      background: var(--warning-bg);
+      border-color: #f5ddb9;
+    }
+
+    .kpi.info {
+      background: var(--info-bg);
+      border-color: #d8e4ff;
+    }
+
+    .kpi.danger {
+      background: var(--danger-bg);
+      border-color: #f1cbc7;
+    }
+
+    .dashUpdated {
+      margin: -5px 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .classList {
+      margin-top: 10px;
+    }
+
+    .classRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 13px;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fff;
+    }
+
+    .className {
+      font-weight: 800;
+    }
+
+    .classCount {
+      min-width: 34px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--info-bg);
+      color: var(--primary);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .profileRow {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .profileRow:last-child {
+      border-bottom: 0;
+    }
+
+    .profileLabel {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .profileValue {
+      margin-top: 4px;
+      font-size: 16px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .bottomNav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 60;
+      width: min(100%, 560px);
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      min-height: var(--nav-height);
+      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      background: rgba(255,255,255,.98);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -8px 24px rgba(22,34,51,.07);
+    }
+
+    .navBtn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-height: 54px;
+      border: 0;
+      border-radius: 13px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .navBtn.active {
+      background: var(--info-bg);
+      color: var(--primary);
+    }
+
+    .navIcon {
+      font-size: 21px;
+      line-height: 1;
     }
 
     #backendFrame {
@@ -224,54 +598,64 @@
       height: 1px;
       border: 0;
     }
+
+    @media (min-width: 700px) {
+      body {
+        background: #edf2f8;
+      }
+
+      .appBar {
+        width: min(100%, 560px);
+        margin: 0 auto;
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+      }
+    }
   </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h1>NSIS Mess Management</h1>
-</div>
+<header class="appBar">
+  <div class="brandWrap">
+    <h1 class="brand">NSIS Mess Management</h1>
+    <div class="brandSub">Nyati Samata International School</div>
+  </div>
 
-<div class="container">
+  <div id="connectionBadge" class="connectionBadge">
+    <span class="dot"></span>
+    <span id="connectionText">Connecting</span>
+  </div>
+</header>
 
-  <!-- LOGIN SCREEN -->
-  <div
-    id="loginScreen"
-    class="card"
-  >
+
+<!-- LOGIN -->
+<main id="loginPage" class="page loginWrap">
+  <section class="card loginCard">
+
+    <div class="loginIcon">🔐</div>
 
     <div class="center">
-      <h2>🔐 Staff Login</h2>
-
-      <div class="subtitle">
-        Mess Entry System
-      </div>
+      <h2 class="title">Staff Login</h2>
+      <div class="subtitle">Secure Mess Entry System</div>
     </div>
 
-    <div
-      id="backendStatus"
-      class="backend"
-    >
-      Connecting to Mess System...
-    </div>
-
-    <div class="formGroup">
-      <label>Login ID</label>
-
+    <div class="field">
+      <label for="loginId">Login ID</label>
       <input
         id="loginId"
+        class="input"
         type="text"
         placeholder="Example: ADMIN01"
         autocomplete="username"
       >
     </div>
 
-    <div class="formGroup">
-      <label>6-Digit PIN</label>
-
+    <div class="field">
+      <label for="loginPin">6-Digit PIN</label>
       <input
         id="loginPin"
+        class="input"
         type="password"
         inputmode="numeric"
         maxlength="6"
@@ -282,290 +666,280 @@
 
     <button
       id="loginButton"
-      class="primary"
+      class="btn btnPrimary"
       onclick="loginStaff()"
       disabled
     >
       Login
     </button>
 
-    <div id="loginMessage"></div>
+    <div id="loginMessage" class="loginMessage"></div>
 
-  </div>
+  </section>
+</main>
 
 
-  <!-- SCANNER SCREEN -->
-  <div
-    id="scannerScreen"
-    class="card"
-  >
+<!-- APP -->
+<div id="appShell">
 
-    <div class="staffBar">
+  <main class="page">
 
-      <div>
-        Logged in as
+    <section class="card staffStrip">
+      <div class="avatar">👤</div>
+
+      <div class="staffText">
+        <div id="staffNameTop" class="staffName">Mess Staff</div>
+        <div id="staffRoleTop" class="staffRole"></div>
+      </div>
+    </section>
+
+
+    <!-- SCAN SCREEN -->
+    <section id="screenScan" class="screen active">
+
+      <div class="sectionTitle">QR Meal Entry</div>
+
+      <div class="card scannerCard">
+
+        <div class="scanHero">
+          <div>
+            <div class="scanHeroTitle">Live QR Scanner</div>
+            <div class="scanHeroSub">Place student's QR inside the camera frame</div>
+          </div>
+          <div style="font-size:30px;">📷</div>
+        </div>
+
+        <div id="cameraPlaceholder" class="cameraHint">
+          <div class="cameraHintIcon">▣</div>
+          Tap <strong>Start Scanner</strong> to begin
+        </div>
+
+        <div id="reader"></div>
+
+        <div class="twoButtons">
+          <button
+            id="startButton"
+            class="btn btnPrimary"
+            onclick="startScanner()"
+          >
+            Start Scanner
+          </button>
+
+          <button
+            id="stopButton"
+            class="btn btnSoft"
+            onclick="stopScanner()"
+          >
+            Stop
+          </button>
+        </div>
+
+        <div id="scanResult" class="resultArea"></div>
+
       </div>
 
-      <div
-        id="staffName"
-        class="staffName"
-      ></div>
+    </section>
 
-      <div
-        id="staffRole"
-        class="staffRole"
-      ></div>
 
-    </div>
+    <!-- MANUAL SCREEN -->
+    <section id="screenManual" class="screen">
 
-    <div class="center">
+      <div class="sectionTitle">Manual Meal Entry</div>
 
-      <h2 style="margin-bottom:5px;">
-        🍽️ Live Mess QR Entry
-      </h2>
+      <div class="card manualCard">
 
-      <div class="subtitle">
-        Scan Student QR Code
+        <div class="field" style="margin-top:0;">
+          <label for="manualStudentId">Student ID</label>
+          <input
+            id="manualStudentId"
+            class="input"
+            type="text"
+            placeholder="Example: STU0001"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="field">
+          <label for="manualReason">Reason</label>
+          <select id="manualReason">
+            <option value="">Select Reason</option>
+            <option value="QR Card Not Available">QR Card Not Available</option>
+            <option value="QR Card Damaged">QR Card Damaged</option>
+            <option value="Camera / Scan Problem">Camera / Scan Problem</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <button
+          id="manualSubmitButton"
+          class="btn btnPrimary"
+          onclick="submitManualEntry()"
+        >
+          Submit Manual Entry
+        </button>
+
+        <div class="helperText">
+          Manual entry follows the same mess-active and duplicate checks as QR scanning.
+        </div>
+
+        <div id="manualResult" class="resultArea"></div>
+
       </div>
 
-    </div>
+    </section>
+
+
+    <!-- DASHBOARD SCREEN -->
+    <section id="screenDashboard" class="screen">
+
+      <div class="sectionTitle">Today's Dashboard</div>
+
+      <div class="card dashboardCard">
+
+        <div id="dashboardUpdated" class="dashUpdated">
+          Tap refresh to load today's data
+        </div>
+
+        <div class="dashboardGrid">
+
+          <div class="kpi success">
+            <div class="kpiLabel">Total Meals</div>
+            <div id="dashTotal" class="kpiValue">0</div>
+          </div>
+
+          <div class="kpi success">
+            <div class="kpiLabel">Allowed</div>
+            <div id="dashAllowed" class="kpiValue">0</div>
+          </div>
+
+          <div class="kpi warning">
+            <div class="kpiLabel">Duplicates</div>
+            <div id="dashDuplicates" class="kpiValue">0</div>
+          </div>
+
+          <div class="kpi info">
+            <div class="kpiLabel">Manual Entries</div>
+            <div id="dashManual" class="kpiValue">0</div>
+          </div>
+
+          <div class="kpi danger full">
+            <div class="kpiLabel">Rejected / Not Allowed</div>
+            <div id="dashRejected" class="kpiValue">0</div>
+          </div>
+
+        </div>
+
+        <button
+          class="btn btnPrimary"
+          onclick="refreshDashboard()"
+        >
+          🔄 Refresh Dashboard
+        </button>
+
+        <div style="margin-top:20px;font-size:15px;font-weight:900;">
+          Class-wise Meals
+        </div>
+
+        <div id="dashboardClasses" class="classList">
+          No data
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PROFILE SCREEN -->
+    <section id="screenProfile" class="screen">
+
+      <div class="sectionTitle">Profile</div>
+
+      <div class="card profileCard">
+
+        <div class="profileRow">
+          <div class="profileLabel">Staff Name</div>
+          <div id="profileStaffName" class="profileValue">-</div>
+        </div>
+
+        <div class="profileRow">
+          <div class="profileLabel">Login ID</div>
+          <div id="profileLoginId" class="profileValue">-</div>
+        </div>
+
+        <div class="profileRow">
+          <div class="profileLabel">Role</div>
+          <div id="profileRole" class="profileValue">-</div>
+        </div>
+
+        <div class="profileRow">
+          <div class="profileLabel">Manual Entry Permission</div>
+          <div id="profileManual" class="profileValue">-</div>
+        </div>
+
+        <button
+          class="btn btnDanger"
+          onclick="logoutStaff()"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottomNav">
 
     <button
-      id="startButton"
-      class="primary"
-      onclick="startScanner()"
+      id="navScan"
+      class="navBtn active"
+      onclick="openScreen('scan')"
     >
-      📷 Start Camera
+      <span class="navIcon">📷</span>
+      <span>Scan</span>
     </button>
 
-    <div id="reader"></div>
-
     <button
-      class="secondary"
-      onclick="stopScanner()"
+      id="navManual"
+      class="navBtn"
+      onclick="openScreen('manual')"
     >
-      Stop Camera
+      <span class="navIcon">✍️</span>
+      <span>Manual</span>
     </button>
 
     <button
-  id="manualEntryButton"
-  class="secondary"
-  onclick="openManualEntry()"
-  style="display:none;"
->
-  ✍️ Manual Entry
-</button>
+      id="navDashboard"
+      class="navBtn"
+      onclick="openScreen('dashboard')"
+    >
+      <span class="navIcon">📊</span>
+      <span>Dashboard</span>
+    </button>
 
     <button
-  id="dashboardButton"
-  class="secondary"
-  onclick="openDashboard()"
->
-  📊 Today Dashboard
-</button>
-
-
-<div
-  id="dashboardBox"
-  style="
-    display:none;
-    margin-top:15px;
-    padding:15px;
-    background:#f8f9fa;
-    border-radius:12px;
-    border:1px solid #ddd;
-  "
->
-
-  <h3 style="margin-top:0;text-align:center;">
-    📊 Today's Mess Dashboard
-  </h3>
-
-  <div
-    id="dashboardUpdated"
-    style="
-      text-align:center;
-      font-size:13px;
-      color:#666;
-      margin-bottom:12px;
-    "
-  ></div>
-
-
-  <div
-    style="
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    "
-  >
-
-    <div class="resultCard" style="background:#e6f4ea;">
-      <div style="font-size:13px;">Total Meals</div>
-      <div id="dashTotal" style="font-size:28px;font-weight:bold;">0</div>
-    </div>
-
-    <div class="resultCard" style="background:#e6f4ea;">
-      <div style="font-size:13px;">Allowed</div>
-      <div id="dashAllowed" style="font-size:28px;font-weight:bold;">0</div>
-    </div>
-
-    <div class="resultCard" style="background:#fff4e5;">
-      <div style="font-size:13px;">Duplicates</div>
-      <div id="dashDuplicates" style="font-size:28px;font-weight:bold;">0</div>
-    </div>
-
-    <div class="resultCard" style="background:#eef3fd;">
-      <div style="font-size:13px;">Manual Entries</div>
-      <div id="dashManual" style="font-size:28px;font-weight:bold;">0</div>
-    </div>
-
-    <div
-      class="resultCard"
-      style="
-        background:#fdecea;
-        grid-column:1 / -1;
-      "
+      id="navProfile"
+      class="navBtn"
+      onclick="openScreen('profile')"
     >
-      <div style="font-size:13px;">Rejected / Not Allowed</div>
-      <div id="dashRejected" style="font-size:28px;font-weight:bold;">0</div>
-    </div>
+      <span class="navIcon">👤</span>
+      <span>Profile</span>
+    </button>
 
-  </div>
-
-
-  <h4 style="margin-bottom:8px;">
-    Class-wise Meals
-  </h4>
-
-  <div id="dashboardClasses">
-    No data
-  </div>
-
-
-  <button
-    class="primary"
-    onclick="refreshDashboard()"
-  >
-    🔄 Refresh Dashboard
-  </button>
-
-  <button
-    class="secondary"
-    onclick="closeDashboard()"
-  >
-    Close Dashboard
-  </button>
-
-</div>
-
-<div
-  id="manualEntryBox"
-  style="
-    display:none;
-    margin-top:15px;
-    padding:15px;
-    background:#f8f9fa;
-    border-radius:12px;
-    border:1px solid #ddd;
-  "
->
-
-  <h3 style="margin-top:0;">
-    Manual Meal Entry
-  </h3>
-
-  <div class="formGroup">
-
-    <label>Student ID</label>
-
-    <input
-      id="manualStudentId"
-      type="text"
-      placeholder="Example: STU0001"
-    >
-
-  </div>
-
-
-  <div class="formGroup">
-
-    <label>Reason</label>
-
-    <select
-      id="manualReason"
-      style="
-        width:100%;
-        padding:14px;
-        border:1px solid #ccd0d5;
-        border-radius:10px;
-        font-size:16px;
-      "
-    >
-
-      <option value="">
-        Select Reason
-      </option>
-
-      <option value="QR Card Not Available">
-        QR Card Not Available
-      </option>
-
-      <option value="QR Card Damaged">
-        QR Card Damaged
-      </option>
-
-      <option value="Camera / Scan Problem">
-        Camera / Scan Problem
-      </option>
-
-      <option value="Other">
-        Other
-      </option>
-
-    </select>
-
-  </div>
-
-
-  <button
-    class="primary"
-    onclick="submitManualEntry()"
-  >
-    Submit Manual Entry
-  </button>
-
-
-  <button
-    class="secondary"
-    onclick="closeManualEntry()"
-  >
-    Cancel
-  </button>
+  </nav>
 
 </div>
 
 
-<div id="result"></div>
-
-    <button
-      class="danger"
-      onclick="logoutStaff()"
-    >
-      Logout
-    </button>
-
-  </div>
-
-</div>
-
-
+<!-- APPS SCRIPT BRIDGE -->
 <iframe
   id="backendFrame"
   name="backendFrame"
   src="https://script.google.com/macros/s/AKfycbyEwKZwMwd0m3glz0gI10aaJWJt7UOU2Wf7I5S0cCor2kKo3FQDEInPW1LapZcQq8sS/exec?mode=bridge"
 ></iframe>
-
 
 <form
   id="backendForm"
@@ -578,32 +952,21 @@
 
 <script>
 
-const BACKEND_URL =
-  'https://script.google.com/macros/s/AKfycbyEwKZwMwd0m3glz0gI10aaJWJt7UOU2Wf7I5S0cCor2kKo3FQDEInPW1LapZcQq8sS/exec';
-
 let backendReady = false;
 
 let sessionToken =
-  sessionStorage.getItem(
-    'NSIS_MESS_TOKEN'
-  ) || '';
+  sessionStorage.getItem('NSIS_MESS_TOKEN') || '';
 
 let currentStaff = null;
 
 try {
-
   currentStaff =
     JSON.parse(
-      sessionStorage.getItem(
-        'NSIS_MESS_STAFF'
-      ) || 'null'
+      sessionStorage.getItem('NSIS_MESS_STAFF') || 'null'
     );
-
 }
 catch (e) {
-
   currentStaff = null;
-
 }
 
 let html5QrCode = null;
@@ -611,12 +974,39 @@ let scannerRunning = false;
 let scanLocked = false;
 
 let currentRequestId = '';
-let responseTimer = null;
 let currentAction = '';
+let responseTimer = null;
+
+let activeScreen = 'scan';
 
 
 /* ==========================================
-   BACKEND MESSAGES
+   PERMISSION
+========================================== */
+
+function hasManualPermission() {
+
+  if (!currentStaff) {
+    return false;
+  }
+
+  const explicitPermission =
+    currentStaff.canManualEntry === true ||
+    String(currentStaff.canManualEntry || '')
+      .trim()
+      .toUpperCase() === 'TRUE';
+
+  const isAdmin =
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase() === 'ADMIN';
+
+  return explicitPermission || isAdmin;
+}
+
+
+/* ==========================================
+   BACKEND MESSAGE HANDLER
 ========================================== */
 
 window.addEventListener(
@@ -628,20 +1018,15 @@ window.addEventListener(
     try {
 
       const host =
-        new URL(
-          event.origin
-        ).hostname;
+        new URL(event.origin).hostname;
 
       validOrigin =
         host === 'script.google.com' ||
         host === 'script.googleusercontent.com' ||
-        host.endsWith(
-          '.googleusercontent.com'
-        );
+        host.endsWith('.googleusercontent.com');
 
     }
     catch (e) {}
-
 
     if (!validOrigin) {
       return;
@@ -654,57 +1039,38 @@ window.addEventListener(
 
     /* BRIDGE READY */
 
-    if (
-      message.type ===
-      'BRIDGE_READY'
-    ) {
+    if (message.type === 'BRIDGE_READY') {
 
       backendReady = true;
 
-      const backendStatus =
-        document.getElementById(
-          'backendStatus'
-        );
-
-      backendStatus.textContent =
-        '✅ Mess System Connected';
-
-      backendStatus.classList.add(
-        'ready'
-      );
+      setConnectionState(true);
 
       document.getElementById(
         'loginButton'
       ).disabled = false;
 
-
       if (
         sessionToken &&
         currentStaff
       ) {
-
-        showScannerScreen();
-
+        showApp();
       }
 
       return;
     }
 
 
-    /* LOGIN RESULT */
+    /* LOGIN */
 
     if (
-      message.type ===
-      'LOGIN_RESULT' &&
-      message.requestId ===
-        currentRequestId
+      message.type === 'LOGIN_RESULT' &&
+      message.requestId === currentRequestId
     ) {
 
       finishRequest();
 
       const result =
         message.result || {};
-
 
       if (
         result.success === true &&
@@ -717,7 +1083,6 @@ window.addEventListener(
         currentStaff =
           result.staff || {};
 
-
         sessionStorage.setItem(
           'NSIS_MESS_TOKEN',
           sessionToken
@@ -725,11 +1090,8 @@ window.addEventListener(
 
         sessionStorage.setItem(
           'NSIS_MESS_STAFF',
-          JSON.stringify(
-            currentStaff
-          )
+          JSON.stringify(currentStaff)
         );
-
 
         document.getElementById(
           'loginPin'
@@ -739,31 +1101,25 @@ window.addEventListener(
           'loginMessage'
         ).innerHTML = '';
 
-
-        showScannerScreen();
-
+        showApp();
       }
-
       else {
 
         showLoginError(
           result.message ||
           'Invalid Login ID or PIN.'
         );
-
       }
 
       return;
     }
 
 
-    /* SCAN RESULT */
+    /* SCAN */
 
     if (
-      message.type ===
-      'SCAN_RESULT' &&
-      message.requestId ===
-        currentRequestId
+      message.type === 'SCAN_RESULT' &&
+      message.requestId === currentRequestId
     ) {
 
       finishRequest();
@@ -771,82 +1127,57 @@ window.addEventListener(
       const result =
         message.result || {};
 
+      if (result.authRequired === true) {
 
-      if (
-        result.authRequired === true
-      ) {
-
-        clearSession();
-
-        showLoginScreen();
-
-        showLoginError(
-          'Session expired. Please login again.'
-        );
-
+        handleExpiredSession();
         return;
       }
 
-
-      if (
-        result.success !== true
-      ) {
+      if (result.success !== true) {
 
         showError(
+          'scanResult',
           result.message ||
           'Unable to record meal.'
         );
 
         scheduleNextScan();
-
         return;
       }
 
-
       showMealResult(
-        result.meal
+        result.meal,
+        'scanResult',
+        true
       );
 
       return;
     }
 
 
-    /* MANUAL ENTRY RESULT */
+    /* MANUAL */
 
     if (
-      message.type ===
-      'MANUAL_RESULT' &&
-      message.requestId ===
-        currentRequestId
+      message.type === 'MANUAL_RESULT' &&
+      message.requestId === currentRequestId
     ) {
 
       finishRequest();
+      setManualSubmitting(false);
 
       const result =
         message.result || {};
 
+      if (result.authRequired === true) {
 
-      if (
-        result.authRequired === true
-      ) {
-
-        clearSession();
-
-        showLoginScreen();
-
-        showLoginError(
-          'Session expired. Please login again.'
-        );
-
+        handleExpiredSession();
         return;
       }
 
-
-      if (
-        result.success !== true
-      ) {
+      if (result.success !== true) {
 
         showError(
+          'manualResult',
           result.message ||
           'Manual entry failed.'
         );
@@ -854,17 +1185,30 @@ window.addEventListener(
         return;
       }
 
-
-      closeManualEntry();
-
       showMealResult(
-        result.meal
+        result.meal,
+        'manualResult',
+        false
       );
+
+      if (
+        result.meal &&
+        result.meal.status !== 'ERROR'
+      ) {
+        document.getElementById(
+          'manualStudentId'
+        ).value = '';
+
+        document.getElementById(
+          'manualReason'
+        ).value = '';
+      }
 
       return;
     }
 
-    /* DASHBOARD RESULT */
+
+    /* DASHBOARD */
 
     if (
       message.type === 'DASHBOARD_RESULT' &&
@@ -876,51 +1220,38 @@ window.addEventListener(
       const result =
         message.result || {};
 
-
       if (result.authRequired === true) {
 
-        clearSession();
-        showLoginScreen();
-
-        showLoginError(
-          'Session expired. Please login again.'
-        );
-
+        handleExpiredSession();
         return;
       }
-
 
       if (result.success !== true) {
 
-        showError(
+        document.getElementById(
+          'dashboardUpdated'
+        ).textContent =
           result.message ||
-          'Unable to load dashboard.'
-        );
+          'Unable to load dashboard.';
 
         return;
       }
 
-
       renderDashboard(result);
-
       return;
     }
-    
-    /* LOGOUT RESULT */
+
+
+    /* LOGOUT */
 
     if (
-      message.type ===
-      'LOGOUT_RESULT' &&
-      message.requestId ===
-        currentRequestId
+      message.type === 'LOGOUT_RESULT' &&
+      message.requestId === currentRequestId
     ) {
 
       finishRequest();
-
       clearSession();
-
-      showLoginScreen();
-
+      showLogin();
       return;
     }
 
@@ -928,20 +1259,17 @@ window.addEventListener(
     /* BACKEND ERROR */
 
     if (
-      message.type ===
-      'BACKEND_ERROR' &&
-      message.requestId ===
-        currentRequestId
+      message.type === 'BACKEND_ERROR' &&
+      message.requestId === currentRequestId
     ) {
 
       const failedAction =
         currentAction;
 
       finishRequest();
+      setManualSubmitting(false);
 
-      if (
-        failedAction === 'login'
-      ) {
+      if (failedAction === 'login') {
 
         showLoginError(
           message.message ||
@@ -949,16 +1277,35 @@ window.addEventListener(
         );
 
       }
-
-      else {
+      else if (failedAction === 'manual') {
 
         showError(
+          'manualResult',
           message.message ||
           'Backend error.'
         );
 
       }
+      else if (failedAction === 'scan') {
 
+        showError(
+          'scanResult',
+          message.message ||
+          'Backend error.'
+        );
+
+      }
+      else if (failedAction === 'dashboard') {
+
+        document.getElementById(
+          'dashboardUpdated'
+        ).textContent =
+          message.message ||
+          'Backend error.';
+
+      }
+
+      return;
     }
 
   }
@@ -966,7 +1313,40 @@ window.addEventListener(
 
 
 /* ==========================================
-   POST TO APPS SCRIPT
+   CONNECTION STATE
+========================================== */
+
+function setConnectionState(
+  connected
+) {
+
+  const badge =
+    document.getElementById(
+      'connectionBadge'
+    );
+
+  const text =
+    document.getElementById(
+      'connectionText'
+    );
+
+  if (connected) {
+
+    badge.classList.add('ready');
+    text.textContent = 'Connected';
+
+  }
+  else {
+
+    badge.classList.remove('ready');
+    text.textContent = 'Connecting';
+
+  }
+}
+
+
+/* ==========================================
+   POST TO BACKEND
 ========================================== */
 
 function postToBackend(
@@ -983,6 +1363,22 @@ function postToBackend(
       );
 
     }
+    else if (action === 'manual') {
+
+      showError(
+        'manualResult',
+        'Mess System is still connecting.'
+      );
+
+    }
+    else if (action === 'scan') {
+
+      showError(
+        'scanResult',
+        'Mess System is still connecting.'
+      );
+
+    }
 
     return;
   }
@@ -994,8 +1390,7 @@ function postToBackend(
     '_' +
     Math.random()
       .toString(36)
-      .substring(2,8);
-
+      .substring(2, 8);
 
   currentAction =
     action;
@@ -1005,7 +1400,6 @@ function postToBackend(
     document.getElementById(
       'backendForm'
     );
-
 
   form.innerHTML = '';
 
@@ -1045,33 +1439,45 @@ function postToBackend(
     setTimeout(
       function() {
 
-        if (
-          currentRequestId
-        ) {
+        if (!currentRequestId) {
+          return;
+        }
 
-          const actionCopy =
-            currentAction;
+        const actionCopy =
+          currentAction;
 
-          finishRequest();
+        finishRequest();
+        setManualSubmitting(false);
 
+        if (actionCopy === 'login') {
 
-          if (
-            actionCopy === 'login'
-          ) {
+          showLoginError(
+            'Server response timeout.'
+          );
 
-            showLoginError(
-              'Server response timeout.'
-            );
+        }
+        else if (actionCopy === 'manual') {
 
-          }
+          showError(
+            'manualResult',
+            'Server response timeout.'
+          );
 
-          else {
+        }
+        else if (actionCopy === 'scan') {
 
-            showError(
-              'Server response timeout.'
-            );
+          showError(
+            'scanResult',
+            'Server response timeout.'
+          );
 
-          }
+        }
+        else if (actionCopy === 'dashboard') {
+
+          document.getElementById(
+            'dashboardUpdated'
+          ).textContent =
+            'Server response timeout.';
 
         }
 
@@ -1092,11 +1498,8 @@ function addFormField(
       'input'
     );
 
-  input.type =
-    'hidden';
-
-  input.name =
-    name;
+  input.type = 'hidden';
+  input.name = name;
 
   input.value =
     String(
@@ -1105,9 +1508,7 @@ function addFormField(
         : value
     );
 
-  form.appendChild(
-    input
-  );
+  form.appendChild(input);
 }
 
 
@@ -1117,17 +1518,13 @@ function finishRequest() {
     responseTimer
   );
 
-  currentRequestId =
-    '';
-
-  currentAction =
-    '';
-
+  currentRequestId = '';
+  currentAction = '';
 }
 
 
 /* ==========================================
-   STAFF LOGIN
+   LOGIN
 ========================================== */
 
 function loginStaff() {
@@ -1136,7 +1533,6 @@ function loginStaff() {
     return;
   }
 
-
   const loginId =
     document.getElementById(
       'loginId'
@@ -1144,7 +1540,6 @@ function loginStaff() {
       .value
       .trim()
       .toUpperCase();
-
 
   const pin =
     document.getElementById(
@@ -1170,9 +1565,7 @@ function loginStaff() {
   }
 
 
-  if (
-    !/^\d{6}$/.test(pin)
-  ) {
+  if (!/^\d{6}$/.test(pin)) {
 
     showLoginError(
       'Please enter valid 6-digit PIN.'
@@ -1185,10 +1578,7 @@ function loginStaff() {
   document.getElementById(
     'loginMessage'
   ).innerHTML =
-
-    '<div class="backend">' +
-      'Checking Login...' +
-    '</div>';
+    '<div class="connectionBadge" style="display:flex;justify-content:center;">Checking Login...</div>';
 
 
   postToBackend(
@@ -1201,20 +1591,14 @@ function loginStaff() {
 }
 
 
-/* ENTER KEY LOGIN */
-
 document.getElementById(
   'loginPin'
 ).addEventListener(
   'keydown',
   function(event) {
 
-    if (
-      event.key === 'Enter'
-    ) {
-
+    if (event.key === 'Enter') {
       loginStaff();
-
     }
 
   }
@@ -1222,518 +1606,215 @@ document.getElementById(
 
 
 /* ==========================================
-   MANUAL ENTRY
+   APP / LOGIN VIEW
 ========================================== */
 
-function hasManualPermission() {
-
-  if (!currentStaff) {
-    return false;
-  }
-
-  const allowed =
-    currentStaff.canManualEntry === true ||
-    String(currentStaff.canManualEntry || '')
-      .trim()
-      .toUpperCase() === 'TRUE';
-
-  const isAdmin =
-    String(currentStaff.role || '')
-      .trim()
-      .toUpperCase() === 'ADMIN';
-
-  return allowed || isAdmin;
-}
-
-
-async function openManualEntry() {
-
-  if (!hasManualPermission()) {
-
-    showError(
-      'Manual Entry permission not allowed.'
-    );
-
-    return;
-  }
-
-  await stopScanner();
-
-  document.getElementById(
-    'manualEntryBox'
-  ).style.display = 'block';
-
-  document.getElementById(
-    'result'
-  ).innerHTML = '';
-}
-
-
-function closeManualEntry() {
-
-  document.getElementById(
-    'manualEntryBox'
-  ).style.display = 'none';
-
-  document.getElementById(
-    'manualStudentId'
-  ).value = '';
-
-  document.getElementById(
-    'manualReason'
-  ).value = '';
-}
-
-
-function submitManualEntry() {
-
-  if (!sessionToken) {
-
-    showLoginScreen();
-
-    return;
-  }
-
-
-  if (!hasManualPermission()) {
-
-    showError(
-      'Manual Entry permission not allowed.'
-    );
-
-    return;
-  }
-
-
-  const studentId =
-    document.getElementById(
-      'manualStudentId'
-    )
-      .value
-      .trim()
-      .toUpperCase();
-
-
-  const manualReason =
-    document.getElementById(
-      'manualReason'
-    )
-      .value
-      .trim();
-
-
-  document.getElementById(
-    'manualStudentId'
-  ).value =
-    studentId;
-
-
-  if (!studentId) {
-
-    showError(
-      'Please enter Student ID.'
-    );
-
-    return;
-  }
-
-
-  if (!manualReason) {
-
-    showError(
-      'Please select Manual Entry reason.'
-    );
-
-    return;
-  }
-
-
-  document.getElementById(
-    'result'
-  ).innerHTML =
-
-    '<div class="resultCard" ' +
-    'style="background:#eef3fd;">' +
-
-    '<strong>Student ID: ' +
-    escapeHtml(studentId) +
-    '</strong><br><br>' +
-
-    'Checking Manual Entry...' +
-
-    '</div>';
-
-
-  postToBackend(
-    'manual',
-    {
-      token: sessionToken,
-      studentId: studentId,
-      manualReason: manualReason
-    }
-  );
-}
-
-/* ==========================================
-   TODAY DASHBOARD
-========================================== */
-
-async function openDashboard() {
-
-  if (!sessionToken) {
-    showLoginScreen();
-    return;
-  }
-
-  await stopScanner();
-
-  // Manual Entry बंद करें
-  const manualBox =
-    document.getElementById(
-      'manualEntryBox'
-    );
-
-  if (manualBox) {
-    manualBox.style.display =
-      'none';
-  }
-
-
-  document.getElementById(
-    'dashboardBox'
-  ).style.display =
-    'block';
-
-
-  document.getElementById(
-    'result'
-  ).innerHTML = '';
-
-
-  refreshDashboard();
-}
-
-
-function refreshDashboard() {
-
-  if (!sessionToken) {
-    showLoginScreen();
-    return;
-  }
-
-
-  document.getElementById(
-    'dashboardUpdated'
-  ).textContent =
-    'Loading dashboard...';
-
-
-  postToBackend(
-    'dashboard',
-    {
-      token: sessionToken
-    }
-  );
-}
-
-
-function renderDashboard(data) {
-
-  document.getElementById(
-    'dashTotal'
-  ).textContent =
-    data.totalMeals || 0;
-
-
-  document.getElementById(
-    'dashAllowed'
-  ).textContent =
-    data.allowed || 0;
-
-
-  document.getElementById(
-    'dashDuplicates'
-  ).textContent =
-    data.duplicates || 0;
-
-
-  document.getElementById(
-    'dashManual'
-  ).textContent =
-    data.manualEntries || 0;
-
-
-  document.getElementById(
-    'dashRejected'
-  ).textContent =
-    data.rejected || 0;
-
-
-  document.getElementById(
-    'dashboardUpdated'
-  ).textContent =
-    data.generatedAt
-      ? 'Updated: ' + data.generatedAt
-      : 'Updated';
-
-
-  const container =
-    document.getElementById(
-      'dashboardClasses'
-    );
-
-
-  container.innerHTML = '';
-
-
-  const classWise =
-    data.classWise || {};
-
-
-  const classNames =
-    Object.keys(
-      classWise
-    );
-
-
-  if (
-    classNames.length === 0
-  ) {
-
-    container.textContent =
-      'No meals recorded today.';
-
-    return;
-  }
-
-
-  classNames
-    .sort(
-      function(a, b) {
-
-        return String(a)
-          .localeCompare(
-            String(b),
-            undefined,
-            {
-              numeric: true,
-              sensitivity: 'base'
-            }
-          );
-
-      }
-    )
-    .forEach(
-      function(className) {
-
-        const row =
-          document.createElement(
-            'div'
-          );
-
-
-        row.style.display =
-          'flex';
-
-        row.style.justifyContent =
-          'space-between';
-
-        row.style.alignItems =
-          'center';
-
-        row.style.padding =
-          '10px 12px';
-
-        row.style.marginBottom =
-          '7px';
-
-        row.style.background =
-          '#ffffff';
-
-        row.style.border =
-          '1px solid #e0e0e0';
-
-        row.style.borderRadius =
-          '9px';
-
-
-        const name =
-          document.createElement(
-            'strong'
-          );
-
-        name.textContent =
-          className;
-
-
-        const count =
-          document.createElement(
-            'strong'
-          );
-
-        count.textContent =
-          classWise[className];
-
-
-        row.appendChild(
-          name
-        );
-
-        row.appendChild(
-          count
-        );
-
-        container.appendChild(
-          row
-        );
-
-      }
-    );
-}
-
-
-function closeDashboard() {
-
-  document.getElementById(
-    'dashboardBox'
-  ).style.display =
-    'none';
-}
-  
-/* ==========================================
-   SCREENS
-========================================== */
-  
-function showScannerScreen() {
+function showApp() {
 
   if (
     !sessionToken ||
     !currentStaff
   ) {
 
-    showLoginScreen();
-
+    showLogin();
     return;
   }
 
-
   document.getElementById(
-    'loginScreen'
+    'loginPage'
   ).style.display =
     'none';
 
-
   document.getElementById(
-    'scannerScreen'
+    'appShell'
   ).style.display =
     'block';
 
+  updateStaffUI();
+
+  if (
+    !hasManualPermission() &&
+    activeScreen === 'manual'
+  ) {
+    activeScreen = 'scan';
+  }
+
+  openScreen(
+    activeScreen || 'scan'
+  );
+}
+
+
+async function showLogin() {
+
+  await stopScanner();
 
   document.getElementById(
-    'staffName'
-  ).textContent =
+    'appShell'
+  ).style.display =
+    'none';
+
+  document.getElementById(
+    'loginPage'
+  ).style.display =
+    'grid';
+
+  document.getElementById(
+    'scanResult'
+  ).innerHTML = '';
+
+  document.getElementById(
+    'manualResult'
+  ).innerHTML = '';
+}
+
+
+function updateStaffUI() {
+
+  const name =
     currentStaff.name ||
     currentStaff.loginId ||
     'Mess Staff';
 
-
-  document.getElementById(
-    'staffRole'
-  ).textContent =
+  const role =
     currentStaff.role || '';
 
-
-  const manualButton =
-    document.getElementById(
-      'manualEntryButton'
-    );
-
-
-  if (hasManualPermission()) {
-
-    manualButton.style.display =
-      'block';
-
-  }
-  else {
-
-    manualButton.style.display =
-      'none';
-
-  }
-}
-
-
-function showLoginScreen() {
-
-  stopScanner();
-
+  document.getElementById(
+    'staffNameTop'
+  ).textContent =
+    name;
 
   document.getElementById(
-    'scannerScreen'
+    'staffRoleTop'
+  ).textContent =
+    role;
+
+  document.getElementById(
+    'profileStaffName'
+  ).textContent =
+    name;
+
+  document.getElementById(
+    'profileLoginId'
+  ).textContent =
+    currentStaff.loginId || '-';
+
+  document.getElementById(
+    'profileRole'
+  ).textContent =
+    role || '-';
+
+  document.getElementById(
+    'profileManual'
+  ).textContent =
+    hasManualPermission()
+      ? 'Allowed'
+      : 'Not Allowed';
+
+  document.getElementById(
+    'navManual'
   ).style.display =
-    'none';
-
-
-  document.getElementById(
-    'loginScreen'
-  ).style.display =
-    'block';
-
-
-  document.getElementById(
-    'result'
-  ).innerHTML = '';
-
+    hasManualPermission()
+      ? 'flex'
+      : 'none';
 }
 
 
 /* ==========================================
-   LOGOUT
+   BOTTOM NAVIGATION
 ========================================== */
 
-async function logoutStaff() {
+async function openScreen(
+  name
+) {
 
-  await stopScanner();
-
-
-  if (!sessionToken) {
-
-    clearSession();
-
-    showLoginScreen();
+  if (
+    name === 'manual' &&
+    !hasManualPermission()
+  ) {
 
     return;
   }
 
+  if (
+    name !== 'scan'
+  ) {
+    await stopScanner();
+  }
 
-  postToBackend(
-    'logout',
-    {
-      token: sessionToken
+  activeScreen =
+    name;
+
+  const screenMap = {
+    scan: 'screenScan',
+    manual: 'screenManual',
+    dashboard: 'screenDashboard',
+    profile: 'screenProfile'
+  };
+
+  const navMap = {
+    scan: 'navScan',
+    manual: 'navManual',
+    dashboard: 'navDashboard',
+    profile: 'navProfile'
+  };
+
+
+  document.querySelectorAll(
+    '.screen'
+  ).forEach(
+    function(el) {
+      el.classList.remove('active');
     }
   );
-}
 
 
-function clearSession() {
-
-  sessionToken = '';
-  currentStaff = null;
-
-  sessionStorage.removeItem(
-    'NSIS_MESS_TOKEN'
+  document.querySelectorAll(
+    '.navBtn'
+  ).forEach(
+    function(el) {
+      el.classList.remove('active');
+    }
   );
 
-  sessionStorage.removeItem(
-    'NSIS_MESS_STAFF'
-  );
 
+  const screen =
+    document.getElementById(
+      screenMap[name]
+    );
+
+  if (screen) {
+    screen.classList.add('active');
+  }
+
+
+  const nav =
+    document.getElementById(
+      navMap[name]
+    );
+
+  if (nav) {
+    nav.classList.add('active');
+  }
+
+
+  if (name === 'dashboard') {
+    refreshDashboard();
+  }
+
+  if (name === 'profile') {
+    updateStaffUI();
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 }
 
 
 /* ==========================================
-   START CAMERA
+   QR SCANNER
 ========================================== */
 
 async function startScanner() {
@@ -1742,19 +1823,16 @@ async function startScanner() {
     return;
   }
 
-
   if (!sessionToken) {
 
-    showLoginScreen();
-
+    showLogin();
     return;
   }
 
 
   document.getElementById(
-    'result'
+    'scanResult'
   ).innerHTML = '';
-
 
   scanLocked = false;
 
@@ -1768,8 +1846,7 @@ async function startScanner() {
 
 
     const cameras =
-      await Html5Qrcode
-        .getCameras();
+      await Html5Qrcode.getCameras();
 
 
     if (
@@ -1798,13 +1875,10 @@ async function startScanner() {
           cameras[i].label || ''
         ).toLowerCase();
 
-
       if (
         label.includes('back') ||
         label.includes('rear') ||
-        label.includes(
-          'environment'
-        )
+        label.includes('environment')
       ) {
 
         cameraId =
@@ -1813,6 +1887,12 @@ async function startScanner() {
         break;
       }
     }
+
+
+    document.getElementById(
+      'cameraPlaceholder'
+    ).style.display =
+      'none';
 
 
     await html5QrCode.start(
@@ -1832,14 +1912,13 @@ async function startScanner() {
               Math.min(
                 width,
                 height
-              ) * .70
+              ) * .72
             );
 
           return {
             width: size,
             height: size
           };
-
         }
       },
 
@@ -1850,20 +1929,25 @@ async function startScanner() {
     );
 
 
-    scannerRunning =
-      true;
+    scannerRunning = true;
+
+    document.getElementById(
+      'startButton'
+    ).disabled = true;
 
   }
-
   catch (error) {
 
-    scannerRunning =
-      false;
+    scannerRunning = false;
+    html5QrCode = null;
 
-    html5QrCode =
-      null;
+    document.getElementById(
+      'cameraPlaceholder'
+    ).style.display =
+      'block';
 
     showError(
+      'scanResult',
       'Camera Error: ' +
       (
         error.message ||
@@ -1875,72 +1959,6 @@ async function startScanner() {
 }
 
 
-/* ==========================================
-   QR DETECTED
-========================================== */
-
-async function onQrDetected(
-  decodedText
-) {
-
-  if (scanLocked) {
-    return;
-  }
-
-
-  const qr =
-    String(
-      decodedText || ''
-    )
-      .trim()
-      .toUpperCase();
-
-
-  if (!qr) {
-    return;
-  }
-
-
-  scanLocked =
-    true;
-
-
-  await stopScanner();
-
-
-  document.getElementById(
-    'result'
-  ).innerHTML =
-
-    '<div class="resultCard" ' +
-    'style="background:#eef3fd;">' +
-
-    '<strong>QR: ' +
-    escapeHtml(qr) +
-    '</strong><br><br>' +
-
-    'Checking Student...' +
-
-    '</div>';
-
-
-  postToBackend(
-    'scan',
-    {
-      token:
-        sessionToken,
-
-      qr:
-        qr
-    }
-  );
-}
-
-
-/* ==========================================
-   STOP CAMERA
-========================================== */
-
 async function stopScanner() {
 
   try {
@@ -1951,9 +1969,7 @@ async function stopScanner() {
     ) {
 
       await html5QrCode.stop();
-
     }
-
 
     if (html5QrCode) {
 
@@ -1961,11 +1977,9 @@ async function stopScanner() {
         html5QrCode.clear();
       }
       catch (e) {}
-
     }
 
   }
-
   catch (error) {
 
     console.log(
@@ -1976,27 +1990,358 @@ async function stopScanner() {
   }
 
 
-  html5QrCode =
-    null;
+  html5QrCode = null;
+  scannerRunning = false;
 
-  scannerRunning =
-    false;
+  const startButton =
+    document.getElementById(
+      'startButton'
+    );
+
+  if (startButton) {
+    startButton.disabled = false;
+  }
+
+  const placeholder =
+    document.getElementById(
+      'cameraPlaceholder'
+    );
+
+  if (placeholder) {
+    placeholder.style.display =
+      'block';
+  }
+}
+
+
+async function onQrDetected(
+  decodedText
+) {
+
+  if (scanLocked) {
+    return;
+  }
+
+  const qr =
+    String(
+      decodedText || ''
+    )
+      .trim()
+      .toUpperCase();
+
+  if (!qr) {
+    return;
+  }
+
+  scanLocked = true;
+
+  await stopScanner();
+
+
+  document.getElementById(
+    'scanResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:#eef4ff;">' +
+    '<strong>QR: ' +
+    escapeHtml(qr) +
+    '</strong><br><br>' +
+    'Checking Student...' +
+    '</div>';
+
+
+  postToBackend(
+    'scan',
+    {
+      token: sessionToken,
+      qr: qr
+    }
+  );
 }
 
 
 /* ==========================================
-   DISPLAY MEAL RESULT
+   MANUAL ENTRY
 ========================================== */
 
-function showMealResult(data) {
+function setManualSubmitting(
+  loading
+) {
+
+  const button =
+    document.getElementById(
+      'manualSubmitButton'
+    );
+
+  if (!button) {
+    return;
+  }
+
+  button.disabled =
+    loading === true;
+
+  button.textContent =
+    loading
+      ? 'Submitting...'
+      : 'Submit Manual Entry';
+}
+
+
+function submitManualEntry() {
+
+  if (!sessionToken) {
+
+    showLogin();
+    return;
+  }
+
+  if (!hasManualPermission()) {
+
+    showError(
+      'manualResult',
+      'Manual Entry permission not allowed.'
+    );
+
+    return;
+  }
+
+
+  const studentId =
+    document.getElementById(
+      'manualStudentId'
+    )
+      .value
+      .trim()
+      .toUpperCase();
+
+  const manualReason =
+    document.getElementById(
+      'manualReason'
+    )
+      .value
+      .trim();
+
+
+  document.getElementById(
+    'manualStudentId'
+  ).value =
+    studentId;
+
+
+  if (!studentId) {
+
+    showError(
+      'manualResult',
+      'Please enter Student ID.'
+    );
+
+    return;
+  }
+
+
+  if (!manualReason) {
+
+    showError(
+      'manualResult',
+      'Please select Manual Entry reason.'
+    );
+
+    return;
+  }
+
+
+  setManualSubmitting(true);
+
+
+  document.getElementById(
+    'manualResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:#eef4ff;">' +
+    '<strong>Student ID: ' +
+    escapeHtml(studentId) +
+    '</strong><br><br>' +
+    'Checking Manual Entry...' +
+    '</div>';
+
+
+  postToBackend(
+    'manual',
+    {
+      token: sessionToken,
+      studentId: studentId,
+      manualReason: manualReason
+    }
+  );
+}
+
+
+/* ==========================================
+   DASHBOARD
+========================================== */
+
+function refreshDashboard() {
+
+  if (!sessionToken) {
+
+    showLogin();
+    return;
+  }
+
+  document.getElementById(
+    'dashboardUpdated'
+  ).textContent =
+    'Loading dashboard...';
+
+  postToBackend(
+    'dashboard',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function renderDashboard(
+  data
+) {
+
+  document.getElementById(
+    'dashTotal'
+  ).textContent =
+    data.totalMeals || 0;
+
+  document.getElementById(
+    'dashAllowed'
+  ).textContent =
+    data.allowed || 0;
+
+  document.getElementById(
+    'dashDuplicates'
+  ).textContent =
+    data.duplicates || 0;
+
+  document.getElementById(
+    'dashManual'
+  ).textContent =
+    data.manualEntries || 0;
+
+  document.getElementById(
+    'dashRejected'
+  ).textContent =
+    data.rejected || 0;
+
+
+  document.getElementById(
+    'dashboardUpdated'
+  ).textContent =
+    data.generatedAt
+      ? 'Updated: ' + data.generatedAt
+      : 'Updated';
+
+
+  const container =
+    document.getElementById(
+      'dashboardClasses'
+    );
+
+  container.innerHTML = '';
+
+
+  const classWise =
+    data.classWise || {};
+
+  const classNames =
+    Object.keys(classWise);
+
+
+  if (classNames.length === 0) {
+
+    container.textContent =
+      'No meals recorded today.';
+
+    return;
+  }
+
+
+  classNames
+    .sort(
+      function(a, b) {
+
+        return String(a)
+          .localeCompare(
+            String(b),
+            undefined,
+            {
+              numeric: true,
+              sensitivity: 'base'
+            }
+          );
+      }
+    )
+    .forEach(
+      function(className) {
+
+        const row =
+          document.createElement(
+            'div'
+          );
+
+        row.className =
+          'classRow';
+
+
+        const name =
+          document.createElement(
+            'div'
+          );
+
+        name.className =
+          'className';
+
+        name.textContent =
+          className;
+
+
+        const count =
+          document.createElement(
+            'div'
+          );
+
+        count.className =
+          'classCount';
+
+        count.textContent =
+          classWise[className];
+
+
+        row.appendChild(name);
+        row.appendChild(count);
+
+        container.appendChild(row);
+      }
+    );
+}
+
+
+/* ==========================================
+   RESULT CARD
+========================================== */
+
+function showMealResult(
+  data,
+  targetId,
+  autoNext
+) {
 
   if (!data) {
 
     showError(
+      targetId,
       'No response received.'
     );
 
-    scheduleNextScan();
+    if (autoNext) {
+      scheduleNextScan();
+    }
 
     return;
   }
@@ -2011,45 +2356,38 @@ function showMealResult(data) {
       .trim()
       .toUpperCase();
 
-
   const student =
     data.student || {};
 
 
   let background =
-    '#e6f4ea';
+    'var(--success-bg)';
 
   let textColor =
-    '#137333';
+    'var(--success)';
 
   let icon =
     '🟢';
 
   let title =
-    status ||
-    'ALLOWED';
+    status || 'ALLOWED';
 
 
-  if (
-    status === 'ALLOWED'
-  ) {
+  if (status === 'ALLOWED') {
 
     title =
       'MEAL ALLOWED';
 
   }
-
-
   else if (
-    status ===
-    'ALREADY TAKEN'
+    status === 'ALREADY TAKEN'
   ) {
 
     background =
-      '#fff4e5';
+      'var(--warning-bg)';
 
     textColor =
-      '#b06000';
+      'var(--warning)';
 
     icon =
       '🟠';
@@ -2058,18 +2396,15 @@ function showMealResult(data) {
       'ALREADY TAKEN';
 
   }
-
-
   else if (
-    status ===
-    'MESS NOT ACTIVE'
+    status === 'MESS NOT ACTIVE'
   ) {
 
     background =
-      '#fdecea';
+      'var(--danger-bg)';
 
     textColor =
-      '#b3261e';
+      'var(--danger)';
 
     icon =
       '🔴';
@@ -2078,18 +2413,15 @@ function showMealResult(data) {
       'MESS NOT ACTIVE';
 
   }
-
-
   else if (
-    status ===
-    'MESS STOPPED'
+    status === 'MESS STOPPED'
   ) {
 
     background =
-      '#fdecea';
+      'var(--danger-bg)';
 
     textColor =
-      '#b3261e';
+      'var(--danger)';
 
     icon =
       '🔴';
@@ -2098,19 +2430,16 @@ function showMealResult(data) {
       'MESS STOPPED';
 
   }
-
-
   else if (
     status === 'NOT STARTED' ||
-    status ===
-    'MESS NOT STARTED'
+    status === 'MESS NOT STARTED'
   ) {
 
     background =
-      '#fdecea';
+      'var(--danger-bg)';
 
     textColor =
-      '#b3261e';
+      'var(--danger)';
 
     icon =
       '🔴';
@@ -2119,19 +2448,16 @@ function showMealResult(data) {
       'MESS NOT STARTED';
 
   }
-
-
   else if (
     status === 'UNKNOWN QR' ||
-    status ===
-    'STUDENT NOT FOUND'
+    status === 'STUDENT NOT FOUND'
   ) {
 
     background =
-      '#fdecea';
+      'var(--danger-bg)';
 
     textColor =
-      '#b3261e';
+      'var(--danger)';
 
     icon =
       '🔴';
@@ -2140,17 +2466,15 @@ function showMealResult(data) {
       'STUDENT NOT FOUND';
 
   }
-
-
   else if (
     status === 'ERROR'
   ) {
 
     background =
-      '#fdecea';
+      'var(--danger-bg)';
 
     textColor =
-      '#b3261e';
+      'var(--danger)';
 
     icon =
       '🔴';
@@ -2173,33 +2497,23 @@ function showMealResult(data) {
   ) {
 
     photoHtml =
-
-      '<img ' +
-      'class="studentPhoto" ' +
+      '<img class="studentPhoto" ' +
       'src="' +
       student.photoUrl +
-      '" ' +
-      'alt="Student Photo">';
+      '" alt="Student Photo">';
 
   }
-
   else {
 
     photoHtml =
-
-      '<div class="placeholder">' +
-      '👤' +
-      '</div>';
-
+      '<div class="placeholder">👤</div>';
   }
 
 
   document.getElementById(
-    'result'
+    targetId
   ).innerHTML =
-
-    '<div class="resultCard" ' +
-    'style="background:' +
+    '<div class="resultCard" style="background:' +
     background +
     ';">' +
 
@@ -2211,7 +2525,7 @@ function showMealResult(data) {
     ) +
     '</div>' +
 
-    '<div>' +
+    '<div class="studentMeta">' +
     'Student ID: <strong>' +
     escapeHtml(
       student.id || ''
@@ -2219,7 +2533,7 @@ function showMealResult(data) {
     '</strong>' +
     '</div>' +
 
-    '<div style="margin-top:5px;">' +
+    '<div class="studentMeta">' +
     'Class: <strong>' +
     escapeHtml(
       student.className || ''
@@ -2231,51 +2545,90 @@ function showMealResult(data) {
     icon +
     '</div>' +
 
-    '<div class="statusText" ' +
-    'style="color:' +
+    '<div class="statusText" style="color:' +
     textColor +
     ';">' +
-
     escapeHtml(title) +
-
     '</div>' +
 
     '</div>';
 
 
-  scheduleNextScan();
+  if (autoNext) {
+    scheduleNextScan();
+  }
 }
 
-
-/* ==========================================
-   NEXT STUDENT
-========================================== */
 
 function scheduleNextScan() {
 
   setTimeout(
     function() {
 
-      scanLocked =
-        false;
-
-
-      document.getElementById(
-        'result'
-      ).innerHTML = '';
-
+      scanLocked = false;
 
       if (
+        activeScreen === 'scan' &&
         sessionToken &&
         !scannerRunning
       ) {
 
         startScanner();
-
       }
 
     },
     3000
+  );
+}
+
+
+/* ==========================================
+   LOGOUT / SESSION
+========================================== */
+
+async function logoutStaff() {
+
+  await stopScanner();
+
+  if (!sessionToken) {
+
+    clearSession();
+    showLogin();
+    return;
+  }
+
+  postToBackend(
+    'logout',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function clearSession() {
+
+  sessionToken = '';
+  currentStaff = null;
+  activeScreen = 'scan';
+
+  sessionStorage.removeItem(
+    'NSIS_MESS_TOKEN'
+  );
+
+  sessionStorage.removeItem(
+    'NSIS_MESS_STAFF'
+  );
+}
+
+
+function handleExpiredSession() {
+
+  clearSession();
+  showLogin();
+
+  showLoginError(
+    'Session expired. Please login again.'
   );
 }
 
@@ -2291,23 +2644,28 @@ function showLoginError(
   document.getElementById(
     'loginMessage'
   ).innerHTML =
-
-    '<div class="error">' +
+    '<div class="errorBox">' +
     escapeHtml(message) +
     '</div>';
 }
 
 
 function showError(
+  targetId,
   message
 ) {
 
-  document.getElementById(
-    'result'
-  ).innerHTML =
+  const target =
+    document.getElementById(
+      targetId
+    );
 
-    '<div class="error">' +
-    '🔴 ' +
+  if (!target) {
+    return;
+  }
+
+  target.innerHTML =
+    '<div class="errorBox">🔴 ' +
     escapeHtml(message) +
     '</div>';
 }
@@ -2323,30 +2681,11 @@ function escapeHtml(
 
   return String(value)
 
-    .replaceAll(
-      '&',
-      '&amp;'
-    )
-
-    .replaceAll(
-      '<',
-      '&lt;'
-    )
-
-    .replaceAll(
-      '>',
-      '&gt;'
-    )
-
-    .replaceAll(
-      '"',
-      '&quot;'
-    )
-
-    .replaceAll(
-      "'",
-      '&#039;'
-    );
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
 </script>
