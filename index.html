@@ -625,6 +625,210 @@
       }
     }
 
+    .adminApprovalPanel {
+      margin-top: 20px;
+    }
+
+    .adminApprovalCard {
+      padding: 18px;
+    }
+
+    .adminApprovalTop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .adminApprovalTitle {
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .pendingBadge {
+      min-width: 34px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .adminRequestCard {
+      margin-top: 12px;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #fff;
+    }
+
+    .adminRequestHead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .adminRequestName {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .adminRequestId {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      word-break: break-word;
+    }
+
+    .statusBadge {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 900;
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .statusBadge.correction {
+      background: var(--info-bg);
+      color: var(--primary-dark);
+    }
+
+    .requestDetails {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .requestDetail {
+      padding: 9px 10px;
+      border-radius: 10px;
+      background: #f7f9fc;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .requestDetail strong {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .2px;
+    }
+
+    .adminRemarksInput {
+      width: 100%;
+      min-height: 84px;
+      margin-top: 12px;
+      padding: 11px 12px;
+      resize: vertical;
+      border: 1px solid #cfd6df;
+      border-radius: 12px;
+      outline: none;
+      font: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .adminRemarksInput:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(11,87,208,.10);
+    }
+
+    .reviewButtons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .reviewBtn {
+      min-height: 44px;
+      padding: 8px 6px;
+      border-radius: 11px;
+      border: 0;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .reviewBtn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .reviewApprove {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid #cde8d5;
+    }
+
+    .reviewCorrection {
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      border: 1px solid #d8e4ff;
+    }
+
+    .reviewReject {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #f1cbc7;
+    }
+
+    .emptyRequests {
+      margin-top: 12px;
+      padding: 22px 14px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 14px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .approvedQrBox {
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px solid #cde8d5;
+      border-radius: 15px;
+      background: #fff;
+      text-align: center;
+    }
+
+    #approvedStudentQr {
+      width: 220px;
+      min-height: 210px;
+      max-width: 100%;
+      margin: 12px auto;
+      display: grid;
+      place-items: center;
+      background: #fff;
+    }
+
+    #approvedStudentQr img,
+    #approvedStudentQr canvas {
+      max-width: 100%;
+      height: auto !important;
+    }
+
+    @media (max-width: 430px) {
+      .requestDetails {
+        grid-template-columns: 1fr;
+      }
+
+      .reviewButtons {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .qrCard {
       padding: 18px;
     }
@@ -944,7 +1148,7 @@
     <!-- NEW STUDENT REQUEST SCREEN -->
     <section id="screenStudent" class="screen">
 
-      <div class="sectionTitle">New Student</div>
+      <div class="sectionTitle">Student Management</div>
 
       <div class="card studentRequestCard">
 
@@ -1069,10 +1273,48 @@
         </button>
 
         <div class="roleNote">
-          Available only to ADMIN and MESS_MANAGER. Duplicate Admission No. requests are blocked by the backend.
+          ADMIN and MESS_MANAGER can submit new students. ADMIN also gets the approval panel below.
         </div>
 
         <div id="studentRequestResult" class="resultArea"></div>
+
+      </div>
+
+      <div
+        id="adminApprovalPanel"
+        class="adminApprovalPanel"
+        style="display:none;"
+      >
+
+        <div class="card adminApprovalCard">
+
+          <div class="adminApprovalTop">
+            <div>
+              <div class="adminApprovalTitle">Admin Approvals</div>
+              <div class="helperText" style="margin-top:3px;">
+                Review pending new-student requests before creating Student ID and first QR.
+              </div>
+            </div>
+
+            <div id="adminPendingCount" class="pendingBadge">0</div>
+          </div>
+
+          <button
+            id="adminRefreshButton"
+            class="btn btnSoft"
+            onclick="refreshStudentRequests()"
+            style="margin-top:4px;"
+          >
+            🔄 Refresh Pending Requests
+          </button>
+
+          <div id="adminApprovalResult" class="resultArea"></div>
+
+          <div id="adminRequestsList">
+            <div class="emptyRequests">Open Student tab to load pending requests.</div>
+          </div>
+
+        </div>
 
       </div>
 
@@ -1238,6 +1480,11 @@
         </div>
 
         <div class="profileRow">
+          <div class="profileLabel">Admin Approval Access</div>
+          <div id="profileApprovalAccess" class="profileValue">-</div>
+        </div>
+
+        <div class="profileRow">
           <div class="profileLabel">QR Management Access</div>
           <div id="profileQrAccess" class="profileValue">-</div>
         </div>
@@ -1365,6 +1612,7 @@ let responseTimer = null;
 
 let activeScreen = 'scan';
 let lastQrResult = null;
+let lastApprovedStudent = null;
 
 
 /* ==========================================
@@ -1424,6 +1672,20 @@ function hasStudentRequestPermission() {
   return (
     role === 'ADMIN' ||
     role === 'MESS_MANAGER'
+  );
+}
+
+
+function hasAdminApprovalPermission() {
+
+  if (!currentStaff) {
+    return false;
+  }
+
+  return (
+    String(currentStaff.role || '')
+      .trim()
+      .toUpperCase() === 'ADMIN'
   );
 }
 
@@ -1663,6 +1925,92 @@ window.addEventListener(
 
       renderStudentRequestResult(result);
       resetStudentRequestForm();
+
+      if (hasAdminApprovalPermission()) {
+        setTimeout(refreshStudentRequests, 250);
+      }
+
+      return;
+    }
+
+
+    /* ADMIN STUDENT REQUEST LIST */
+
+    if (
+      message.type === 'STUDENT_REQUESTS_LIST_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setAdminRequestsLoading(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'adminApprovalResult',
+          result.message ||
+          'Unable to load student requests.'
+        );
+
+        return;
+      }
+
+      document.getElementById(
+        'adminApprovalResult'
+      ).innerHTML = '';
+
+      renderAdminRequests(
+        result.requests || []
+      );
+
+      return;
+    }
+
+
+    /* ADMIN STUDENT REQUEST REVIEW */
+
+    if (
+      message.type === 'STUDENT_REQUEST_REVIEW_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+      setAdminReviewButtonsDisabled(false);
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+
+        showError(
+          'adminApprovalResult',
+          result.message ||
+          'Unable to review student request.'
+        );
+
+        return;
+      }
+
+      renderStudentReviewResult(result);
+
+      setTimeout(
+        refreshStudentRequests,
+        300
+      );
+
       return;
     }
 
@@ -1804,6 +2152,28 @@ window.addEventListener(
         );
 
       }
+      else if (failedAction === 'student_requests_list') {
+
+        setAdminRequestsLoading(false);
+
+        showError(
+          'adminApprovalResult',
+          message.message ||
+          'Backend error.'
+        );
+
+      }
+      else if (failedAction === 'student_request_review') {
+
+        setAdminReviewButtonsDisabled(false);
+
+        showError(
+          'adminApprovalResult',
+          message.message ||
+          'Backend error.'
+        );
+
+      }
       else if (failedAction === 'qr_reissue') {
 
         setQrProcessing(false);
@@ -1903,6 +2273,17 @@ function postToBackend(
 
       showError(
         'studentRequestResult',
+        'Mess System is still connecting.'
+      );
+
+    }
+    else if (
+      action === 'student_requests_list' ||
+      action === 'student_request_review'
+    ) {
+
+      showError(
+        'adminApprovalResult',
         'Mess System is still connecting.'
       );
 
@@ -2014,6 +2395,26 @@ function postToBackend(
 
           showError(
             'studentRequestResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'student_requests_list') {
+
+          setAdminRequestsLoading(false);
+
+          showError(
+            'adminApprovalResult',
+            'Server response timeout.'
+          );
+
+        }
+        else if (actionCopy === 'student_request_review') {
+
+          setAdminReviewButtonsDisabled(false);
+
+          showError(
+            'adminApprovalResult',
             'Server response timeout.'
           );
 
@@ -2242,6 +2643,19 @@ async function showLogin() {
   ).innerHTML = '';
 
   document.getElementById(
+    'adminApprovalResult'
+  ).innerHTML = '';
+
+  document.getElementById(
+    'adminRequestsList'
+  ).innerHTML =
+    '<div class="emptyRequests">Login as ADMIN to review requests.</div>';
+
+  document.getElementById(
+    'adminPendingCount'
+  ).textContent = '0';
+
+  document.getElementById(
     'qrResult'
   ).innerHTML = '';
 
@@ -2301,11 +2715,25 @@ function updateStaffUI() {
       : 'Not Allowed';
 
   document.getElementById(
+    'profileApprovalAccess'
+  ).textContent =
+    hasAdminApprovalPermission()
+      ? 'Allowed'
+      : 'Not Allowed';
+
+  document.getElementById(
     'profileQrAccess'
   ).textContent =
     hasQrPermission()
       ? 'Allowed'
       : 'Not Allowed';
+
+  document.getElementById(
+    'adminApprovalPanel'
+  ).style.display =
+    hasAdminApprovalPermission()
+      ? 'block'
+      : 'none';
 
   document.getElementById(
     'navManual'
@@ -2459,6 +2887,13 @@ async function openScreen(
 
   if (name === 'dashboard') {
     refreshDashboard();
+  }
+
+  if (
+    name === 'student' &&
+    hasAdminApprovalPermission()
+  ) {
+    refreshStudentRequests();
   }
 
   if (name === 'profile') {
@@ -3058,6 +3493,630 @@ function resetStudentRequestForm() {
       }
     }
   );
+}
+
+
+/* ==========================================
+   ADMIN STUDENT APPROVAL
+========================================== */
+
+function setAdminRequestsLoading(
+  loading
+) {
+
+  const button =
+    document.getElementById(
+      'adminRefreshButton'
+    );
+
+  if (!button) {
+    return;
+  }
+
+  button.disabled =
+    loading === true;
+
+  button.textContent =
+    loading
+      ? 'Loading Requests...'
+      : '🔄 Refresh Pending Requests';
+}
+
+
+function setAdminReviewButtonsDisabled(
+  disabled
+) {
+
+  document.querySelectorAll(
+    '.reviewBtn'
+  ).forEach(
+    function(button) {
+      button.disabled =
+        disabled === true;
+    }
+  );
+}
+
+
+function refreshStudentRequests() {
+
+  if (!sessionToken) {
+    showLogin();
+    return;
+  }
+
+  if (!hasAdminApprovalPermission()) {
+    return;
+  }
+
+  setAdminRequestsLoading(true);
+
+  document.getElementById(
+    'adminRequestsList'
+  ).innerHTML =
+    '<div class="emptyRequests">Loading pending requests...</div>';
+
+  postToBackend(
+    'student_requests_list',
+    {
+      token: sessionToken
+    }
+  );
+}
+
+
+function renderAdminRequests(
+  requests
+) {
+
+  const list =
+    document.getElementById(
+      'adminRequestsList'
+    );
+
+  const count =
+    Array.isArray(requests)
+      ? requests.length
+      : 0;
+
+  document.getElementById(
+    'adminPendingCount'
+  ).textContent =
+    String(count);
+
+  list.innerHTML = '';
+
+  if (!count) {
+
+    list.innerHTML =
+      '<div class="emptyRequests">✅ No pending student requests.</div>';
+
+    return;
+  }
+
+  requests.forEach(
+    function(request) {
+
+      const card =
+        document.createElement('div');
+
+      card.className =
+        'adminRequestCard';
+
+      const head =
+        document.createElement('div');
+
+      head.className =
+        'adminRequestHead';
+
+      const titleWrap =
+        document.createElement('div');
+
+      const name =
+        document.createElement('div');
+
+      name.className =
+        'adminRequestName';
+
+      name.textContent =
+        request.studentName ||
+        'Unnamed Student';
+
+      const requestId =
+        document.createElement('div');
+
+      requestId.className =
+        'adminRequestId';
+
+      requestId.textContent =
+        'Request: ' +
+        (request.requestId || '-');
+
+      titleWrap.appendChild(name);
+      titleWrap.appendChild(requestId);
+
+      const badge =
+        document.createElement('div');
+
+      badge.className =
+        'statusBadge' +
+        (
+          String(request.approvalStatus || '')
+            .toUpperCase() === 'CORRECTION_REQUIRED'
+            ? ' correction'
+            : ''
+        );
+
+      badge.textContent =
+        request.approvalStatus ||
+        'PENDING';
+
+      head.appendChild(titleWrap);
+      head.appendChild(badge);
+      card.appendChild(head);
+
+      const details =
+        document.createElement('div');
+
+      details.className =
+        'requestDetails';
+
+      const fields = [
+        ['Admission No.', request.admissionNo || '-'],
+        ['Class', (request.className || '-') + (request.division ? ' / ' + request.division : '')],
+        ['Roll No.', request.rollNo || '-'],
+        ['Parent', request.parentName || '-'],
+        ['Contact', request.contactNo || '-'],
+        ['Mess Start', request.messStartDate || '-'],
+        ['Requested By', request.requestedBy || '-'],
+        ['Request Date', request.requestDateTime || '-']
+      ];
+
+      fields.forEach(
+        function(item) {
+
+          const box =
+            document.createElement('div');
+
+          box.className =
+            'requestDetail';
+
+          const label =
+            document.createElement('strong');
+
+          label.textContent =
+            item[0];
+
+          const value =
+            document.createElement('span');
+
+          value.textContent =
+            item[1];
+
+          box.appendChild(label);
+          box.appendChild(value);
+          details.appendChild(box);
+        }
+      );
+
+      card.appendChild(details);
+
+      if (request.notes) {
+
+        const notes =
+          document.createElement('div');
+
+        notes.className =
+          'requestDetail';
+
+        notes.style.marginTop =
+          '8px';
+
+        const label =
+          document.createElement('strong');
+
+        label.textContent =
+          'Notes';
+
+        const value =
+          document.createElement('span');
+
+        value.textContent =
+          request.notes;
+
+        notes.appendChild(label);
+        notes.appendChild(value);
+        card.appendChild(notes);
+      }
+
+      if (request.adminRemarks) {
+
+        const previous =
+          document.createElement('div');
+
+        previous.className =
+          'requestInfo';
+
+        previous.textContent =
+          'Previous Admin Remark: ' +
+          request.adminRemarks;
+
+        card.appendChild(previous);
+      }
+
+      const remarks =
+        document.createElement('textarea');
+
+      remarks.className =
+        'adminRemarksInput';
+
+      remarks.placeholder =
+        'Admin remarks (required for Reject / Correction Required)';
+
+      card.appendChild(remarks);
+
+      const buttons =
+        document.createElement('div');
+
+      buttons.className =
+        'reviewButtons';
+
+      const approve =
+        document.createElement('button');
+
+      approve.type = 'button';
+      approve.className =
+        'reviewBtn reviewApprove';
+      approve.textContent =
+        '✅ Approve';
+
+      approve.addEventListener(
+        'click',
+        function() {
+          reviewStudentRequest(
+            request.requestId,
+            'APPROVED',
+            remarks.value
+          );
+        }
+      );
+
+      const correction =
+        document.createElement('button');
+
+      correction.type = 'button';
+      correction.className =
+        'reviewBtn reviewCorrection';
+      correction.textContent =
+        '✏️ Correction';
+
+      correction.addEventListener(
+        'click',
+        function() {
+          reviewStudentRequest(
+            request.requestId,
+            'CORRECTION_REQUIRED',
+            remarks.value
+          );
+        }
+      );
+
+      const reject =
+        document.createElement('button');
+
+      reject.type = 'button';
+      reject.className =
+        'reviewBtn reviewReject';
+      reject.textContent =
+        '❌ Reject';
+
+      reject.addEventListener(
+        'click',
+        function() {
+          reviewStudentRequest(
+            request.requestId,
+            'REJECTED',
+            remarks.value
+          );
+        }
+      );
+
+      buttons.appendChild(approve);
+      buttons.appendChild(correction);
+      buttons.appendChild(reject);
+      card.appendChild(buttons);
+      list.appendChild(card);
+    }
+  );
+}
+
+
+function reviewStudentRequest(
+  requestId,
+  decision,
+  adminRemarks
+) {
+
+  if (!hasAdminApprovalPermission()) {
+
+    showError(
+      'adminApprovalResult',
+      'Admin permission required.'
+    );
+
+    return;
+  }
+
+  requestId =
+    String(requestId || '').trim();
+
+  decision =
+    String(decision || '')
+      .trim()
+      .toUpperCase();
+
+  adminRemarks =
+    String(adminRemarks || '').trim();
+
+  if (!requestId) {
+    return;
+  }
+
+  if (
+    (
+      decision === 'REJECTED' ||
+      decision === 'CORRECTION_REQUIRED'
+    ) &&
+    !adminRemarks
+  ) {
+
+    showError(
+      'adminApprovalResult',
+      'Admin Remarks are required for Reject / Correction Required.'
+    );
+
+    return;
+  }
+
+  let confirmMessage = '';
+
+  if (decision === 'APPROVED') {
+    confirmMessage =
+      'Approve this student? Student ID and first QR will be generated and Mess will be activated.';
+  }
+  else if (decision === 'REJECTED') {
+    confirmMessage =
+      'Reject this student request?';
+  }
+  else {
+    confirmMessage =
+      'Mark this request as Correction Required?';
+  }
+
+  if (!window.confirm(confirmMessage)) {
+    return;
+  }
+
+  setAdminReviewButtonsDisabled(true);
+
+  document.getElementById(
+    'adminApprovalResult'
+  ).innerHTML =
+    '<div class="resultCard" style="background:#eef4ff;">Processing request...</div>';
+
+  postToBackend(
+    'student_request_review',
+    {
+      token: sessionToken,
+      studentRequestId: requestId,
+      decision: decision,
+      adminRemarks: adminRemarks
+    }
+  );
+}
+
+
+function renderStudentReviewResult(
+  result
+) {
+
+  const decision =
+    String(result.decision || '')
+      .trim()
+      .toUpperCase();
+
+  const container =
+    document.getElementById(
+      'adminApprovalResult'
+    );
+
+  lastApprovedStudent = null;
+
+  if (
+    decision === 'APPROVED' &&
+    result.student
+  ) {
+
+    const student =
+      result.student || {};
+
+    lastApprovedStudent =
+      student;
+
+    container.innerHTML =
+      '<div class="resultCard" style="background:var(--success-bg);color:var(--success);">' +
+      '<div style="font-size:30px;">✅</div>' +
+      '<div style="font-size:18px;font-weight:900;margin-top:5px;">Student Approved</div>' +
+      '<div style="margin-top:7px;font-size:13px;color:var(--text);">' +
+      escapeHtml(student.name || '') +
+      '</div>' +
+      '<div style="margin-top:5px;font-size:13px;color:var(--text);">Student ID: <strong>' +
+      escapeHtml(student.id || '') +
+      '</strong></div>' +
+      '<div style="margin-top:5px;font-size:13px;color:var(--text);">First QR generated free of reissue charge.</div>' +
+      '</div>' +
+      '<div class="approvedQrBox">' +
+      '<div style="font-size:16px;font-weight:900;">Initial Student QR</div>' +
+      '<div id="approvedStudentQr"></div>' +
+      '<div class="qrCodeText">' +
+      escapeHtml(student.qrCode || '') +
+      '</div>' +
+      '<button class="btn btnSoft" onclick="printApprovedStudentQr()">🖨️ Print First QR Card</button>' +
+      '</div>';
+
+    const qrContainer =
+      document.getElementById(
+        'approvedStudentQr'
+      );
+
+    if (
+      qrContainer &&
+      typeof QRCode !== 'undefined' &&
+      student.qrCode
+    ) {
+
+      new QRCode(
+        qrContainer,
+        {
+          text: student.qrCode,
+          width: 210,
+          height: 210,
+          correctLevel:
+            QRCode.CorrectLevel.H
+        }
+      );
+    }
+
+    return;
+  }
+
+  const label =
+    decision === 'REJECTED'
+      ? 'Request Rejected'
+      : 'Correction Required';
+
+  const icon =
+    decision === 'REJECTED'
+      ? '❌'
+      : '✏️';
+
+  container.innerHTML =
+    '<div class="resultCard" style="background:' +
+    (decision === 'REJECTED' ? 'var(--danger-bg)' : 'var(--info-bg)') +
+    ';color:' +
+    (decision === 'REJECTED' ? 'var(--danger)' : 'var(--primary-dark)') +
+    ';">' +
+    '<div style="font-size:30px;">' + icon + '</div>' +
+    '<div style="font-size:18px;font-weight:900;margin-top:5px;">' +
+    escapeHtml(label) +
+    '</div>' +
+    '<div style="margin-top:6px;font-size:12px;">' +
+    escapeHtml(result.requestId || '') +
+    '</div>' +
+    '</div>';
+}
+
+
+function printApprovedStudentQr() {
+
+  if (
+    !lastApprovedStudent ||
+    !lastApprovedStudent.qrCode
+  ) {
+
+    showError(
+      'adminApprovalResult',
+      'Approved QR is not available.'
+    );
+
+    return;
+  }
+
+  const qrContainer =
+    document.getElementById(
+      'approvedStudentQr'
+    );
+
+  if (!qrContainer) {
+    return;
+  }
+
+  const canvas =
+    qrContainer.querySelector('canvas');
+
+  const image =
+    qrContainer.querySelector('img');
+
+  let imageSource = '';
+
+  if (canvas) {
+    imageSource =
+      canvas.toDataURL('image/png');
+  }
+  else if (image) {
+    imageSource =
+      image.src || '';
+  }
+
+  if (!imageSource) {
+
+    showError(
+      'adminApprovalResult',
+      'QR image is not ready yet.'
+    );
+
+    return;
+  }
+
+  const printWindow =
+    window.open(
+      '',
+      '_blank',
+      'width=480,height=650'
+    );
+
+  if (!printWindow) {
+
+    showError(
+      'adminApprovalResult',
+      'Allow pop-ups to print QR.'
+    );
+
+    return;
+  }
+
+  const student =
+    lastApprovedStudent;
+
+  printWindow.document.write(
+    '<!DOCTYPE html>' +
+    '<html><head><meta charset="UTF-8">' +
+    '<title>NSIS Student QR</title>' +
+    '<style>' +
+    'body{font-family:Arial;text-align:center;padding:28px;color:#172033;}' +
+    '.card{width:320px;margin:auto;border:2px solid #172033;border-radius:18px;padding:20px;}' +
+    'h2{margin:0 0 5px;font-size:19px;}' +
+    '.school{font-size:12px;margin-bottom:15px;}' +
+    '.name{font-size:20px;font-weight:700;margin-top:12px;}' +
+    '.meta{font-size:13px;margin-top:5px;}' +
+    '.qrtext{font-size:10px;margin-top:9px;word-break:break-all;}' +
+    'img{width:210px;height:210px;}' +
+    '@media print{button{display:none;}}' +
+    '</style></head><body>' +
+    '<div class="card">' +
+    '<h2>NSIS Mess Management</h2>' +
+    '<div class="school">Nyati Samata International School</div>' +
+    '<img src="' + imageSource + '">' +
+    '<div class="name">' + escapeHtml(student.name || '') + '</div>' +
+    '<div class="meta">Student ID: ' + escapeHtml(student.id || '') + '</div>' +
+    '<div class="meta">Class: ' + escapeHtml(student.className || '') + '</div>' +
+    '<div class="qrtext">' + escapeHtml(student.qrCode || '') + '</div>' +
+    '</div>' +
+    '<button onclick="window.print()" style="margin-top:18px;padding:12px 22px;font-size:16px;">Print</button>' +
+    '</body></html>'
+  );
+
+  printWindow.document.close();
 }
 
 
