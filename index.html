@@ -1778,6 +1778,146 @@
     }
 
 
+
+    /* ==========================================
+       MESS FEE ACCOUNT — SCAN VIEW
+    ========================================== */
+
+    .scanFeeAccount {
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 15px;
+      background: rgba(255,255,255,.82);
+      border: 1px solid rgba(23,32,51,.10);
+      text-align: left;
+    }
+
+    .scanFeeLoading {
+      padding: 11px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.72);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .feeAccountHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .feeAccountTitle {
+      font-size: 13px;
+      font-weight: 950;
+      color: var(--text);
+    }
+
+    .feeStatusBadge {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 950;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+    }
+
+    .feeStatusBadge.paid {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .feeStatusBadge.partial {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .feeStatusBadge.unpaid,
+    .feeStatusBadge.advance {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .feeLedgerGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .feeLedgerItem {
+      padding: 9px 10px;
+      border-radius: 11px;
+      background: #f8fafc;
+      border: 1px solid rgba(23,32,51,.06);
+    }
+
+    .feeLedgerItem.full {
+      grid-column: 1 / -1;
+    }
+
+    .feeLedgerLabel {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.25;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .35px;
+    }
+
+    .feeLedgerValue {
+      display: block;
+      margin-top: 4px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .feeLedgerItem.totalPayable {
+      background: var(--info-bg);
+      border-color: #d8e4ff;
+    }
+
+    .feeLedgerItem.totalReceived {
+      background: var(--success-bg);
+      border-color: #cde8d5;
+    }
+
+    .feeLedgerItem.outstanding {
+      background: var(--warning-bg);
+      border-color: #f5ddb9;
+    }
+
+    .feeLedgerItem.outstanding.zero {
+      background: var(--success-bg);
+      border-color: #cde8d5;
+    }
+
+    .feeLedgerItem.outstanding .feeLedgerValue {
+      font-size: 20px;
+    }
+
+    .feeAccountNote {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 9.5px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    @media (max-width: 390px) {
+      .feeLedgerGrid {
+        grid-template-columns: 1fr;
+      }
+      .feeLedgerItem.full {
+        grid-column: auto;
+      }
+    }
+
     /* ==========================================
        REPORTS & MIS
     ========================================== */
@@ -4020,6 +4160,58 @@ window.addEventListener(
         false
       );
 
+      const feeStudentId =
+        result.meal &&
+        result.meal.student
+          ? String(
+              result.meal.student.id || ''
+            ).trim().toUpperCase()
+          : '';
+
+      if (feeStudentId) {
+        loadScanFeeAccount(
+          feeStudentId
+        );
+      }
+      else {
+        setScanNextEnabled_(true);
+      }
+
+      return;
+    }
+
+
+    /* FEE ACCOUNT VIEW */
+
+    if (
+      message.type === 'FEE_ACCOUNT_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+      finishRequest();
+
+      const result =
+        message.result || {};
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+        renderScanFeeAccountError_(
+          result.message ||
+          'Fee account unavailable.'
+        );
+        setScanNextEnabled_(true);
+        return;
+      }
+
+      renderScanFeeAccount_(
+        result
+      );
+
+      setScanNextEnabled_(true);
       return;
     }
 
@@ -5029,6 +5221,16 @@ window.addEventListener(
         );
 
       }
+      else if (failedAction === 'fee_account') {
+
+        renderScanFeeAccountError_(
+          message.message ||
+          'Fee account backend error.'
+        );
+
+        setScanNextEnabled_(true);
+
+      }
       else if (failedAction === 'student_request') {
 
         setStudentSubmitting(false);
@@ -5245,6 +5447,15 @@ function postToBackend(
       );
 
     }
+    else if (action === 'fee_account') {
+
+      renderScanFeeAccountError_(
+        'Mess System is still connecting.'
+      );
+
+      setScanNextEnabled_(true);
+
+    }
     else if (
       action === 'student_manage_lookup' ||
       action === 'student_manage_update'
@@ -5446,6 +5657,15 @@ function postToBackend(
             'scanResult',
             'Server response timeout.'
           );
+
+        }
+        else if (actionCopy === 'fee_account') {
+
+          renderScanFeeAccountError_(
+            'Fee account response timeout.'
+          );
+
+          setScanNextEnabled_(true);
 
         }
         else if (actionCopy === 'student_manage_lookup') {
@@ -12150,7 +12370,10 @@ function showMealResult(
           detail('Scan Time', nowText) +
         '</div>' +
         '<div class="scanStatusPill" style="color:' + textColor + ';">' + icon + ' ' + escapeHtml(title) + '</div>' +
-        '<button class="scanNextButton" type="button" onclick="prepareNextScan()">📷 Scan Next Student</button>' +
+        '<div id="scanFeeAccount" class="scanFeeAccount">' +
+          '<div class="scanFeeLoading">Loading fee account...</div>' +
+        '</div>' +
+        '<button id="scanNextButton" class="scanNextButton" type="button" onclick="prepareNextScan()" disabled>📷 Scan Next Student</button>' +
       '</div>';
 
     return;
@@ -12170,6 +12393,240 @@ function showMealResult(
     '</div>';
 
   if (autoNext) scheduleNextScan();
+}
+
+
+
+function setScanNextEnabled_(
+  enabled
+) {
+
+  const button =
+    document.getElementById(
+      'scanNextButton'
+    );
+
+  if (button) {
+    button.disabled =
+      enabled !== true;
+  }
+}
+
+
+function loadScanFeeAccount(
+  studentId
+) {
+
+  const container =
+    document.getElementById(
+      'scanFeeAccount'
+    );
+
+  if (!container) {
+    setScanNextEnabled_(true);
+    return;
+  }
+
+  studentId =
+    String(studentId || '')
+      .trim()
+      .toUpperCase();
+
+  if (!studentId) {
+    renderScanFeeAccountError_(
+      'Student ID not available.'
+    );
+    setScanNextEnabled_(true);
+    return;
+  }
+
+  container.innerHTML =
+    '<div class="scanFeeLoading">Loading fee account...</div>';
+
+  postToBackend(
+    'fee_account',
+    {
+      token: sessionToken,
+      studentId: studentId
+    }
+  );
+}
+
+
+function formatFeeMoney_(
+  value
+) {
+
+  const number =
+    Number(value || 0);
+
+  if (!isFinite(number)) {
+    return '₹0';
+  }
+
+  return (
+    '₹' +
+    number.toLocaleString(
+      'en-IN',
+      {
+        minimumFractionDigits:
+          Number.isInteger(number)
+            ? 0
+            : 2,
+        maximumFractionDigits: 2
+      }
+    )
+  );
+}
+
+
+function renderScanFeeAccount_(
+  result
+) {
+
+  const container =
+    document.getElementById(
+      'scanFeeAccount'
+    );
+
+  if (!container) {
+    return;
+  }
+
+  const account =
+    result.account || {};
+
+  const status =
+    String(
+      account.paymentStatus ||
+      ''
+    )
+      .trim()
+      .toUpperCase();
+
+  let statusClass = '';
+
+  if (status === 'PAID') {
+    statusClass = ' paid';
+  }
+  else if (status === 'PARTIAL') {
+    statusClass = ' partial';
+  }
+  else if (status === 'UNPAID') {
+    statusClass = ' unpaid';
+  }
+  else if (status === 'ADVANCE') {
+    statusClass = ' advance';
+  }
+
+  const outstanding =
+    Number(
+      account.outstanding || 0
+    );
+
+  const outstandingClass =
+    outstanding <= 0
+      ? ' zero'
+      : '';
+
+  container.innerHTML =
+    '<div class="feeAccountHead">' +
+      '<div class="feeAccountTitle">💳 Mess Fee Account</div>' +
+      '<div class="feeStatusBadge' +
+        statusClass +
+        '">' +
+        escapeHtml(status || '-') +
+      '</div>' +
+    '</div>' +
+
+    '<div class="feeLedgerGrid">' +
+
+      '<div class="feeLedgerItem">' +
+        '<span class="feeLedgerLabel">Previous Opening Due</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.openingDue) +
+        '</span>' +
+      '</div>' +
+
+      '<div class="feeLedgerItem">' +
+        '<span class="feeLedgerLabel">2026-27 Mess Fee</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.currentYearFee) +
+        '</span>' +
+      '</div>' +
+
+      '<div class="feeLedgerItem">' +
+        '<span class="feeLedgerLabel">Other Debit</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.otherDebit) +
+        '</span>' +
+      '</div>' +
+
+      '<div class="feeLedgerItem totalPayable">' +
+        '<span class="feeLedgerLabel">Total Payable</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.totalPayable) +
+        '</span>' +
+      '</div>' +
+
+      '<div class="feeLedgerItem">' +
+        '<span class="feeLedgerLabel">Received up to 25-08-2026</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.broughtForwardReceived) +
+        '</span>' +
+      '</div>' +
+
+      '<div class="feeLedgerItem">' +
+        '<span class="feeLedgerLabel">New Receipts</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.newReceipts) +
+        '</span>' +
+      '</div>' +
+
+      '<div class="feeLedgerItem totalReceived full">' +
+        '<span class="feeLedgerLabel">Total Received</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.totalReceived) +
+        '</span>' +
+      '</div>' +
+
+      '<div class="feeLedgerItem outstanding full' +
+        outstandingClass +
+        '">' +
+        '<span class="feeLedgerLabel">Current Outstanding</span>' +
+        '<span class="feeLedgerValue">' +
+          formatFeeMoney_(account.outstanding) +
+        '</span>' +
+      '</div>' +
+
+    '</div>' +
+
+    '<div class="feeAccountNote">' +
+      'Opening Due and current-year fee are shown separately. New collections are calculated from Fee_Transactions.' +
+    '</div>';
+}
+
+
+function renderScanFeeAccountError_(
+  message
+) {
+
+  const container =
+    document.getElementById(
+      'scanFeeAccount'
+    );
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML =
+    '<div class="scanFeeLoading" style="background:var(--warning-bg);color:var(--warning);">' +
+      escapeHtml(
+        message ||
+        'Fee account unavailable.'
+      ) +
+    '</div>';
 }
 
 
