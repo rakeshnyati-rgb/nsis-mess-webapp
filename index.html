@@ -21582,6 +21582,202 @@ function feeLedgerFileName_() {
 }
 
 
+function feeLedgerBalanceText_(value) {
+  const balance = feeLedgerNumber_(value);
+  if (Math.abs(balance) < 0.005) return formatFeeMoney_(0);
+  return formatFeeMoney_(Math.abs(balance)) + (balance < 0 ? ' Cr' : ' Dr');
+}
+
+
+function feeLedgerSortValue_(value, fallbackIndex) {
+  const text = String(value || '').trim();
+  let match = text.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  let parsed = NaN;
+
+
+  if (match) {
+    parsed = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])).getTime();
+  }
+  else {
+    match = text.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);
+    if (match) {
+      parsed = new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1])).getTime();
+    }
+    else {
+      parsed = Date.parse(text);
+    }
+  }
+
+
+  return Number.isFinite(parsed)
+    ? parsed
+    : 9000000000000000 + Number(fallbackIndex || 0);
+}
+
+
+function buildFeeAccountingLedgerRows_() {
+  const account = feeModuleAccount || {};
+  const sourceTransactions = Array.isArray(feeLedgerTransactions)
+    ? feeLedgerTransactions.slice()
+    : [];
+  const rows = [];
+  let runningBalance = 0;
+  let totalDebit = 0;
+  let totalCredit = 0;
+
+
+  function addRow(date, particulars, voucherNo, debit, credit, extra, isReversed) {
+    debit = feeLedgerNumber_(debit);
+    credit = feeLedgerNumber_(credit);
+    runningBalance += debit - credit;
+    totalDebit += debit;
+    totalCredit += credit;
+    rows.push({
+      date: date || '-',
+      particulars: particulars || '-',
+      voucherNo: voucherNo || '-',
+      debit: debit,
+      credit: credit,
+      balance: runningBalance,
+      extra: extra || '',
+      reversed: isReversed === true
+    });
+  }
+
+
+  const openingDue = feeLedgerNumber_(account.openingDue);
+  const currentYearFee = feeLedgerNumber_(account.currentYearFee);
+  const otherDebit = feeLedgerNumber_(account.otherDebit);
+  const totalPayable = feeLedgerNumber_(account.totalPayable);
+  const broughtForwardReceived = feeLedgerNumber_(account.broughtForwardReceived);
+  const expectedNewReceipts = feeLedgerNumber_(account.newReceipts);
+
+
+  if (openingDue) {
+    addRow('Opening', 'Previous Opening Due', 'OPENING', openingDue, 0);
+  }
+  if (currentYearFee) {
+    addRow('2026-27', 'Current Year Mess Fee', 'FEE-2026-27', currentYearFee, 0);
+  }
+  if (otherDebit) {
+    addRow('Opening', 'Other Fee / Debit', 'OTHER-DEBIT', otherDebit, 0);
+  }
+
+
+  const payableDifference = totalPayable - (openingDue + currentYearFee + otherDebit);
+  if (Math.abs(payableDifference) >= 0.005) {
+    addRow(
+      'Opening',
+      'Fee Account Adjustment',
+      'ADJUSTMENT',
+      payableDifference > 0 ? payableDifference : 0,
+      payableDifference < 0 ? Math.abs(payableDifference) : 0
+    );
+  }
+
+
+  if (broughtForwardReceived) {
+    addRow(
+      'B/F',
+      'Amount Received up to 25-08-2026',
+      'B/F-RECEIPTS',
+      0,
+      broughtForwardReceived
+    );
+  }
+
+
+  const sortedTransactions = sourceTransactions
+    .map(function(item, index) {
+      return { item: item || {}, index: index };
+    })
+    .sort(function(a, b) {
+      const aValue = feeLedgerSortValue_(
+        a.item.transactionDate || a.item.entryDateTime,
+        a.index
+      );
+      const bValue = feeLedgerSortValue_(
+        b.item.transactionDate || b.item.entryDateTime,
+        b.index
+      );
+      return aValue === bValue ? a.index - b.index : aValue - bValue;
+    });
+
+
+  let activeTransactionNetReceipts = 0;
+
+
+  sortedTransactions.forEach(function(wrapper) {
+    const item = wrapper.item;
+    const status = String(item.status || 'ACTIVE').trim().toUpperCase();
+    const reversed = status === 'REVERSED';
+    const debit = reversed ? 0 : feeLedgerNumber_(item.debit);
+    const credit = reversed ? 0 : feeLedgerNumber_(item.credit);
+    const feeHead = feeHeadLabel_(item.feeHead);
+    const particulars = reversed
+      ? 'REVERSED — ' + feeHead + ' (No Balance Effect)'
+      : (credit > 0 ? 'Fee Received — ' + feeHead : 'Fee Debit / Adjustment — ' + feeHead);
+    const extra = [
+      item.paymentMode ? 'Mode: ' + item.paymentMode : '',
+      item.referenceNo ? 'Ref: ' + item.referenceNo : '',
+      item.collectedBy ? 'By: ' + item.collectedBy : '',
+      item.remarks ? 'Remarks: ' + item.remarks : ''
+    ].filter(Boolean).join(' | ');
+
+
+    if (!reversed) {
+      activeTransactionNetReceipts += credit - debit;
+    }
+
+
+    addRow(
+      item.transactionDate || item.entryDateTime || '-',
+      particulars,
+      item.receiptNo || '-',
+      debit,
+      credit,
+      extra,
+      reversed
+    );
+  });
+
+
+  const receiptDifference = expectedNewReceipts - activeTransactionNetReceipts;
+  if (Math.abs(receiptDifference) >= 0.005) {
+    addRow(
+      'B/F',
+      receiptDifference > 0
+        ? 'Other Recorded New Receipts'
+        : 'New Receipt Adjustment',
+      'RECEIPT-ADJ',
+      receiptDifference < 0 ? Math.abs(receiptDifference) : 0,
+      receiptDifference > 0 ? receiptDifference : 0
+    );
+  }
+
+
+  const authoritativeOutstanding = feeLedgerNumber_(account.outstanding);
+  const closingDifference = authoritativeOutstanding - runningBalance;
+  if (Math.abs(closingDifference) >= 0.005) {
+    addRow(
+      'Closing',
+      'System Balance Adjustment',
+      'BAL-ADJ',
+      closingDifference > 0 ? closingDifference : 0,
+      closingDifference < 0 ? Math.abs(closingDifference) : 0
+    );
+  }
+
+
+  return {
+    rows: rows,
+    totalDebit: totalDebit,
+    totalCredit: totalCredit,
+    closingBalance: runningBalance
+  };
+}
+
+
 function printFullFeeLedger_() {
   const student = feeModuleStudent || {};
   const account = feeModuleAccount || {};
@@ -21600,37 +21796,26 @@ function printFullFeeLedger_() {
   }
 
 
-  const transactions = Array.isArray(feeLedgerTransactions)
-    ? feeLedgerTransactions
-    : [];
-
-
-  const transactionRows = transactions.length
-    ? transactions.map(function(item, index) {
-        const debit = feeLedgerNumber_(item.debit);
-        const credit = feeLedgerNumber_(item.credit);
-        const status = String(item.status || 'ACTIVE').trim().toUpperCase();
-        return '<tr' + (status === 'REVERSED' ? ' class="reversed"' : '') + '>' +
-          '<td>' + (index + 1) + '</td>' +
-          '<td>' + escapeHtml(item.transactionDate || '-') + '</td>' +
-          '<td>' + escapeHtml(item.receiptNo || '-') + '</td>' +
-          '<td>' + escapeHtml(feeHeadLabel_(item.feeHead)) + '</td>' +
-          '<td>' + escapeHtml(item.paymentMode || '-') + '</td>' +
-          '<td>' + escapeHtml(item.referenceNo || '-') + '</td>' +
-          '<td class="amount">' + escapeHtml(debit ? formatFeeMoney_(debit) : '-') + '</td>' +
-          '<td class="amount">' + escapeHtml(credit ? formatFeeMoney_(credit) : '-') + '</td>' +
-          '<td>' + escapeHtml(status) + '</td>' +
-          '<td>' + escapeHtml(item.collectedBy || '-') + '</td>' +
-          '<td>' + escapeHtml(item.remarks || '-') + '</td>' +
-        '</tr>';
-      }).join('')
-    : '<tr><td colspan="11" class="empty">No new receipt transactions found for this student.</td></tr>';
+  const statement = buildFeeAccountingLedgerRows_();
+  const statementRows = statement.rows.map(function(row, index) {
+    return '<tr' + (row.reversed ? ' class="reversed"' : '') + '>' +
+      '<td>' + (index + 1) + '</td>' +
+      '<td>' + escapeHtml(row.date) + '</td>' +
+      '<td><strong>' + escapeHtml(row.particulars) + '</strong>' +
+        (row.extra ? '<div class="extra">' + escapeHtml(row.extra) + '</div>' : '') +
+      '</td>' +
+      '<td>' + escapeHtml(row.voucherNo) + '</td>' +
+      '<td class="amount">' + (row.debit ? escapeHtml(formatFeeMoney_(row.debit)) : '-') + '</td>' +
+      '<td class="amount">' + (row.credit ? escapeHtml(formatFeeMoney_(row.credit)) : '-') + '</td>' +
+      '<td class="amount balance">' + escapeHtml(feeLedgerBalanceText_(row.balance)) + '</td>' +
+    '</tr>';
+  }).join('');
 
 
   const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' +
     escapeHtml(feeLedgerFileName_()) +
     '</title><style>' +
-      'body{font-family:Arial,sans-serif;margin:0;background:#fff;color:#111}.wrap{max-width:1100px;margin:0 auto;padding:28px}.school{text-align:center}.school h1{font-size:23px;margin:0 0 5px}.addr{font-size:12px;line-height:1.45}.title{text-align:center;font-size:19px;font-weight:800;margin:18px 0 14px;padding:9px;border-top:1px solid #222;border-bottom:1px solid #222}.actions{display:flex;gap:8px;margin-bottom:15px}.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 18px;padding:11px;border:1px solid #aaa;font-size:13px}.label{font-weight:700}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.box{border:1px solid #bbb;padding:9px;font-size:11px}.box strong{display:block;font-size:14px;margin-top:4px}.box.outstanding{background:#fff4e5}.table{width:100%;border-collapse:collapse;margin-top:14px;font-size:10px}.table th,.table td{border:1px solid #999;padding:6px;vertical-align:top}.table th{background:#eef4ff}.table .amount{text-align:right;white-space:nowrap}.table .reversed{color:#777;text-decoration:line-through;background:#f5f5f5}.empty{text-align:center;padding:18px!important;color:#666}.footer{display:flex;justify-content:space-between;margin-top:38px;font-size:11px}.note{text-align:center;margin-top:22px;font-size:9px;color:#555}@media print{.actions{display:none}.wrap{padding:8px}@page{size:landscape;margin:9mm}}' +
+      'body{font-family:Arial,sans-serif;margin:0;background:#fff;color:#111}.wrap{max-width:1100px;margin:0 auto;padding:28px}.school{text-align:center}.school h1{font-size:23px;margin:0 0 5px}.addr{font-size:12px;line-height:1.45}.title{text-align:center;font-size:19px;font-weight:800;margin:18px 0 14px;padding:9px;border-top:1px solid #222;border-bottom:1px solid #222}.actions{display:flex;gap:8px;margin-bottom:15px}.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 18px;padding:11px;border:1px solid #aaa;font-size:13px}.label{font-weight:700}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.box{border:1px solid #bbb;padding:9px;font-size:11px}.box strong{display:block;font-size:14px;margin-top:4px}.box.outstanding{background:#fff4e5}.statementTitle{font-size:14px;font-weight:800;margin:18px 0 6px}.table{width:100%;border-collapse:collapse;font-size:10px}.table th,.table td{border:1px solid #888;padding:6px;vertical-align:top}.table th{background:#dce8fb}.table .amount{text-align:right;white-space:nowrap}.table .balance{font-weight:700}.table .extra{font-size:8px;color:#555;margin-top:3px}.table .reversed{color:#777;background:#f5f5f5}.table tfoot td{font-weight:800;background:#eef4ff}.footer{display:flex;justify-content:space-between;margin-top:38px;font-size:11px}.note{text-align:center;margin-top:22px;font-size:9px;color:#555}@media print{.actions{display:none}.wrap{padding:8px}@page{size:landscape;margin:9mm}}' +
     '</style></head><body><div class="wrap">' +
       '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
       '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur<br>Tal. Shrirampur, Dist. Ahilyanagar, Maharashtra - 413715</div></div>' +
@@ -21646,7 +21831,10 @@ function printFullFeeLedger_() {
         '<div class="box">Total Received<strong>' + escapeHtml(formatFeeMoney_(account.totalReceived)) + '</strong></div>' +
         '<div class="box outstanding">Current Outstanding<strong>' + escapeHtml(formatFeeMoney_(account.outstanding)) + '</strong></div>' +
       '</div>' +
-      '<table class="table"><thead><tr><th>#</th><th>Date</th><th>Receipt No.</th><th>Fee Head</th><th>Mode</th><th>Reference</th><th>Debit</th><th>Credit</th><th>Status</th><th>Collected By</th><th>Remarks</th></tr></thead><tbody>' + transactionRows + '</tbody></table>' +
+      '<div class="statementTitle">ACCOUNTING STATEMENT</div>' +
+      '<table class="table"><thead><tr><th>#</th><th>Date</th><th>Particulars</th><th>Voucher / Receipt No.</th><th>Debit</th><th>Credit</th><th>Running Balance</th></tr></thead><tbody>' + statementRows + '</tbody>' +
+        '<tfoot><tr><td colspan="4">TOTAL / CLOSING BALANCE</td><td class="amount">' + escapeHtml(formatFeeMoney_(statement.totalDebit)) + '</td><td class="amount">' + escapeHtml(formatFeeMoney_(statement.totalCredit)) + '</td><td class="amount balance">' + escapeHtml(feeLedgerBalanceText_(statement.closingBalance)) + '</td></tr></tfoot>' +
+      '</table>' +
       '<div class="footer"><div>Generated: ' + escapeHtml(new Date().toLocaleString()) + '</div><div>Authorised Signatory</div></div>' +
       '<div class="note">This is a computer-generated student mess fee ledger.</div>' +
     '</div></body></html>';
@@ -21675,47 +21863,55 @@ function downloadFeeLedgerExcel_() {
   }
 
 
-  const summaryRows = [
+  const statement = buildFeeAccountingLedgerRows_();
+  const excelRows = [
     ['Nyati Samata International School'],
-    ['Student Mess Fee Ledger — Academic Year 2026-27'],
+    ['Student Mess Fee Accounting Statement — Academic Year 2026-27'],
     [],
     ['Student Name', student.name || '-'],
     ['Student ID', student.id || '-'],
     ['Class', student.className || '-'],
     [],
-    ['Account Summary', 'Amount'],
-    ['Previous Opening Due', feeLedgerNumber_(account.openingDue)],
-    ['2026-27 Mess Fee', feeLedgerNumber_(account.currentYearFee)],
-    ['Other Debit', feeLedgerNumber_(account.otherDebit)],
-    ['Total Payable', feeLedgerNumber_(account.totalPayable)],
-    ['Received up to 25-08-2026', feeLedgerNumber_(account.broughtForwardReceived)],
-    ['New Receipts', feeLedgerNumber_(account.newReceipts)],
-    ['Total Received', feeLedgerNumber_(account.totalReceived)],
-    ['Current Outstanding', feeLedgerNumber_(account.outstanding)],
-    [],
-    ['Generated', new Date().toLocaleString()]
+    ['Sr. No.', 'Date', 'Particulars', 'Voucher / Receipt No.', 'Debit', 'Credit', 'Running Balance']
   ];
 
 
-  const transactionRows = [[
-    'Sr. No.',
-    'Transaction Date',
-    'Receipt No.',
-    'Fee Head',
-    'Payment Mode',
-    'Reference No.',
-    'Debit',
-    'Credit',
-    'Status',
-    'Collected By',
-    'Entry Date & Time',
-    'Remarks'
+  statement.rows.forEach(function(row, index) {
+    excelRows.push([
+      index + 1,
+      row.date,
+      row.particulars + (row.extra ? ' | ' + row.extra : ''),
+      row.voucherNo,
+      row.debit || '',
+      row.credit || '',
+      row.balance
+    ]);
+  });
+
+
+  excelRows.push([
+    '',
+    '',
+    'TOTAL / CLOSING BALANCE',
+    '',
+    statement.totalDebit,
+    statement.totalCredit,
+    statement.closingBalance
+  ]);
+  excelRows.push([]);
+  excelRows.push(['Generated', new Date().toLocaleString()]);
+
+
+  const detailRows = [[
+    'Sr. No.', 'Transaction Date', 'Receipt No.', 'Fee Head', 'Payment Mode',
+    'Reference No.', 'Debit', 'Credit', 'Status', 'Collected By',
+    'Entry Date & Time', 'Remarks'
   ]];
 
 
   (Array.isArray(feeLedgerTransactions) ? feeLedgerTransactions : [])
     .forEach(function(item, index) {
-      transactionRows.push([
+      detailRows.push([
         index + 1,
         item.transactionDate || '',
         item.receiptNo || '',
@@ -21732,12 +21928,15 @@ function downloadFeeLedgerExcel_() {
     });
 
 
-  const summarySheet = XLSX.utils.aoa_to_sheet(summaryRows);
-  const transactionsSheet = XLSX.utils.aoa_to_sheet(transactionRows);
+  const ledgerSheet = XLSX.utils.aoa_to_sheet(excelRows);
+  const detailsSheet = XLSX.utils.aoa_to_sheet(detailRows);
 
 
-  summarySheet['!cols'] = [{ wch: 30 }, { wch: 22 }];
-  transactionsSheet['!cols'] = [
+  ledgerSheet['!cols'] = [
+    { wch: 8 }, { wch: 16 }, { wch: 48 }, { wch: 24 },
+    { wch: 16 }, { wch: 16 }, { wch: 19 }
+  ];
+  detailsSheet['!cols'] = [
     { wch: 8 }, { wch: 16 }, { wch: 20 }, { wch: 24 },
     { wch: 15 }, { wch: 20 }, { wch: 14 }, { wch: 14 },
     { wch: 12 }, { wch: 20 }, { wch: 22 }, { wch: 30 }
@@ -21745,8 +21944,8 @@ function downloadFeeLedgerExcel_() {
 
 
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, summarySheet, 'Account Summary');
-  XLSX.utils.book_append_sheet(workbook, transactionsSheet, 'Receipt Transactions');
+  XLSX.utils.book_append_sheet(workbook, ledgerSheet, 'Accounting Ledger');
+  XLSX.utils.book_append_sheet(workbook, detailsSheet, 'Receipt Details');
   XLSX.writeFile(workbook, feeLedgerFileName_() + '.xlsx');
 }
 
