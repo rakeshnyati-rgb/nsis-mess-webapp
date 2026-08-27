@@ -2903,6 +2903,114 @@
     }
 
 
+    .feeReportPanel {
+      margin-top: 14px;
+      padding: 14px;
+    }
+
+
+    .feeReportSection {
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+
+    .feeReportSection:first-child {
+      padding-top: 0;
+      margin-top: 0;
+      border-top: 0;
+    }
+
+
+    .feeReportFilterGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+
+    .feeReportFilterGrid .field {
+      margin-top: 0;
+    }
+
+
+    .feeReportActions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+
+    .feeReportTableWrap {
+      margin-top: 12px;
+      overflow: auto;
+      max-height: 460px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+
+    .feeReportTable {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+
+    .feeReportTable th,
+    .feeReportTable td {
+      padding: 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+
+    .feeReportTable th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #eaf1ff;
+      color: var(--primary-dark);
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+
+    .feeReportTable td.money,
+    .feeReportTable th.money {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+
+    .feeReportTable tr.reversed td {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+
+    .feeReportCaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+
+    @media (max-width: 430px) {
+      .feeReportFilterGrid,
+      .feeReportActions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
     /* ==========================================
        REPORTS & MIS
     ========================================== */
@@ -5488,6 +5596,101 @@
       </div>
 
 
+      <div id="feeReportsPanel" class="card feeReportPanel" style="display:none;">
+
+
+        <div class="softwarePageHead" style="margin-bottom:12px;">
+          <div>
+            <div class="softwarePageTitle" style="font-size:18px;">Fee Reports & Controls</div>
+            <div class="softwarePageSub">Secure collection register and outstanding-fee monitoring</div>
+          </div>
+        </div>
+
+
+        <div class="feeReportSection">
+          <div class="sectionTitle" style="margin-top:0;">📅 Daily Fee Collection Report</div>
+
+
+          <div class="feeReportFilterGrid">
+            <div class="field">
+              <label for="feeReportStartDate">From Date</label>
+              <input id="feeReportStartDate" class="input" type="date">
+            </div>
+
+
+            <div class="field">
+              <label for="feeReportEndDate">To Date</label>
+              <input id="feeReportEndDate" class="input" type="date">
+            </div>
+          </div>
+
+
+          <button id="loadFeeCollectionReportButton" class="btn btnPrimary" type="button" onclick="loadFeeCollectionReport_()" style="margin-top:10px;">
+            📊 Load Collection Report
+          </button>
+
+
+          <div id="feeCollectionReportResult" class="resultArea"></div>
+
+
+          <div id="feeCollectionReportActions" class="feeReportActions" style="display:none;">
+            <button type="button" class="btn btnSoft" onclick="printFeeCollectionReport_()">🖨️ Print / Save PDF</button>
+            <button type="button" class="btn btnPrimary" onclick="downloadFeeCollectionReportExcel_()">⬇️ Download Excel</button>
+          </div>
+        </div>
+
+
+        <div class="feeReportSection">
+          <div class="sectionTitle" style="margin-top:0;">⚠️ Outstanding Fees Report</div>
+
+
+          <div class="feeReportFilterGrid">
+            <div class="field">
+              <label for="feeOutstandingClass">Class</label>
+              <select id="feeOutstandingClass" class="input">
+                <option value="">All Classes</option>
+              </select>
+            </div>
+
+
+            <div class="field">
+              <label for="feeOutstandingStatus">Account Status</label>
+              <select id="feeOutstandingStatus" class="input">
+                <option value="OUTSTANDING">All Outstanding</option>
+                <option value="PARTIAL">Partial</option>
+                <option value="UNPAID">Unpaid</option>
+                <option value="PAID">Paid</option>
+                <option value="ADVANCE">Advance</option>
+                <option value="ALL">All Accounts</option>
+              </select>
+            </div>
+          </div>
+
+
+          <div class="field">
+            <label for="feeOutstandingSearch">Student Search</label>
+            <input id="feeOutstandingSearch" class="input" type="text" placeholder="Student ID or Name" autocomplete="off">
+          </div>
+
+
+          <button id="loadFeeOutstandingReportButton" class="btn btnPrimary" type="button" onclick="loadFeeOutstandingReport_()">
+            📋 Load Outstanding Report
+          </button>
+
+
+          <div id="feeOutstandingReportResult" class="resultArea"></div>
+
+
+          <div id="feeOutstandingReportActions" class="feeReportActions" style="display:none;">
+            <button type="button" class="btn btnSoft" onclick="printFeeOutstandingReport_()">🖨️ Print / Save PDF</button>
+            <button type="button" class="btn btnPrimary" onclick="downloadFeeOutstandingReportExcel_()">⬇️ Download Excel</button>
+          </div>
+        </div>
+
+
+      </div>
+
+
 
 
     </section>
@@ -6060,6 +6263,10 @@ let feeCollectBusy = false;
 let feeModuleAccount = {};
 let feeLedgerTransactions = [];
 let feeLedgerBusy = false;
+let feeReverseBusy = false;
+let feeReportBusy = false;
+let lastFeeCollectionReport = null;
+let lastFeeOutstandingReport = null;
 
 
 
@@ -6307,6 +6514,52 @@ function hasFeeCollectPermission() {
   return (
     currentStaff.canFeeCollect === true ||
     String(currentStaff.canFeeCollect || '')
+      .trim()
+      .toUpperCase() === 'TRUE'
+  );
+}
+
+
+
+
+function hasFeeReversePermission() {
+
+
+
+
+  if (!currentStaff) {
+    return false;
+  }
+
+
+
+
+  return (
+    currentStaff.canFeeReverse === true ||
+    String(currentStaff.canFeeReverse || '')
+      .trim()
+      .toUpperCase() === 'TRUE'
+  );
+}
+
+
+
+
+function hasFeeReportsPermission() {
+
+
+
+
+  if (!currentStaff) {
+    return false;
+  }
+
+
+
+
+  return (
+    currentStaff.canFeeReports === true ||
+    String(currentStaff.canFeeReports || '')
       .trim()
       .toUpperCase() === 'TRUE'
   );
@@ -6939,6 +7192,181 @@ window.addEventListener(
 
 
 
+      return;
+    }
+
+
+
+
+    /* FEE RECEIPT REVERSAL */
+
+
+
+
+    if (
+      message.type === 'FEE_REVERSE_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+
+
+
+      finishRequest();
+      setFeeReverseBusy_(false);
+
+
+
+
+      const result = message.result || {};
+
+
+
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+
+
+
+      if (result.success !== true) {
+        showError(
+          'feeModuleResult',
+          result.message || 'Receipt reversal failed.'
+        );
+        return;
+      }
+
+
+
+
+      window.alert(
+        'Receipt ' +
+        (result.receiptNo || '') +
+        ' reversed successfully.'
+      );
+
+
+
+
+      if (feeModuleStudent && feeModuleStudent.id) {
+        const searchInput =
+          document.getElementById('feeStudentSearch');
+
+        if (searchInput) {
+          searchInput.value = feeModuleStudent.id;
+        }
+
+        loadFeeModuleAccount();
+      }
+
+
+
+
+      return;
+    }
+
+
+
+
+    /* DAILY FEE COLLECTION REPORT */
+
+
+
+
+    if (
+      message.type === 'FEE_COLLECTION_REPORT_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+
+
+
+      finishRequest();
+      setFeeReportBusy_(false);
+
+
+
+
+      const result = message.result || {};
+
+
+
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+
+
+
+      if (result.success !== true) {
+        showError(
+          'feeCollectionReportResult',
+          result.message || 'Unable to load collection report.'
+        );
+        return;
+      }
+
+
+
+
+      lastFeeCollectionReport = result;
+      renderFeeCollectionReport_(result);
+      return;
+    }
+
+
+
+
+    /* OUTSTANDING FEES REPORT */
+
+
+
+
+    if (
+      message.type === 'FEE_OUTSTANDING_REPORT_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+
+
+
+      finishRequest();
+      setFeeReportBusy_(false);
+
+
+
+
+      const result = message.result || {};
+
+
+
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+
+
+
+      if (result.success !== true) {
+        showError(
+          'feeOutstandingReportResult',
+          result.message || 'Unable to load outstanding report.'
+        );
+        return;
+      }
+
+
+
+
+      lastFeeOutstandingReport = result;
+      renderFeeOutstandingReport_(result);
+      updateOutstandingClassOptions_(result.classes || []);
       return;
     }
 
@@ -8820,6 +9248,54 @@ window.addEventListener(
 
 
       }
+      else if (failedAction === 'fee_reverse') {
+
+
+
+
+        setFeeReverseBusy_(false);
+        showError(
+          'feeModuleResult',
+          message.message ||
+          'Fee reversal backend error.'
+        );
+
+
+
+
+      }
+      else if (failedAction === 'fee_collection_report') {
+
+
+
+
+        setFeeReportBusy_(false);
+        showError(
+          'feeCollectionReportResult',
+          message.message ||
+          'Collection report backend error.'
+        );
+
+
+
+
+      }
+      else if (failedAction === 'fee_outstanding_report') {
+
+
+
+
+        setFeeReportBusy_(false);
+        showError(
+          'feeOutstandingReportResult',
+          message.message ||
+          'Outstanding report backend error.'
+        );
+
+
+
+
+      }
       else if (failedAction === 'student_request') {
 
 
@@ -9253,6 +9729,51 @@ function postToBackend(
 
 
     }
+    else if (action === 'fee_reverse') {
+
+
+
+
+      setFeeReverseBusy_(false);
+      showError(
+        'feeModuleResult',
+        'Mess System is still connecting.'
+      );
+
+
+
+
+    }
+    else if (action === 'fee_collection_report') {
+
+
+
+
+      setFeeReportBusy_(false);
+      showError(
+        'feeCollectionReportResult',
+        'Mess System is still connecting.'
+      );
+
+
+
+
+    }
+    else if (action === 'fee_outstanding_report') {
+
+
+
+
+      setFeeReportBusy_(false);
+      showError(
+        'feeOutstandingReportResult',
+        'Mess System is still connecting.'
+      );
+
+
+
+
+    }
     else if (
       action === 'student_manage_lookup' ||
       action === 'student_manage_update'
@@ -9652,6 +10173,51 @@ function postToBackend(
 
 
         }
+        else if (actionCopy === 'fee_reverse') {
+
+
+
+
+          setFeeReverseBusy_(false);
+          showError(
+            'feeModuleResult',
+            'Fee reversal response timeout.'
+          );
+
+
+
+
+        }
+        else if (actionCopy === 'fee_collection_report') {
+
+
+
+
+          setFeeReportBusy_(false);
+          showError(
+            'feeCollectionReportResult',
+            'Collection report response timeout.'
+          );
+
+
+
+
+        }
+        else if (actionCopy === 'fee_outstanding_report') {
+
+
+
+
+          setFeeReportBusy_(false);
+          showError(
+            'feeOutstandingReportResult',
+            'Outstanding report response timeout.'
+          );
+
+
+
+
+        }
         else if (actionCopy === 'student_manage_lookup') {
 
 
@@ -9935,7 +10501,9 @@ function postToBackend(
 
 
       },
-      action === 'backup_now'
+      action === 'backup_now' ||
+      action === 'fee_collection_report' ||
+      action === 'fee_outstanding_report'
         ? 45000
         : 20000
     );
@@ -20866,8 +21434,8 @@ function formatFeeMoney_(
 
 
   return (
-    '₹' +
-    number.toLocaleString(
+    (number < 0 ? '-₹' : '₹') +
+    Math.abs(number).toLocaleString(
       'en-IN',
       {
         minimumFractionDigits:
@@ -21212,6 +21780,27 @@ function prepareFeeScreen() {
   const ledger = document.getElementById('feeModuleLedger');
   const result = document.getElementById('feeModuleResult');
   const collectPanel = document.getElementById('feeCollectPanel');
+  const reportsPanel = document.getElementById('feeReportsPanel');
+  const reportStart = document.getElementById('feeReportStartDate');
+  const reportEnd = document.getElementById('feeReportEndDate');
+
+
+  if (reportsPanel) {
+    reportsPanel.style.display =
+      hasFeeReportsPermission()
+        ? 'block'
+        : 'none';
+  }
+
+
+  if (reportStart && !reportStart.value) {
+    reportStart.value = localDateInputValue_();
+  }
+
+
+  if (reportEnd && !reportEnd.value) {
+    reportEnd.value = localDateInputValue_();
+  }
 
 
 
@@ -21505,6 +22094,11 @@ function renderFeeLedgerHistory_(transactions) {
     const status = String(item.status || 'ACTIVE').trim().toUpperCase();
     const reversed = status === 'REVERSED';
     const amount = Number(item.credit || 0) > 0 ? Number(item.credit || 0) : Number(item.debit || 0);
+    const canReverse =
+      !reversed &&
+      Number(item.credit || 0) > 0 &&
+      hasFeeReversePermission() &&
+      feeModulePermissions.canReverse === true;
 
 
     const details = [
@@ -21525,7 +22119,12 @@ function renderFeeLedgerHistory_(transactions) {
         '<div class="feeHistoryMeta">' + (details || 'Transaction details unavailable') + '</div>' +
         (item.remarks ? '<div class="feeHistoryMeta">Remarks: ' + escapeHtml(item.remarks) + '</div>' : '') +
         (!reversed && Number(item.credit || 0) > 0
-          ? '<button type="button" class="btn btnSoft" style="margin-top:10px;min-height:40px;" onclick="printFeeReceiptByIndex_(' + index + ')">🖨️ Print Receipt</button>'
+          ? '<div style="display:grid;grid-template-columns:' + (canReverse ? '1fr 1fr' : '1fr') + ';gap:8px;margin-top:10px;">' +
+              '<button type="button" class="btn btnSoft" style="min-height:40px;" onclick="printFeeReceiptByIndex_(' + index + ')">🖨️ Print Receipt</button>' +
+              (canReverse
+                ? '<button type="button" class="btn btnDanger feeReverseButton" style="min-height:40px;" onclick="requestFeeReversal_(' + index + ')"' + (feeReverseBusy ? ' disabled' : '') + '>↩️ Reverse Receipt</button>'
+                : '') +
+            '</div>'
           : '') +
       '</div>'
     );
@@ -22111,6 +22710,711 @@ function submitFeeCollection() {
 }
 
 
+function setFeeReverseBusy_(busy) {
+  feeReverseBusy = busy === true;
+
+  document
+    .querySelectorAll('.feeReverseButton')
+    .forEach(function(button) {
+      button.disabled = feeReverseBusy;
+      button.textContent = feeReverseBusy
+        ? 'Reversing...'
+        : '↩️ Reverse Receipt';
+    });
+}
+
+
+function requestFeeReversal_(index) {
+
+  if (!sessionToken) {
+    handleExpiredSession();
+    return;
+  }
+
+  if (!hasFeeReversePermission()) {
+    showError(
+      'feeModuleResult',
+      'Fee reversal permission not allowed.'
+    );
+    return;
+  }
+
+  if (feeReverseBusy) {
+    return;
+  }
+
+  const item = feeLedgerTransactions[index];
+
+  if (!item) {
+    window.alert(
+      'Receipt details not available. Please search the student again.'
+    );
+    return;
+  }
+
+  const status =
+    String(item.status || 'ACTIVE')
+      .trim()
+      .toUpperCase();
+
+  if (status === 'REVERSED') {
+    window.alert('This receipt is already reversed.');
+    return;
+  }
+
+  const reasonInput = window.prompt(
+    'Enter reversal reason for receipt ' +
+    (item.receiptNo || '') +
+    '. This action cannot be silently deleted.'
+  );
+
+  if (reasonInput === null) {
+    return;
+  }
+
+  const reason = String(reasonInput || '').trim();
+
+  if (reason.length < 5) {
+    window.alert(
+      'Please enter a clear reversal reason of at least 5 characters.'
+    );
+    return;
+  }
+
+  const confirmed = window.confirm(
+    'Reverse receipt ' +
+    (item.receiptNo || '') +
+    ' for ' +
+    formatFeeMoney_(item.credit || 0) +
+    '?\n\nReason: ' +
+    reason +
+    '\n\nThis will create a permanent reversal audit entry.'
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  setFeeReverseBusy_(true);
+
+  const resultArea =
+    document.getElementById('feeModuleResult');
+
+  if (resultArea) {
+    resultArea.innerHTML =
+      '<div class="scanFeeLoading">Reversing receipt securely...</div>';
+  }
+
+  postToBackend(
+    'fee_reverse',
+    {
+      token: sessionToken,
+      transactionId: item.transactionId || '',
+      receiptNo: item.receiptNo || '',
+      reason: reason
+    }
+  );
+}
+
+
+function setFeeReportBusy_(busy) {
+  feeReportBusy = busy === true;
+
+  const collectionButton =
+    document.getElementById(
+      'loadFeeCollectionReportButton'
+    );
+
+  const outstandingButton =
+    document.getElementById(
+      'loadFeeOutstandingReportButton'
+    );
+
+  if (collectionButton) {
+    collectionButton.disabled = feeReportBusy;
+    collectionButton.textContent = feeReportBusy
+      ? 'Loading...'
+      : '📊 Load Collection Report';
+  }
+
+  if (outstandingButton) {
+    outstandingButton.disabled = feeReportBusy;
+    outstandingButton.textContent = feeReportBusy
+      ? 'Loading...'
+      : '📋 Load Outstanding Report';
+  }
+}
+
+
+function loadFeeCollectionReport_() {
+
+  if (!sessionToken) {
+    handleExpiredSession();
+    return;
+  }
+
+  if (!hasFeeReportsPermission()) {
+    showError(
+      'feeCollectionReportResult',
+      'Fee reports permission not allowed.'
+    );
+    return;
+  }
+
+  if (feeReportBusy) {
+    return;
+  }
+
+  const startDate = String(
+    document.getElementById('feeReportStartDate').value || ''
+  ).trim();
+
+  const endDate = String(
+    document.getElementById('feeReportEndDate').value || ''
+  ).trim();
+
+  if (!startDate || !endDate) {
+    showError(
+      'feeCollectionReportResult',
+      'Please select From Date and To Date.'
+    );
+    return;
+  }
+
+  if (startDate > endDate) {
+    showError(
+      'feeCollectionReportResult',
+      'From Date cannot be after To Date.'
+    );
+    return;
+  }
+
+  lastFeeCollectionReport = null;
+
+  const actions =
+    document.getElementById('feeCollectionReportActions');
+
+  if (actions) actions.style.display = 'none';
+
+  document.getElementById(
+    'feeCollectionReportResult'
+  ).innerHTML =
+    '<div class="scanFeeLoading">Loading fee collection register...</div>';
+
+  setFeeReportBusy_(true);
+
+  postToBackend(
+    'fee_collection_report',
+    {
+      token: sessionToken,
+      startDate: startDate,
+      endDate: endDate
+    }
+  );
+}
+
+
+function loadFeeOutstandingReport_() {
+
+  if (!sessionToken) {
+    handleExpiredSession();
+    return;
+  }
+
+  if (!hasFeeReportsPermission()) {
+    showError(
+      'feeOutstandingReportResult',
+      'Fee reports permission not allowed.'
+    );
+    return;
+  }
+
+  if (feeReportBusy) {
+    return;
+  }
+
+  const className = String(
+    document.getElementById('feeOutstandingClass').value || ''
+  ).trim();
+
+  const status = String(
+    document.getElementById('feeOutstandingStatus').value || 'OUTSTANDING'
+  ).trim();
+
+  const search = String(
+    document.getElementById('feeOutstandingSearch').value || ''
+  ).trim();
+
+  lastFeeOutstandingReport = null;
+
+  const actions =
+    document.getElementById('feeOutstandingReportActions');
+
+  if (actions) actions.style.display = 'none';
+
+  document.getElementById(
+    'feeOutstandingReportResult'
+  ).innerHTML =
+    '<div class="scanFeeLoading">Loading outstanding fee accounts...</div>';
+
+  setFeeReportBusy_(true);
+
+  postToBackend(
+    'fee_outstanding_report',
+    {
+      token: sessionToken,
+      className: className,
+      status: status,
+      search: search
+    }
+  );
+}
+
+
+function renderFeeCollectionReport_(result) {
+
+  const target =
+    document.getElementById('feeCollectionReportResult');
+
+  if (!target) return;
+
+  const summary = result.summary || {};
+  const transactions = Array.isArray(result.transactions)
+    ? result.transactions
+    : [];
+  const collectors = Array.isArray(result.collectorTotals)
+    ? result.collectorTotals
+    : [];
+
+  const transactionRows = transactions.length
+    ? transactions.map(function(item, index) {
+        const transactionType =
+          String(item.transactionType || 'RECEIPT')
+            .trim()
+            .toUpperCase();
+        const isReversal = transactionType === 'REVERSAL';
+        const reversed =
+          isReversal ||
+          String(item.status || '').trim().toUpperCase() === 'REVERSED';
+        const signedAmount =
+          isReversal
+            ? -Number(item.amount || 0)
+            : Number(item.amount || 0);
+
+        return '<tr' + (reversed ? ' class="reversed"' : '') + '>' +
+          '<td>' + (index + 1) + '</td>' +
+          '<td>' + escapeHtml(item.transactionDate || '-') + '</td>' +
+          '<td>' + escapeHtml(item.receiptNo || '-') + '</td>' +
+          '<td>' + escapeHtml(item.studentId || '-') + '<br><strong>' + escapeHtml(item.studentName || '-') + '</strong></td>' +
+          '<td>' + escapeHtml(item.className || '-') + '</td>' +
+          '<td>' + escapeHtml(item.paymentMode || '-') + '</td>' +
+          '<td class="money">' + escapeHtml(formatFeeMoney_(signedAmount)) + '</td>' +
+          '<td>' + escapeHtml(item.collectedBy || '-') + '</td>' +
+          '<td>' + escapeHtml(isReversal ? 'REVERSAL' : (item.status || 'ACTIVE')) + '</td>' +
+        '</tr>';
+      }).join('')
+    : '<tr><td colspan="9">No fee receipts found for the selected period.</td></tr>';
+
+  const collectorText = collectors.length
+    ? collectors.map(function(item) {
+        return escapeHtml(item.collectedBy || '-') +
+          ': <strong>' +
+          escapeHtml(formatFeeMoney_(item.amount || 0)) +
+          '</strong> (' +
+          Number(item.count || 0) +
+          ' entries)';
+      }).join('<br>')
+    : 'No active collections.';
+
+  target.innerHTML =
+    '<div class="reportKpiGrid" style="margin-top:12px;">' +
+      '<div class="reportKpi success"><div class="reportKpiLabel">Total Collected</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalCollected) + '</div></div>' +
+      '<div class="reportKpi info"><div class="reportKpiLabel">Active Receipts</div><div class="reportKpiValue">' + Number(summary.activeReceiptCount || 0) + '</div></div>' +
+      '<div class="reportKpi"><div class="reportKpiLabel">Cash</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.cash) + '</div></div>' +
+      '<div class="reportKpi"><div class="reportKpiLabel">UPI / Bank / Cheque</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(Number(summary.upi || 0) + Number(summary.bank || 0) + Number(summary.cheque || 0)) + '</div></div>' +
+      '<div class="reportKpi danger"><div class="reportKpiLabel">Reversed</div><div class="reportKpiValue">' + Number(summary.reversedReceiptCount || 0) + '</div></div>' +
+    '</div>' +
+    '<div class="feeReportCaption">Period: <strong>' + escapeHtml(result.startDate || '-') + '</strong> to <strong>' + escapeHtml(result.endDate || '-') + '</strong><br>Collector Summary:<br>' + collectorText + '</div>' +
+    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Date</th><th>Receipt</th><th>Student</th><th>Class</th><th>Mode</th><th class="money">Amount</th><th>Collected By</th><th>Status</th></tr></thead><tbody>' + transactionRows + '</tbody></table></div>';
+
+  const actions =
+    document.getElementById('feeCollectionReportActions');
+
+  if (actions) actions.style.display = 'grid';
+}
+
+
+function updateOutstandingClassOptions_(classes) {
+
+  const select =
+    document.getElementById('feeOutstandingClass');
+
+  if (!select) return;
+
+  const selected = select.value;
+
+  select.innerHTML =
+    '<option value="">All Classes</option>' +
+    (Array.isArray(classes) ? classes : [])
+      .map(function(className) {
+        return '<option value="' + escapeHtml(className) + '">' + escapeHtml(className) + '</option>';
+      })
+      .join('');
+
+  if (
+    Array.from(select.options).some(function(option) {
+      return option.value === selected;
+    })
+  ) {
+    select.value = selected;
+  }
+}
+
+
+function renderFeeOutstandingReport_(result) {
+
+  const target =
+    document.getElementById('feeOutstandingReportResult');
+
+  if (!target) return;
+
+  const summary = result.summary || {};
+  const rows = Array.isArray(result.rows)
+    ? result.rows
+    : [];
+
+  const tableRows = rows.length
+    ? rows.map(function(item, index) {
+        return '<tr>' +
+          '<td>' + (index + 1) + '</td>' +
+          '<td>' + escapeHtml(item.studentId || '-') + '</td>' +
+          '<td><strong>' + escapeHtml(item.studentName || '-') + '</strong></td>' +
+          '<td>' + escapeHtml(item.className || '-') + '</td>' +
+          '<td class="money">' + escapeHtml(formatFeeMoney_(item.totalPayable)) + '</td>' +
+          '<td class="money">' + escapeHtml(formatFeeMoney_(item.totalReceived)) + '</td>' +
+          '<td class="money"><strong>' + escapeHtml(formatFeeMoney_(item.outstanding)) + '</strong></td>' +
+          '<td>' + escapeHtml(item.paymentStatus || '-') + '</td>' +
+        '</tr>';
+      }).join('')
+    : '<tr><td colspan="8">No student accounts found for the selected filters.</td></tr>';
+
+  const filters = result.filters || {};
+
+  target.innerHTML =
+    '<div class="reportKpiGrid" style="margin-top:12px;">' +
+      '<div class="reportKpi info"><div class="reportKpiLabel">Students</div><div class="reportKpiValue">' + Number(summary.studentCount || 0) + '</div></div>' +
+      '<div class="reportKpi"><div class="reportKpiLabel">Total Payable</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalPayable) + '</div></div>' +
+      '<div class="reportKpi success"><div class="reportKpiLabel">Total Received</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalReceived) + '</div></div>' +
+      '<div class="reportKpi warning"><div class="reportKpiLabel">Outstanding</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalOutstanding) + '</div></div>' +
+      '<div class="reportKpi info"><div class="reportKpiLabel">Advance</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalAdvance) + '</div></div>' +
+    '</div>' +
+    '<div class="feeReportCaption">Academic Year: <strong>' + escapeHtml(result.financialYear || '-') + '</strong> · Status: <strong>' + escapeHtml(filters.status || 'OUTSTANDING') + '</strong>' + (filters.className ? ' · Class: <strong>' + escapeHtml(filters.className) + '</strong>' : '') + '</div>' +
+    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Student ID</th><th>Student Name</th><th>Class</th><th class="money">Total Payable</th><th class="money">Total Received</th><th class="money">Outstanding</th><th>Status</th></tr></thead><tbody>' + tableRows + '</tbody></table></div>';
+
+  const actions =
+    document.getElementById('feeOutstandingReportActions');
+
+  if (actions) actions.style.display = 'grid';
+}
+
+
+function openFeeReportPrint_(title, caption, summaryItems, headers, rows) {
+
+  const printWindow =
+    window.open('', '_blank', 'width=1200,height=900');
+
+  if (!printWindow) {
+    window.alert('Please allow pop-ups to print the report.');
+    return;
+  }
+
+  const summaryHtml =
+    (summaryItems || []).map(function(item) {
+      return '<div class="box"><span>' + escapeHtml(item[0]) + '</span><strong>' + escapeHtml(item[1]) + '</strong></div>';
+    }).join('');
+
+  const headerHtml =
+    (headers || []).map(function(value) {
+      return '<th>' + escapeHtml(value) + '</th>';
+    }).join('');
+
+  const rowsHtml =
+    (rows || []).length
+      ? rows.map(function(row) {
+          return '<tr>' + row.map(function(value) {
+            return '<td>' + escapeHtml(value) + '</td>';
+          }).join('') + '</tr>';
+        }).join('')
+      : '<tr><td colspan="' + Math.max((headers || []).length, 1) + '">No records found.</td></tr>';
+
+  const html =
+    '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + escapeHtml(title) + '</title>' +
+    '<style>@page{size:A4 landscape;margin:9mm}body{font-family:Arial,sans-serif;margin:0;color:#111}.wrap{padding:16px}.school{text-align:center}.school h1{margin:0;font-size:21px}.addr{font-size:10px;line-height:1.4;margin-top:3px}.title{text-align:center;font-size:18px;font-weight:800;margin:14px 0 5px}.caption{text-align:center;font-size:10px;color:#555;margin-bottom:12px}.actions{display:flex;gap:8px;margin-bottom:12px}.actions button{padding:8px 12px;border:0;border-radius:6px;background:#0b57d0;color:#fff;font-weight:700}.actions .secondary{background:#eee;color:#111}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}.box{border:1px solid #aaa;padding:7px;font-size:9px}.box span{display:block;color:#555}.box strong{display:block;font-size:13px;margin-top:3px}.table{width:100%;border-collapse:collapse;font-size:8.5px}.table th,.table td{border:1px solid #888;padding:5px;vertical-align:top}.table th{background:#dce8fb}.footer{display:flex;justify-content:space-between;margin-top:18px;font-size:9px}@media print{.actions{display:none}.wrap{padding:0}}</style></head><body><div class="wrap">' +
+    '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
+    '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur, Tal. Shrirampur, Dist. Ahilyanagar, Maharashtra - 413715</div></div>' +
+    '<div class="title">' + escapeHtml(title) + '</div><div class="caption">' + escapeHtml(caption) + '</div>' +
+    '<div class="summary">' + summaryHtml + '</div>' +
+    '<table class="table"><thead><tr>' + headerHtml + '</tr></thead><tbody>' + rowsHtml + '</tbody></table>' +
+    '<div class="footer"><div>Generated: ' + escapeHtml(new Date().toLocaleString()) + '</div><div>Authorised Signatory</div></div>' +
+    '</div></body></html>';
+
+  printWindow.document.open();
+  printWindow.document.write(html);
+  printWindow.document.close();
+}
+
+
+function printFeeCollectionReport_() {
+
+  const report = lastFeeCollectionReport;
+
+  if (!report) {
+    window.alert('Please load the collection report first.');
+    return;
+  }
+
+  const summary = report.summary || {};
+  const rows = (report.transactions || []).map(function(item, index) {
+    const isReversal =
+      String(item.transactionType || '')
+        .trim()
+        .toUpperCase() === 'REVERSAL';
+
+    return [
+      index + 1,
+      item.transactionDate || '-',
+      item.receiptNo || '-',
+      item.studentId || '-',
+      item.studentName || '-',
+      item.className || '-',
+      item.paymentMode || '-',
+      formatFeeMoney_(
+        isReversal
+          ? -Number(item.amount || 0)
+          : Number(item.amount || 0)
+      ),
+      item.collectedBy || '-',
+      isReversal
+        ? 'REVERSAL'
+        : (item.status || 'ACTIVE')
+    ];
+  });
+
+  openFeeReportPrint_(
+    'DAILY FEE COLLECTION REGISTER',
+    'Period: ' + report.startDate + ' to ' + report.endDate + ' · Academic Year ' + (report.financialYear || ''),
+    [
+      ['Total Collected', formatFeeMoney_(summary.totalCollected)],
+      ['Active Receipts', String(summary.activeReceiptCount || 0)],
+      ['Cash', formatFeeMoney_(summary.cash)],
+      ['UPI / Bank / Cheque', formatFeeMoney_(Number(summary.upi || 0) + Number(summary.bank || 0) + Number(summary.cheque || 0))],
+      ['Reversed', String(summary.reversedReceiptCount || 0)]
+    ],
+    ['#', 'Date', 'Receipt No.', 'Student ID', 'Student Name', 'Class', 'Mode', 'Amount', 'Collected By', 'Status'],
+    rows
+  );
+}
+
+
+function printFeeOutstandingReport_() {
+
+  const report = lastFeeOutstandingReport;
+
+  if (!report) {
+    window.alert('Please load the outstanding report first.');
+    return;
+  }
+
+  const summary = report.summary || {};
+  const filters = report.filters || {};
+  const rows = (report.rows || []).map(function(item, index) {
+    return [
+      index + 1,
+      item.studentId || '-',
+      item.studentName || '-',
+      item.className || '-',
+      formatFeeMoney_(item.totalPayable),
+      formatFeeMoney_(item.totalReceived),
+      formatFeeMoney_(item.outstanding),
+      item.paymentStatus || '-'
+    ];
+  });
+
+  openFeeReportPrint_(
+    'STUDENT OUTSTANDING FEES REPORT',
+    'Academic Year ' + (report.financialYear || '') + ' · Status: ' + (filters.status || 'OUTSTANDING') + (filters.className ? ' · Class: ' + filters.className : ''),
+    [
+      ['Students', String(summary.studentCount || 0)],
+      ['Total Payable', formatFeeMoney_(summary.totalPayable)],
+      ['Total Received', formatFeeMoney_(summary.totalReceived)],
+      ['Outstanding', formatFeeMoney_(summary.totalOutstanding)],
+      ['Advance', formatFeeMoney_(summary.totalAdvance)]
+    ],
+    ['#', 'Student ID', 'Student Name', 'Class', 'Total Payable', 'Total Received', 'Outstanding', 'Status'],
+    rows
+  );
+}
+
+
+function downloadFeeCollectionReportExcel_() {
+
+  const report = lastFeeCollectionReport;
+
+  if (!report) {
+    window.alert('Please load the collection report first.');
+    return;
+  }
+
+  if (typeof XLSX === 'undefined') {
+    window.alert('Excel library is unavailable. Please refresh and try again.');
+    return;
+  }
+
+  const summary = report.summary || {};
+  const rows = [
+    ['Nyati Samata International School'],
+    ['Daily Fee Collection Register'],
+    ['Period', report.startDate, 'To', report.endDate],
+    ['Academic Year', report.financialYear || ''],
+    [],
+    ['Total Collected', feeLedgerNumber_(summary.totalCollected)],
+    ['Active Receipts', Number(summary.activeReceiptCount || 0)],
+    ['Reversed Receipts', Number(summary.reversedReceiptCount || 0)],
+    ['Cash', feeLedgerNumber_(summary.cash)],
+    ['UPI', feeLedgerNumber_(summary.upi)],
+    ['Bank', feeLedgerNumber_(summary.bank)],
+    ['Cheque', feeLedgerNumber_(summary.cheque)],
+    [],
+    ['Sr. No.', 'Date', 'Receipt No.', 'Student ID', 'Student Name', 'Class', 'Fee Head', 'Payment Mode', 'Amount', 'Reference No.', 'Collected By', 'Status', 'Remarks']
+  ];
+
+  (report.transactions || []).forEach(function(item, index) {
+    const isReversal =
+      String(item.transactionType || '')
+        .trim()
+        .toUpperCase() === 'REVERSAL';
+
+    rows.push([
+      index + 1,
+      item.transactionDate || '',
+      item.receiptNo || '',
+      item.studentId || '',
+      item.studentName || '',
+      item.className || '',
+      feeHeadLabel_(item.feeHead),
+      item.paymentMode || '',
+      isReversal
+        ? -feeLedgerNumber_(item.amount)
+        : feeLedgerNumber_(item.amount),
+      item.referenceNo || '',
+      item.collectedBy || '',
+      isReversal
+        ? 'REVERSAL'
+        : (item.status || 'ACTIVE'),
+      item.remarks || ''
+    ]);
+  });
+
+  const collectorRows = [
+    ['Collected By', 'Receipt Count', 'Amount']
+  ];
+
+  (report.collectorTotals || []).forEach(function(item) {
+    collectorRows.push([
+      item.collectedBy || '',
+      Number(item.count || 0),
+      feeLedgerNumber_(item.amount)
+    ]);
+  });
+
+  const workbook = XLSX.utils.book_new();
+  const collectionSheet = XLSX.utils.aoa_to_sheet(rows);
+  const collectorSheet = XLSX.utils.aoa_to_sheet(collectorRows);
+
+  collectionSheet['!cols'] = [
+    {wch:8},{wch:14},{wch:20},{wch:14},{wch:25},{wch:12},{wch:22},
+    {wch:14},{wch:14},{wch:20},{wch:20},{wch:12},{wch:30}
+  ];
+  collectorSheet['!cols'] = [{wch:25},{wch:15},{wch:16}];
+
+  XLSX.utils.book_append_sheet(workbook, collectionSheet, 'Collection Register');
+  XLSX.utils.book_append_sheet(workbook, collectorSheet, 'Collector Summary');
+  XLSX.writeFile(
+    workbook,
+    'Fee_Collection_' + report.startDate + '_to_' + report.endDate + '.xlsx'
+  );
+}
+
+
+function downloadFeeOutstandingReportExcel_() {
+
+  const report = lastFeeOutstandingReport;
+
+  if (!report) {
+    window.alert('Please load the outstanding report first.');
+    return;
+  }
+
+  if (typeof XLSX === 'undefined') {
+    window.alert('Excel library is unavailable. Please refresh and try again.');
+    return;
+  }
+
+  const summary = report.summary || {};
+  const filters = report.filters || {};
+  const rows = [
+    ['Nyati Samata International School'],
+    ['Student Outstanding Fees Report'],
+    ['Academic Year', report.financialYear || ''],
+    ['Status Filter', filters.status || 'OUTSTANDING'],
+    ['Class Filter', filters.className || 'All Classes'],
+    [],
+    ['Students', Number(summary.studentCount || 0)],
+    ['Total Payable', feeLedgerNumber_(summary.totalPayable)],
+    ['Total Received', feeLedgerNumber_(summary.totalReceived)],
+    ['Total Outstanding', feeLedgerNumber_(summary.totalOutstanding)],
+    ['Total Advance', feeLedgerNumber_(summary.totalAdvance)],
+    [],
+    ['Sr. No.', 'Student ID', 'Student Name', 'Class', 'Opening Due', 'Current Year Fee', 'Other Debit', 'Total Payable', 'B/F Received', 'New Receipts', 'Total Received', 'Outstanding', 'Status']
+  ];
+
+  (report.rows || []).forEach(function(item, index) {
+    rows.push([
+      index + 1,
+      item.studentId || '',
+      item.studentName || '',
+      item.className || '',
+      feeLedgerNumber_(item.openingDue),
+      feeLedgerNumber_(item.currentYearFee),
+      feeLedgerNumber_(item.otherDebit),
+      feeLedgerNumber_(item.totalPayable),
+      feeLedgerNumber_(item.broughtForwardReceived),
+      feeLedgerNumber_(item.newReceipts),
+      feeLedgerNumber_(item.totalReceived),
+      feeLedgerNumber_(item.outstanding),
+      item.paymentStatus || ''
+    ]);
+  });
+
+  const workbook = XLSX.utils.book_new();
+  const sheet = XLSX.utils.aoa_to_sheet(rows);
+
+  sheet['!cols'] = [
+    {wch:8},{wch:14},{wch:28},{wch:12},{wch:14},{wch:17},{wch:14},
+    {wch:15},{wch:16},{wch:14},{wch:16},{wch:16},{wch:12}
+  ];
+
+  XLSX.utils.book_append_sheet(workbook, sheet, 'Outstanding Fees');
+  XLSX.writeFile(
+    workbook,
+    'Outstanding_Fees_' +
+    (filters.status || 'OUTSTANDING') +
+    (filters.className ? '_' + String(filters.className).replace(/[^A-Za-z0-9_-]+/g, '_') : '') +
+    '.xlsx'
+  );
+}
+
+
 
 
 
@@ -22291,6 +23595,10 @@ function clearSession() {
   lastQrResult = null;
   securitySessions = [];
   securityBusy = false;
+  feeReverseBusy = false;
+  feeReportBusy = false;
+  lastFeeCollectionReport = null;
+  lastFeeOutstandingReport = null;
 
 
 
