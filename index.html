@@ -21277,6 +21277,8 @@ function loadFeeModuleAccount() {
 
   feeModuleStudent = null;
   feeModulePermissions = {};
+  feeModuleAccount = {};
+  feeLedgerTransactions = [];
   feeAccountContext = 'module';
 
 
@@ -21394,6 +21396,10 @@ function renderFeeModuleAccount_(result) {
           '<div class="feeLedgerItem outstanding full' + outstandingClass + '"><span class="feeLedgerLabel">Current Outstanding</span><span class="feeLedgerValue">' + formatFeeMoney_(account.outstanding) + '</span></div>' +
         '</div>' +
         '<div class="feeAccountNote">Opening Due and current-year fee are shown separately. Every new collection creates a separate receipt transaction.</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">' +
+          '<button id="printFullFeeLedgerButton" type="button" class="btn btnSoft" onclick="printFullFeeLedger_()" disabled>🖨️ Print Full Ledger / Save PDF</button>' +
+          '<button id="downloadFeeLedgerExcelButton" type="button" class="btn btnPrimary" onclick="downloadFeeLedgerExcel_()" disabled>⬇️ Download Ledger Excel</button>' +
+        '</div>' +
       '</div>';
   }
 
@@ -21482,6 +21488,9 @@ function renderFeeLedgerHistory_(transactions) {
   feeLedgerTransactions = transactions.slice();
 
 
+  setFeeLedgerExportReady_(true);
+
+
   if (!transactions.length) {
     history.innerHTML =
       '<div class="feeHistoryCard">' +
@@ -21538,6 +21547,9 @@ function renderFeeLedgerError_(message) {
   if (!history) return;
 
 
+  setFeeLedgerExportReady_(false);
+
+
   history.innerHTML =
     '<div class="feeHistoryCard">' +
       '<div class="feeHistoryTitle">🧾 Receipt History</div>' +
@@ -21545,6 +21557,197 @@ function renderFeeLedgerError_(message) {
         escapeHtml(message || 'Receipt history unavailable.') +
       '</div>' +
     '</div>';
+}
+
+
+function setFeeLedgerExportReady_(ready) {
+  const printButton = document.getElementById('printFullFeeLedgerButton');
+  const excelButton = document.getElementById('downloadFeeLedgerExcelButton');
+  if (printButton) printButton.disabled = !ready;
+  if (excelButton) excelButton.disabled = !ready;
+}
+
+
+function feeLedgerNumber_(value) {
+  const number = Number(value || 0);
+  return Number.isFinite(number) ? number : 0;
+}
+
+
+function feeLedgerFileName_() {
+  const student = feeModuleStudent || {};
+  const studentId = String(student.id || 'Student')
+    .replace(/[^A-Za-z0-9_-]+/g, '_');
+  return 'Mess_Fee_Ledger_' + studentId + '_2026-27';
+}
+
+
+function printFullFeeLedger_() {
+  const student = feeModuleStudent || {};
+  const account = feeModuleAccount || {};
+
+
+  if (!student.id) {
+    window.alert('Please search and load a student fee account first.');
+    return;
+  }
+
+
+  const ledgerWindow = window.open('', '_blank', 'width=1050,height=950');
+  if (!ledgerWindow) {
+    window.alert('Please allow pop-ups to print the full ledger.');
+    return;
+  }
+
+
+  const transactions = Array.isArray(feeLedgerTransactions)
+    ? feeLedgerTransactions
+    : [];
+
+
+  const transactionRows = transactions.length
+    ? transactions.map(function(item, index) {
+        const debit = feeLedgerNumber_(item.debit);
+        const credit = feeLedgerNumber_(item.credit);
+        const status = String(item.status || 'ACTIVE').trim().toUpperCase();
+        return '<tr' + (status === 'REVERSED' ? ' class="reversed"' : '') + '>' +
+          '<td>' + (index + 1) + '</td>' +
+          '<td>' + escapeHtml(item.transactionDate || '-') + '</td>' +
+          '<td>' + escapeHtml(item.receiptNo || '-') + '</td>' +
+          '<td>' + escapeHtml(feeHeadLabel_(item.feeHead)) + '</td>' +
+          '<td>' + escapeHtml(item.paymentMode || '-') + '</td>' +
+          '<td>' + escapeHtml(item.referenceNo || '-') + '</td>' +
+          '<td class="amount">' + escapeHtml(debit ? formatFeeMoney_(debit) : '-') + '</td>' +
+          '<td class="amount">' + escapeHtml(credit ? formatFeeMoney_(credit) : '-') + '</td>' +
+          '<td>' + escapeHtml(status) + '</td>' +
+          '<td>' + escapeHtml(item.collectedBy || '-') + '</td>' +
+          '<td>' + escapeHtml(item.remarks || '-') + '</td>' +
+        '</tr>';
+      }).join('')
+    : '<tr><td colspan="11" class="empty">No new receipt transactions found for this student.</td></tr>';
+
+
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' +
+    escapeHtml(feeLedgerFileName_()) +
+    '</title><style>' +
+      'body{font-family:Arial,sans-serif;margin:0;background:#fff;color:#111}.wrap{max-width:1100px;margin:0 auto;padding:28px}.school{text-align:center}.school h1{font-size:23px;margin:0 0 5px}.addr{font-size:12px;line-height:1.45}.title{text-align:center;font-size:19px;font-weight:800;margin:18px 0 14px;padding:9px;border-top:1px solid #222;border-bottom:1px solid #222}.actions{display:flex;gap:8px;margin-bottom:15px}.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 18px;padding:11px;border:1px solid #aaa;font-size:13px}.label{font-weight:700}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.box{border:1px solid #bbb;padding:9px;font-size:11px}.box strong{display:block;font-size:14px;margin-top:4px}.box.outstanding{background:#fff4e5}.table{width:100%;border-collapse:collapse;margin-top:14px;font-size:10px}.table th,.table td{border:1px solid #999;padding:6px;vertical-align:top}.table th{background:#eef4ff}.table .amount{text-align:right;white-space:nowrap}.table .reversed{color:#777;text-decoration:line-through;background:#f5f5f5}.empty{text-align:center;padding:18px!important;color:#666}.footer{display:flex;justify-content:space-between;margin-top:38px;font-size:11px}.note{text-align:center;margin-top:22px;font-size:9px;color:#555}@media print{.actions{display:none}.wrap{padding:8px}@page{size:landscape;margin:9mm}}' +
+    '</style></head><body><div class="wrap">' +
+      '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
+      '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur<br>Tal. Shrirampur, Dist. Ahilyanagar, Maharashtra - 413715</div></div>' +
+      '<div class="title">STUDENT MESS FEE LEDGER — ACADEMIC YEAR 2026-27</div>' +
+      '<div class="student"><div><span class="label">Student Name:</span> ' + escapeHtml(student.name || '-') + '</div><div><span class="label">Student ID:</span> ' + escapeHtml(student.id || '-') + '</div><div><span class="label">Class:</span> ' + escapeHtml(student.className || '-') + '</div></div>' +
+      '<div class="summary">' +
+        '<div class="box">Previous Opening Due<strong>' + escapeHtml(formatFeeMoney_(account.openingDue)) + '</strong></div>' +
+        '<div class="box">2026-27 Mess Fee<strong>' + escapeHtml(formatFeeMoney_(account.currentYearFee)) + '</strong></div>' +
+        '<div class="box">Other Debit<strong>' + escapeHtml(formatFeeMoney_(account.otherDebit)) + '</strong></div>' +
+        '<div class="box">Total Payable<strong>' + escapeHtml(formatFeeMoney_(account.totalPayable)) + '</strong></div>' +
+        '<div class="box">Received up to 25-08-2026<strong>' + escapeHtml(formatFeeMoney_(account.broughtForwardReceived)) + '</strong></div>' +
+        '<div class="box">New Receipts<strong>' + escapeHtml(formatFeeMoney_(account.newReceipts)) + '</strong></div>' +
+        '<div class="box">Total Received<strong>' + escapeHtml(formatFeeMoney_(account.totalReceived)) + '</strong></div>' +
+        '<div class="box outstanding">Current Outstanding<strong>' + escapeHtml(formatFeeMoney_(account.outstanding)) + '</strong></div>' +
+      '</div>' +
+      '<table class="table"><thead><tr><th>#</th><th>Date</th><th>Receipt No.</th><th>Fee Head</th><th>Mode</th><th>Reference</th><th>Debit</th><th>Credit</th><th>Status</th><th>Collected By</th><th>Remarks</th></tr></thead><tbody>' + transactionRows + '</tbody></table>' +
+      '<div class="footer"><div>Generated: ' + escapeHtml(new Date().toLocaleString()) + '</div><div>Authorised Signatory</div></div>' +
+      '<div class="note">This is a computer-generated student mess fee ledger.</div>' +
+    '</div></body></html>';
+
+
+  ledgerWindow.document.open();
+  ledgerWindow.document.write(html);
+  ledgerWindow.document.close();
+}
+
+
+function downloadFeeLedgerExcel_() {
+  const student = feeModuleStudent || {};
+  const account = feeModuleAccount || {};
+
+
+  if (!student.id) {
+    window.alert('Please search and load a student fee account first.');
+    return;
+  }
+
+
+  if (typeof XLSX === 'undefined') {
+    window.alert('Excel library is not available. Please refresh the app and try again.');
+    return;
+  }
+
+
+  const summaryRows = [
+    ['Nyati Samata International School'],
+    ['Student Mess Fee Ledger — Academic Year 2026-27'],
+    [],
+    ['Student Name', student.name || '-'],
+    ['Student ID', student.id || '-'],
+    ['Class', student.className || '-'],
+    [],
+    ['Account Summary', 'Amount'],
+    ['Previous Opening Due', feeLedgerNumber_(account.openingDue)],
+    ['2026-27 Mess Fee', feeLedgerNumber_(account.currentYearFee)],
+    ['Other Debit', feeLedgerNumber_(account.otherDebit)],
+    ['Total Payable', feeLedgerNumber_(account.totalPayable)],
+    ['Received up to 25-08-2026', feeLedgerNumber_(account.broughtForwardReceived)],
+    ['New Receipts', feeLedgerNumber_(account.newReceipts)],
+    ['Total Received', feeLedgerNumber_(account.totalReceived)],
+    ['Current Outstanding', feeLedgerNumber_(account.outstanding)],
+    [],
+    ['Generated', new Date().toLocaleString()]
+  ];
+
+
+  const transactionRows = [[
+    'Sr. No.',
+    'Transaction Date',
+    'Receipt No.',
+    'Fee Head',
+    'Payment Mode',
+    'Reference No.',
+    'Debit',
+    'Credit',
+    'Status',
+    'Collected By',
+    'Entry Date & Time',
+    'Remarks'
+  ]];
+
+
+  (Array.isArray(feeLedgerTransactions) ? feeLedgerTransactions : [])
+    .forEach(function(item, index) {
+      transactionRows.push([
+        index + 1,
+        item.transactionDate || '',
+        item.receiptNo || '',
+        feeHeadLabel_(item.feeHead),
+        item.paymentMode || '',
+        item.referenceNo || '',
+        feeLedgerNumber_(item.debit),
+        feeLedgerNumber_(item.credit),
+        String(item.status || 'ACTIVE').trim().toUpperCase(),
+        item.collectedBy || '',
+        item.entryDateTime || '',
+        item.remarks || ''
+      ]);
+    });
+
+
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryRows);
+  const transactionsSheet = XLSX.utils.aoa_to_sheet(transactionRows);
+
+
+  summarySheet['!cols'] = [{ wch: 30 }, { wch: 22 }];
+  transactionsSheet['!cols'] = [
+    { wch: 8 }, { wch: 16 }, { wch: 20 }, { wch: 24 },
+    { wch: 15 }, { wch: 20 }, { wch: 14 }, { wch: 14 },
+    { wch: 12 }, { wch: 20 }, { wch: 22 }, { wch: 30 }
+  ];
+
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, summarySheet, 'Account Summary');
+  XLSX.utils.book_append_sheet(workbook, transactionsSheet, 'Receipt Transactions');
+  XLSX.writeFile(workbook, feeLedgerFileName_() + '.xlsx');
 }
 
 
