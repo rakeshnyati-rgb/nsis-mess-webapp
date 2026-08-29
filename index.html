@@ -2791,6 +2791,453 @@
     }
 
 
+    .feeTabBar {
+      display: flex;
+      gap: 8px;
+      margin: 0 0 14px;
+      padding: 6px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 5px 16px rgba(31,47,75,.05);
+      scrollbar-width: thin;
+    }
+
+
+    .feeTabButton {
+      flex: 0 0 auto;
+      min-width: 122px;
+      min-height: 48px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, transform .18s ease;
+    }
+
+
+    .feeTabButton:active {
+      transform: scale(.98);
+    }
+
+
+    .feeTabButton.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(32,91,154,.22);
+    }
+
+
+    .feeTabView {
+      display: none;
+      animation: feeTabIn .18s ease;
+    }
+
+
+    .feeTabView.active {
+      display: block;
+    }
+
+
+    @keyframes feeTabIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+
+    .feeDashboardHero {
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #143a69, #215b9a);
+      color: #fff;
+      box-shadow: 0 12px 26px rgba(20,58,105,.18);
+    }
+
+
+    .feeDashboardTitle {
+      font-size: 20px;
+      font-weight: 950;
+    }
+
+
+    .feeDashboardSub {
+      margin-top: 5px;
+      color: rgba(255,255,255,.82);
+      font-size: 11px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+
+    .feeDashboardRefresh {
+      margin-top: 13px;
+      min-height: 42px;
+      padding: 9px 13px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 11px;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+
+    .feeDashboardGrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+
+    .feeDashboardKpi {
+      min-height: 94px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(31,47,75,.04);
+    }
+
+
+    .feeDashboardKpi.success {
+      background: var(--success-bg);
+      border-color: #cde8d5;
+    }
+
+
+    .feeDashboardKpi.warning {
+      background: var(--warning-bg);
+      border-color: #f5ddb9;
+    }
+
+
+    .feeDashboardKpi.info {
+      background: var(--info-bg);
+      border-color: #d8e4ff;
+    }
+
+
+    .feeDashboardKpiLabel {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.3;
+      font-weight: 850;
+    }
+
+
+    .feeDashboardKpiValue {
+      margin-top: 8px;
+      font-size: 22px;
+      line-height: 1.05;
+      font-weight: 950;
+      letter-spacing: -.3px;
+      overflow-wrap: anywhere;
+    }
+
+
+    .feeDashboardActions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+
+    .feeDashboardAction {
+      min-height: 78px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #fff;
+      color: var(--text);
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
+
+    .feeDashboardAction strong,
+    .feeDashboardAction span {
+      display: block;
+    }
+
+
+    .feeDashboardAction strong {
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+
+    .feeDashboardAction span {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 9.5px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+
+    .feeEmptyState {
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+
+    .feeEmptyStateIcon {
+      font-size: 32px;
+    }
+
+
+    .feeEmptyStateTitle {
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+
+    .feeEmptyStateText {
+      max-width: 420px;
+      margin: 6px auto 13px;
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+
+    .feeStudentSearchBox {
+      position: relative;
+    }
+
+
+    .feeStudentSuggestions {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 5px);
+      z-index: 45;
+      display: none;
+      max-height: 310px;
+      overflow-y: auto;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 14px 30px rgba(31,47,75,.16);
+    }
+
+
+    .feeStudentSuggestions.show {
+      display: block;
+    }
+
+
+    .feeStudentSuggestion {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      min-height: 48px;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
+
+    .feeStudentSuggestion:hover,
+    .feeStudentSuggestion:focus {
+      background: var(--info-bg);
+    }
+
+
+    .feeStudentSuggestionName {
+      display: block;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+
+    .feeStudentSuggestionMeta {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9.5px;
+      font-weight: 750;
+    }
+
+
+    .feeStudentSuggestionClass {
+      flex: 0 0 auto;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+
+    .feeStatementControls {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(190px,auto);
+      gap: 10px;
+      align-items: end;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+
+    .feeStatementControls .field {
+      margin: 0;
+    }
+
+
+    .feeInlineStatement {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+
+    .feeInlineStatementHead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+
+    .feeInlineStatementTitle {
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+
+    .feeInlineStatementSub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9.5px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+
+    .feeInlineTableWrap {
+      overflow: auto;
+      max-height: 520px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+
+    .feeInlineTable {
+      width: 100%;
+      min-width: 970px;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+
+    .feeInlineTable th,
+    .feeInlineTable td {
+      padding: 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+
+    .feeInlineTable th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #eaf1ff;
+      color: var(--primary-dark);
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+
+    .feeInlineTable td.money,
+    .feeInlineTable th.money {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+
+    .feeInlineTable tr.reversed td {
+      background: var(--danger-bg);
+    }
+
+
+    .feeInlineTable tr.adjustment td {
+      background: var(--warning-bg);
+    }
+
+
+    .feeInlineTable tfoot td {
+      position: sticky;
+      bottom: 0;
+      background: #eef4ff;
+      font-weight: 950;
+    }
+
+
+    .feeInlineRowExtra {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 8.5px;
+      line-height: 1.4;
+    }
+
+
+    .feeInlineReceiptButton {
+      min-height: 32px;
+      padding: 6px 9px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--primary-dark);
+      font: inherit;
+      font-size: 9px;
+      font-weight: 900;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+
+    @media (max-width: 430px) {
+      .feeTabButton {
+        min-width: 112px;
+      }
+
+
+      .feeStatementControls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
 
 
     .feeReceiptSuccess {
@@ -5482,217 +5929,244 @@
 
     <!-- FEES & ACCOUNTS SCREEN -->
     <section id="screenFees" class="screen">
-
-
-
-
       <div class="softwarePageHead">
         <div>
           <div class="softwarePageTitle">Fees & Accounts</div>
-          <div class="softwarePageSub">Student ledger, balance and secure receipt collection</div>
+          <div class="softwarePageSub">Student accounts, secure collection and reports</div>
         </div>
       </div>
 
 
-
-
-      <div class="card manualCard">
-        <div class="field" style="margin-top:0;">
-          <label for="feeStudentSearch">Student ID</label>
-          <input id="feeStudentSearch" class="input" type="text" placeholder="Example: STU0001" autocomplete="off">
-        </div>
-
-
-
-
-        <button id="feeSearchButton" class="btn btnPrimary" type="button" onclick="loadFeeModuleAccount()">
-          🔎 Search Fee Account
-        </button>
-
-
-
-
-        <div id="feeModuleResult" class="resultArea"></div>
-        <div id="feeModuleLedger"></div>
-        <div id="feeModuleHistory"></div>
+      <div class="feeTabBar" role="tablist" aria-label="Fees and accounts sections">
+        <button id="feeTabButtonDashboard" class="feeTabButton active" type="button" role="tab" aria-selected="true" onclick="openFeeTab_('dashboard')">🏠 Overview</button>
+        <button id="feeTabButtonAccount" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('account')">📒 Student Account</button>
+        <button id="feeTabButtonCollect" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('collect')">💳 Collect Fee</button>
+        <button id="feeTabButtonDaily" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('daily')">📅 Daily Collection</button>
+        <button id="feeTabButtonOutstanding" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('outstanding')">⚠️ Outstanding</button>
       </div>
 
 
-
-
-      <div id="feeCollectPanel" class="card manualCard" style="margin-top:14px;display:none;">
-        <div class="sectionTitle" style="margin-top:0;">Collect Mess Fee</div>
-        <div id="feeCollectStudentCaption" class="helperText"></div>
-
-
-
-
-        <div class="field">
-          <label for="feeCollectAmount">Amount (₹)</label>
-          <input id="feeCollectAmount" class="input" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Enter amount">
+      <div id="feeTabDashboard" class="feeTabView active" role="tabpanel">
+        <div class="feeDashboardHero">
+          <div class="feeDashboardTitle">Fee Control Center</div>
+          <div class="feeDashboardSub">Use the separate screens below. Only the selected section will remain visible.</div>
+          <button id="feeDashboardRefreshButton" class="feeDashboardRefresh" type="button" onclick="refreshFeeDashboard_()">↻ Refresh Today Summary</button>
         </div>
 
 
-
-
-        <div class="field">
-          <label for="feeCollectHead">Fee Head</label>
-          <select id="feeCollectHead">
-            <option value="CURRENT_YEAR_FEE">Current Year Fee</option>
-            <option value="OPENING_DUE">Opening Due</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </div>
-
-
-
-
-        <div class="field">
-          <label for="feeCollectMode">Payment Mode</label>
-          <select id="feeCollectMode">
-            <option value="">Select Payment Mode</option>
-            <option value="CASH">Cash</option>
-            <option value="UPI">UPI</option>
-            <option value="BANK">Bank</option>
-            <option value="CHEQUE">Cheque</option>
-          </select>
-        </div>
-
-
-
-
-        <div class="field">
-          <label for="feeCollectReference">Reference No.</label>
-          <input id="feeCollectReference" class="input" type="text" placeholder="UPI / Bank / Cheque reference" autocomplete="off">
-        </div>
-
-
-
-
-        <div class="field">
-          <label for="feeCollectDate">Transaction Date</label>
-          <input id="feeCollectDate" class="input" type="date">
-        </div>
-
-
-
-
-        <div class="field">
-          <label for="feeCollectRemarks">Remarks</label>
-          <input id="feeCollectRemarks" class="input" type="text" placeholder="Optional remarks" autocomplete="off">
-        </div>
-
-
-
-
-        <button id="feeCollectButton" class="btn btnPrimary" type="button" onclick="submitFeeCollection()">
-          💳 Collect Fee & Create Receipt
-        </button>
-
-
-
-
-        <div id="feeCollectionResult" class="resultArea"></div>
-      </div>
-
-
-      <div id="feeReportsPanel" class="card feeReportPanel" style="display:none;">
-
-
-        <div class="softwarePageHead" style="margin-bottom:12px;">
-          <div>
-            <div class="softwarePageTitle" style="font-size:18px;">Fee Reports & Controls</div>
-            <div class="softwarePageSub">Secure collection register and outstanding-fee monitoring</div>
+        <div class="feeDashboardGrid">
+          <div class="feeDashboardKpi success">
+            <div class="feeDashboardKpiLabel">Today's Collection</div>
+            <div id="feeDashboardTodayCollection" class="feeDashboardKpiValue">—</div>
+          </div>
+          <div class="feeDashboardKpi info">
+            <div class="feeDashboardKpiLabel">Today's Active Receipts</div>
+            <div id="feeDashboardTodayReceipts" class="feeDashboardKpiValue">—</div>
+          </div>
+          <div class="feeDashboardKpi warning">
+            <div class="feeDashboardKpiLabel">Total Outstanding</div>
+            <div id="feeDashboardOutstanding" class="feeDashboardKpiValue">—</div>
+          </div>
+          <div class="feeDashboardKpi">
+            <div class="feeDashboardKpiLabel">Students With Outstanding</div>
+            <div id="feeDashboardOutstandingStudents" class="feeDashboardKpiValue">—</div>
           </div>
         </div>
 
 
-        <div class="feeReportSection">
-          <div class="sectionTitle" style="margin-top:0;">📅 Daily Fee Collection Report</div>
+        <div id="feeDashboardStatus" class="feeReportCaption">Press “Refresh Today Summary” to load current figures.</div>
 
 
-          <div class="feeReportFilterGrid">
-            <div class="field">
-              <label for="feeReportStartDate">From Date</label>
-              <input id="feeReportStartDate" class="input" type="date">
+        <div class="feeDashboardActions">
+          <button class="feeDashboardAction" type="button" onclick="openFeeTab_('account')"><strong>📒 Student Account</strong><span>Search ledger, receipts and reversal history</span></button>
+          <button id="feeDashboardCollectAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('collect')"><strong>💳 Collect Fee</strong><span>Create a secure fee receipt</span></button>
+          <button id="feeDashboardDailyAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('daily')"><strong>📅 Daily Collection</strong><span>Collection register, PDF and Excel</span></button>
+          <button id="feeDashboardOutstandingAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('outstanding')"><strong>⚠️ Outstanding</strong><span>Class-wise pending fee report</span></button>
+        </div>
+      </div>
+
+
+      <div id="feeTabAccount" class="feeTabView" role="tabpanel">
+        <div class="card manualCard">
+          <div class="sectionTitle" style="margin-top:0;">Student Fee Account</div>
+          <div class="feeStudentSearchBox">
+            <div class="field" style="margin-top:0;">
+              <label for="feeStudentSearch">Student Name or Student Code / ID</label>
+              <input id="feeStudentSearch" class="input" type="text" placeholder="Type student name or ID" autocomplete="off">
             </div>
-
-
-            <div class="field">
-              <label for="feeReportEndDate">To Date</label>
-              <input id="feeReportEndDate" class="input" type="date">
-            </div>
+            <div id="feeStudentSuggestions" class="feeStudentSuggestions" role="listbox" aria-label="Matching students"></div>
           </div>
 
 
-          <button id="loadFeeCollectionReportButton" class="btn btnPrimary" type="button" onclick="loadFeeCollectionReport_()" style="margin-top:10px;">
-            📊 Load Collection Report
+          <button id="feeSearchButton" class="btn btnPrimary" type="button" onclick="loadFeeModuleAccount()">
+            🔎 Search Fee Account
           </button>
 
 
-          <div id="feeCollectionReportResult" class="resultArea"></div>
+          <div id="feeModuleResult" class="resultArea"></div>
+          <div id="feeModuleLedger"></div>
+          <div id="feeModuleStatement"></div>
+          <div id="feeModuleHistory"></div>
+        </div>
+      </div>
 
 
-          <div id="feeCollectionReportActions" class="feeReportActions" style="display:none;">
-            <button type="button" class="btn btnSoft" onclick="printFeeCollectionReport_()">🖨️ Print / Save PDF</button>
-            <button type="button" class="btn btnPrimary" onclick="downloadFeeCollectionReportExcel_()">⬇️ Download Excel</button>
-          </div>
+      <div id="feeTabCollect" class="feeTabView" role="tabpanel">
+        <div id="feeCollectEmptyState" class="card feeEmptyState">
+          <div class="feeEmptyStateIcon">🎓</div>
+          <div id="feeCollectEmptyTitle" class="feeEmptyStateTitle">Select a student first</div>
+          <div id="feeCollectEmptyText" class="feeEmptyStateText">Open Student Account, search the Student ID and verify the outstanding balance. Then return here to collect the fee.</div>
+          <button class="btn btnPrimary" type="button" onclick="openFeeTab_('account')">Open Student Account</button>
         </div>
 
 
-        <div class="feeReportSection">
-          <div class="sectionTitle" style="margin-top:0;">⚠️ Outstanding Fees Report</div>
+        <div id="feeCollectPanel" class="card manualCard" style="display:none;">
+          <div class="sectionTitle" style="margin-top:0;">Collect Mess Fee</div>
+          <div id="feeCollectStudentCaption" class="helperText"></div>
 
 
-          <div class="feeReportFilterGrid">
-            <div class="field">
-              <label for="feeOutstandingClass">Class</label>
-              <select id="feeOutstandingClass" class="input">
-                <option value="">All Classes</option>
-              </select>
-            </div>
-
-
-            <div class="field">
-              <label for="feeOutstandingStatus">Account Status</label>
-              <select id="feeOutstandingStatus" class="input">
-                <option value="OUTSTANDING">All Outstanding</option>
-                <option value="PARTIAL">Partial</option>
-                <option value="UNPAID">Unpaid</option>
-                <option value="PAID">Paid</option>
-                <option value="ADVANCE">Advance</option>
-                <option value="ALL">All Accounts</option>
-              </select>
-            </div>
+          <div class="field">
+            <label for="feeCollectAmount">Amount (₹)</label>
+            <input id="feeCollectAmount" class="input" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Enter amount">
           </div>
 
 
           <div class="field">
-            <label for="feeOutstandingSearch">Student Search</label>
-            <input id="feeOutstandingSearch" class="input" type="text" placeholder="Student ID or Name" autocomplete="off">
+            <label for="feeCollectHead">Particular / Fee Head (Optional)</label>
+            <select id="feeCollectHead">
+              <option value="">Mess Fee (Default)</option>
+              <option value="CURRENT_YEAR_FEE">Current Year Fee</option>
+              <option value="OPENING_DUE">Opening Due</option>
+              <option value="OTHER">Other</option>
+            </select>
           </div>
 
 
-          <button id="loadFeeOutstandingReportButton" class="btn btnPrimary" type="button" onclick="loadFeeOutstandingReport_()">
-            📋 Load Outstanding Report
+          <div class="field">
+            <label for="feeCollectMode">Payment Mode</label>
+            <select id="feeCollectMode">
+              <option value="">Select Payment Mode</option>
+              <option value="CASH">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="BANK">Bank</option>
+              <option value="CHEQUE">Cheque</option>
+            </select>
+          </div>
+
+
+          <div class="field">
+            <label for="feeCollectReference">Reference No.</label>
+            <input id="feeCollectReference" class="input" type="text" placeholder="UPI / Bank / Cheque reference" autocomplete="off">
+          </div>
+
+
+          <div class="field">
+            <label for="feeCollectDate">Transaction Date</label>
+            <input id="feeCollectDate" class="input" type="date">
+          </div>
+
+
+          <div class="field">
+            <label for="feeCollectRemarks">Remarks</label>
+            <input id="feeCollectRemarks" class="input" type="text" placeholder="Optional remarks" autocomplete="off">
+          </div>
+
+
+          <button id="feeCollectButton" class="btn btnPrimary" type="button" onclick="submitFeeCollection()">
+            💳 Collect Fee & Create Receipt
           </button>
 
 
-          <div id="feeOutstandingReportResult" class="resultArea"></div>
+          <div id="feeCollectionResult" class="resultArea"></div>
+        </div>
+      </div>
 
 
-          <div id="feeOutstandingReportActions" class="feeReportActions" style="display:none;">
-            <button type="button" class="btn btnSoft" onclick="printFeeOutstandingReport_()">🖨️ Print / Save PDF</button>
-            <button type="button" class="btn btnPrimary" onclick="downloadFeeOutstandingReportExcel_()">⬇️ Download Excel</button>
+      <div id="feeReportsPanel" style="display:none;">
+        <div id="feeTabDaily" class="feeTabView" role="tabpanel">
+          <div class="card feeReportPanel">
+            <div class="sectionTitle" style="margin-top:0;">📅 Daily Fee Collection Report</div>
+
+
+            <div class="feeReportFilterGrid">
+              <div class="field">
+                <label for="feeReportStartDate">From Date</label>
+                <input id="feeReportStartDate" class="input" type="date">
+              </div>
+
+
+              <div class="field">
+                <label for="feeReportEndDate">To Date</label>
+                <input id="feeReportEndDate" class="input" type="date">
+              </div>
+            </div>
+
+
+            <button id="loadFeeCollectionReportButton" class="btn btnPrimary" type="button" onclick="loadFeeCollectionReport_()" style="margin-top:10px;">
+              📊 Load Collection Report
+            </button>
+
+
+            <div id="feeCollectionReportResult" class="resultArea"></div>
+
+
+            <div id="feeCollectionReportActions" class="feeReportActions" style="display:none;">
+              <button type="button" class="btn btnSoft" onclick="printFeeCollectionReport_()">🖨️ Print / Save PDF</button>
+              <button type="button" class="btn btnPrimary" onclick="downloadFeeCollectionReportExcel_()">⬇️ Download Excel</button>
+            </div>
           </div>
         </div>
 
 
+        <div id="feeTabOutstanding" class="feeTabView" role="tabpanel">
+          <div class="card feeReportPanel">
+            <div class="sectionTitle" style="margin-top:0;">⚠️ Outstanding Fees Report</div>
+
+
+            <div class="feeReportFilterGrid">
+              <div class="field">
+                <label for="feeOutstandingClass">Class</label>
+                <select id="feeOutstandingClass" class="input">
+                  <option value="">All Classes</option>
+                </select>
+              </div>
+
+
+              <div class="field">
+                <label for="feeOutstandingStatus">Account Status</label>
+                <select id="feeOutstandingStatus" class="input">
+                  <option value="OUTSTANDING">All Outstanding</option>
+                  <option value="PARTIAL">Partial</option>
+                  <option value="UNPAID">Unpaid</option>
+                  <option value="PAID">Paid</option>
+                  <option value="ADVANCE">Advance</option>
+                  <option value="ALL">All Accounts</option>
+                </select>
+              </div>
+            </div>
+
+
+            <div class="field">
+              <label for="feeOutstandingSearch">Student Search</label>
+              <input id="feeOutstandingSearch" class="input" type="text" placeholder="Student ID or Name" autocomplete="off">
+            </div>
+
+
+            <button id="loadFeeOutstandingReportButton" class="btn btnPrimary" type="button" onclick="loadFeeOutstandingReport_()">
+              📋 Load Outstanding Report
+            </button>
+
+
+            <div id="feeOutstandingReportResult" class="resultArea"></div>
+
+
+            <div id="feeOutstandingReportActions" class="feeReportActions" style="display:none;">
+              <button type="button" class="btn btnSoft" onclick="printFeeOutstandingReport_()">🖨️ Print / Save PDF</button>
+              <button type="button" class="btn btnPrimary" onclick="downloadFeeOutstandingReportExcel_()">⬇️ Download Excel</button>
+            </div>
+          </div>
+        </div>
       </div>
-
-
-
-
     </section>
 
 
@@ -6267,6 +6741,16 @@ let feeReverseBusy = false;
 let feeReportBusy = false;
 let lastFeeCollectionReport = null;
 let lastFeeOutstandingReport = null;
+let activeFeeTab = 'dashboard';
+let feeDashboardRefreshStage = '';
+let feeDashboardTodaySummary = null;
+let feeDashboardOutstandingSummary = null;
+let feeDashboardUpdatedAt = '';
+let feeStudentSearchTimer = null;
+let feeStudentSearchMatches = [];
+let feeStudentSearchPendingQuery = '';
+let feeStudentSearchRequestQuery = '';
+let feeStudentSearchAutoOpenQuery = '';
 
 
 
@@ -6942,6 +7426,91 @@ window.addEventListener(
 
 
 
+    /* FEE STUDENT SEARCH */
+
+
+    if (
+      message.type === 'FEE_STUDENT_SEARCH_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+
+
+      finishRequest();
+
+
+      const result = message.result || {};
+      const completedQuery = feeStudentSearchRequestQuery;
+      feeStudentSearchRequestQuery = '';
+
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+
+      if (result.success !== true) {
+        renderFeeStudentSuggestions_([], result.message || 'Student search unavailable.');
+      }
+      else {
+        feeStudentSearchMatches = Array.isArray(result.matches)
+          ? result.matches.slice()
+          : [];
+        renderFeeStudentSuggestions_(feeStudentSearchMatches, '');
+      }
+
+
+      const autoOpenQuery = String(feeStudentSearchAutoOpenQuery || '').trim();
+      if (
+        autoOpenQuery &&
+        autoOpenQuery.toUpperCase() === String(completedQuery || '').toUpperCase()
+      ) {
+        feeStudentSearchAutoOpenQuery = '';
+        const exactAutoMatch = feeStudentSearchMatches.find(function(student) {
+          return String(student.id || '').trim().toUpperCase() === autoOpenQuery.toUpperCase();
+        });
+
+
+        if (exactAutoMatch) {
+          selectFeeStudent_(feeStudentSearchMatches.indexOf(exactAutoMatch));
+          return;
+        }
+
+
+        if (feeStudentSearchMatches.length === 1) {
+          selectFeeStudent_(0);
+          return;
+        }
+
+
+        if (feeStudentSearchMatches.length > 1) {
+          showError('feeModuleResult', 'Please select the correct student from the matching list.');
+        }
+        else if (!feeStudentSearchMatches.length) {
+          showError(
+            'feeModuleResult',
+            result.message || 'No matching student found for this name or ID.'
+          );
+        }
+      }
+
+
+      const pendingQuery = String(feeStudentSearchPendingQuery || '').trim();
+      feeStudentSearchPendingQuery = '';
+
+
+      if (
+        pendingQuery &&
+        pendingQuery.toUpperCase() !== String(completedQuery || '').toUpperCase()
+      ) {
+        requestFeeStudentSuggestions_(pendingQuery);
+      }
+
+
+      return;
+    }
+
+
     /* FEE ACCOUNT VIEW */
 
 
@@ -7307,6 +7876,11 @@ window.addEventListener(
           'feeCollectionReportResult',
           result.message || 'Unable to load collection report.'
         );
+        if (feeDashboardRefreshStage === 'collection') {
+          finishFeeDashboardRefresh_(
+            result.message || 'Unable to refresh the fee dashboard.'
+          );
+        }
         return;
       }
 
@@ -7315,6 +7889,30 @@ window.addEventListener(
 
       lastFeeCollectionReport = result;
       renderFeeCollectionReport_(result);
+
+
+      if (feeDashboardRefreshStage === 'collection') {
+        feeDashboardTodaySummary = result.summary || {};
+        feeDashboardRefreshStage = 'outstanding';
+
+
+        const outstandingClass = document.getElementById('feeOutstandingClass');
+        const outstandingStatus = document.getElementById('feeOutstandingStatus');
+        const outstandingSearch = document.getElementById('feeOutstandingSearch');
+        if (outstandingClass) outstandingClass.value = '';
+        if (outstandingStatus) outstandingStatus.value = 'OUTSTANDING';
+        if (outstandingSearch) outstandingSearch.value = '';
+
+
+        const dashboardStatus = document.getElementById('feeDashboardStatus');
+        if (dashboardStatus) dashboardStatus.textContent = 'Loading total outstanding fees...';
+
+
+        loadFeeOutstandingReport_();
+      }
+
+
+      updateFeeDashboard_();
       return;
     }
 
@@ -7358,6 +7956,11 @@ window.addEventListener(
           'feeOutstandingReportResult',
           result.message || 'Unable to load outstanding report.'
         );
+        if (feeDashboardRefreshStage === 'outstanding') {
+          finishFeeDashboardRefresh_(
+            result.message || 'Unable to refresh the fee dashboard.'
+          );
+        }
         return;
       }
 
@@ -7367,6 +7970,17 @@ window.addEventListener(
       lastFeeOutstandingReport = result;
       renderFeeOutstandingReport_(result);
       updateOutstandingClassOptions_(result.classes || []);
+
+
+      if (feeDashboardRefreshStage === 'outstanding') {
+        feeDashboardOutstandingSummary = result.summary || {};
+        feeDashboardUpdatedAt = new Date().toLocaleString();
+        feeDashboardRefreshStage = '';
+        setFeeDashboardBusy_(false);
+      }
+
+
+      updateFeeDashboard_();
       return;
     }
 
@@ -9201,6 +9815,19 @@ window.addEventListener(
 
 
       }
+      else if (failedAction === 'fee_student_search') {
+
+
+        feeStudentSearchRequestQuery = '';
+        renderFeeStudentSuggestions_(
+          [],
+          message.message || 'Student search backend error.'
+        );
+
+
+
+
+      }
       else if (failedAction === 'fee_account') {
 
 
@@ -9689,6 +10316,19 @@ function postToBackend(
 
 
     }
+    else if (action === 'fee_student_search') {
+
+
+      feeStudentSearchRequestQuery = '';
+      renderFeeStudentSuggestions_(
+        [],
+        'Mess System is still connecting.'
+      );
+
+
+
+
+    }
     else if (action === 'fee_account') {
 
 
@@ -9754,6 +10394,9 @@ function postToBackend(
         'feeCollectionReportResult',
         'Mess System is still connecting.'
       );
+      if (feeDashboardRefreshStage === 'collection') {
+        finishFeeDashboardRefresh_('Mess System is still connecting. Please try again.');
+      }
 
 
 
@@ -9769,6 +10412,9 @@ function postToBackend(
         'feeOutstandingReportResult',
         'Mess System is still connecting.'
       );
+      if (feeDashboardRefreshStage === 'outstanding') {
+        finishFeeDashboardRefresh_('Mess System is still connecting. Please try again.');
+      }
 
 
 
@@ -10133,6 +10779,19 @@ function postToBackend(
 
 
         }
+        else if (actionCopy === 'fee_student_search') {
+
+
+          feeStudentSearchRequestQuery = '';
+          renderFeeStudentSuggestions_(
+            [],
+            'Student search response timeout.'
+          );
+
+
+
+
+        }
         else if (actionCopy === 'fee_account') {
 
 
@@ -10198,6 +10857,9 @@ function postToBackend(
             'feeCollectionReportResult',
             'Collection report response timeout.'
           );
+          if (feeDashboardRefreshStage === 'collection') {
+            finishFeeDashboardRefresh_('Dashboard refresh timed out. Please try again.');
+          }
 
 
 
@@ -10213,6 +10875,9 @@ function postToBackend(
             'feeOutstandingReportResult',
             'Outstanding report response timeout.'
           );
+          if (feeDashboardRefreshStage === 'outstanding') {
+            finishFeeDashboardRefresh_('Dashboard refresh timed out. Please try again.');
+          }
 
 
 
@@ -13151,13 +13816,50 @@ function saveManagedStudent() {
 document.getElementById(
   'feeStudentSearch'
 ).addEventListener(
+  'input',
+  handleFeeStudentSearchInput_
+);
+
+
+
+
+
+
+document.getElementById(
+  'feeStudentSearch'
+).addEventListener(
   'keydown',
   function(event) {
     if (event.key === 'Enter') {
-      loadFeeModuleAccount();
+      event.preventDefault();
+      const input = document.getElementById('feeStudentSearch');
+      const hasSelectedStudent = input && input.dataset && input.dataset.studentId;
+
+
+      if (!hasSelectedStudent && feeStudentSearchMatches.length) {
+        selectFeeStudent_(0);
+      }
+      else {
+        loadFeeModuleAccount();
+      }
+    }
+    else if (event.key === 'Escape') {
+      hideFeeStudentSuggestions_();
     }
   }
 );
+
+
+
+
+
+
+document.addEventListener('click', function(event) {
+  const searchBox = document.querySelector('.feeStudentSearchBox');
+  if (searchBox && !searchBox.contains(event.target)) {
+    hideFeeStudentSuggestions_();
+  }
+});
 
 
 
@@ -21759,6 +22461,251 @@ function localDateInputValue_() {
 
 
 
+function updateFeeCollectView_() {
+
+
+  const collectPanel = document.getElementById('feeCollectPanel');
+  const emptyState = document.getElementById('feeCollectEmptyState');
+  const emptyTitle = document.getElementById('feeCollectEmptyTitle');
+  const emptyText = document.getElementById('feeCollectEmptyText');
+
+
+  const canCollect =
+    !!feeModuleStudent &&
+    feeModulePermissions.canCollect === true &&
+    hasFeeCollectPermission();
+
+
+  if (collectPanel) {
+    collectPanel.style.display = canCollect ? 'block' : 'none';
+  }
+
+
+  if (emptyState) {
+    emptyState.style.display = canCollect ? 'none' : 'block';
+  }
+
+
+  if (!canCollect && emptyTitle && emptyText) {
+    if (feeModuleStudent) {
+      emptyTitle.textContent = 'Fee collection not allowed';
+      emptyText.textContent =
+        'This student account is loaded, but collection permission is not available for this account or user.';
+    }
+    else {
+      emptyTitle.textContent = 'Select a student first';
+      emptyText.textContent =
+        'Open Student Account, search the Student ID and verify the outstanding balance. Then return here to collect the fee.';
+    }
+  }
+}
+
+
+function updateFeeDashboard_() {
+
+
+  const canCollect = hasFeeCollectPermission();
+  const canReports = hasFeeReportsPermission();
+
+
+  const collectTab = document.getElementById('feeTabButtonCollect');
+  const dailyTab = document.getElementById('feeTabButtonDaily');
+  const outstandingTab = document.getElementById('feeTabButtonOutstanding');
+  const collectAction = document.getElementById('feeDashboardCollectAction');
+  const dailyAction = document.getElementById('feeDashboardDailyAction');
+  const outstandingAction = document.getElementById('feeDashboardOutstandingAction');
+  const refreshButton = document.getElementById('feeDashboardRefreshButton');
+
+
+  if (collectTab) collectTab.style.display = canCollect ? '' : 'none';
+  if (dailyTab) dailyTab.style.display = canReports ? '' : 'none';
+  if (outstandingTab) outstandingTab.style.display = canReports ? '' : 'none';
+  if (collectAction) collectAction.style.display = canCollect ? '' : 'none';
+  if (dailyAction) dailyAction.style.display = canReports ? '' : 'none';
+  if (outstandingAction) outstandingAction.style.display = canReports ? '' : 'none';
+  if (refreshButton) refreshButton.style.display = canReports ? '' : 'none';
+
+
+  const collection = feeDashboardTodaySummary || {};
+  const outstanding = feeDashboardOutstandingSummary || {};
+
+
+  const todayCollection = document.getElementById('feeDashboardTodayCollection');
+  const todayReceipts = document.getElementById('feeDashboardTodayReceipts');
+  const outstandingAmount = document.getElementById('feeDashboardOutstanding');
+  const outstandingStudents = document.getElementById('feeDashboardOutstandingStudents');
+
+
+  if (todayCollection) {
+    todayCollection.textContent = feeDashboardTodaySummary
+      ? formatFeeMoney_(collection.totalCollected || 0)
+      : '—';
+  }
+
+
+  if (todayReceipts) {
+    todayReceipts.textContent = feeDashboardTodaySummary
+      ? String(Number(collection.activeReceiptCount || 0))
+      : '—';
+  }
+
+
+  if (outstandingAmount) {
+    outstandingAmount.textContent = feeDashboardOutstandingSummary
+      ? formatFeeMoney_(outstanding.totalOutstanding || 0)
+      : '—';
+  }
+
+
+  if (outstandingStudents) {
+    outstandingStudents.textContent = feeDashboardOutstandingSummary
+      ? String(Number(outstanding.studentCount || 0))
+      : '—';
+  }
+
+
+  const status = document.getElementById('feeDashboardStatus');
+  if (status && !canReports) {
+    status.textContent = 'Fee report permission is not enabled for this user.';
+  }
+  else if (status && feeDashboardUpdatedAt && !feeDashboardRefreshStage) {
+    status.textContent = 'Summary updated: ' + feeDashboardUpdatedAt;
+  }
+}
+
+
+function setFeeDashboardBusy_(busy) {
+
+
+  const button = document.getElementById('feeDashboardRefreshButton');
+  if (!button) return;
+
+
+  button.disabled = busy === true;
+  button.textContent = busy === true
+    ? 'Refreshing Summary...'
+    : '↻ Refresh Today Summary';
+}
+
+
+function finishFeeDashboardRefresh_(message) {
+
+
+  feeDashboardRefreshStage = '';
+  setFeeDashboardBusy_(false);
+  updateFeeDashboard_();
+
+
+  const status = document.getElementById('feeDashboardStatus');
+  if (status && message) {
+    status.textContent = message;
+  }
+}
+
+
+function refreshFeeDashboard_() {
+
+
+  if (!hasFeeReportsPermission()) {
+    finishFeeDashboardRefresh_('Fee report permission is not enabled for this user.');
+    return;
+  }
+
+
+  if (feeReportBusy || feeDashboardRefreshStage) {
+    return;
+  }
+
+
+  const today = localDateInputValue_();
+  const startDate = document.getElementById('feeReportStartDate');
+  const endDate = document.getElementById('feeReportEndDate');
+
+
+  if (startDate) startDate.value = today;
+  if (endDate) endDate.value = today;
+
+
+  feeDashboardTodaySummary = null;
+  feeDashboardOutstandingSummary = null;
+  feeDashboardUpdatedAt = '';
+  feeDashboardRefreshStage = 'collection';
+  setFeeDashboardBusy_(true);
+  updateFeeDashboard_();
+
+
+  const status = document.getElementById('feeDashboardStatus');
+  if (status) status.textContent = 'Loading today\'s fee collection...';
+
+
+  loadFeeCollectionReport_();
+}
+
+
+function openFeeTab_(name) {
+
+
+  name = String(name || 'dashboard').trim().toLowerCase();
+
+
+  const viewMap = {
+    dashboard: 'feeTabDashboard',
+    account: 'feeTabAccount',
+    collect: 'feeTabCollect',
+    daily: 'feeTabDaily',
+    outstanding: 'feeTabOutstanding'
+  };
+
+
+  const buttonMap = {
+    dashboard: 'feeTabButtonDashboard',
+    account: 'feeTabButtonAccount',
+    collect: 'feeTabButtonCollect',
+    daily: 'feeTabButtonDaily',
+    outstanding: 'feeTabButtonOutstanding'
+  };
+
+
+  if (!viewMap[name]) name = 'dashboard';
+  if (name === 'collect' && !hasFeeCollectPermission()) name = 'account';
+  if ((name === 'daily' || name === 'outstanding') && !hasFeeReportsPermission()) {
+    name = 'dashboard';
+  }
+
+
+  activeFeeTab = name;
+
+
+  document.querySelectorAll('#screenFees .feeTabView').forEach(function(view) {
+    view.classList.remove('active');
+  });
+
+
+  document.querySelectorAll('#screenFees .feeTabButton').forEach(function(button) {
+    button.classList.remove('active');
+    button.setAttribute('aria-selected', 'false');
+  });
+
+
+  const view = document.getElementById(viewMap[name]);
+  const button = document.getElementById(buttonMap[name]);
+
+
+  if (view) view.classList.add('active');
+  if (button) {
+    button.classList.add('active');
+    button.setAttribute('aria-selected', 'true');
+  }
+
+
+  updateFeeCollectView_();
+  updateFeeDashboard_();
+
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
 function prepareFeeScreen() {
 
 
@@ -21813,6 +22760,11 @@ function prepareFeeScreen() {
         '<div class="cameraHint">Search a student to view the fee account.</div>';
     }
   }
+
+
+  updateFeeCollectView_();
+  updateFeeDashboard_();
+  openFeeTab_(activeFeeTab || 'dashboard');
 }
 
 
@@ -21822,7 +22774,152 @@ function prepareFeeScreen() {
 
 
 
-function loadFeeModuleAccount() {
+function hideFeeStudentSuggestions_() {
+
+
+  const container = document.getElementById('feeStudentSuggestions');
+  if (!container) return;
+
+
+  container.classList.remove('show');
+  container.innerHTML = '';
+}
+
+
+function renderFeeStudentSuggestions_(matches, message) {
+
+
+  const container = document.getElementById('feeStudentSuggestions');
+  const input = document.getElementById('feeStudentSearch');
+  if (!container || !input || !String(input.value || '').trim()) return;
+
+
+  matches = Array.isArray(matches) ? matches : [];
+
+
+  if (!matches.length) {
+    container.innerHTML =
+      '<div class="cameraHint" style="padding:10px;">' +
+        escapeHtml(message || 'No matching student found.') +
+      '</div>';
+    container.classList.add('show');
+    return;
+  }
+
+
+  container.innerHTML = matches.map(function(student, index) {
+    return (
+      '<button class="feeStudentSuggestion" type="button" role="option" onclick="selectFeeStudent_(' + index + ')">' +
+        '<span><span class="feeStudentSuggestionName">' + escapeHtml(student.name || 'Student') + '</span>' +
+        '<span class="feeStudentSuggestionMeta">Code: ' + escapeHtml(student.id || '-') + '</span></span>' +
+        '<span class="feeStudentSuggestionClass">' + escapeHtml(student.className || '-') + '</span>' +
+      '</button>'
+    );
+  }).join('');
+
+
+  container.classList.add('show');
+}
+
+
+function requestFeeStudentSuggestions_(query) {
+
+
+  query = String(query || '').trim();
+
+
+  if (query.length < 2 || !sessionToken || !hasFeeViewPermission()) {
+    hideFeeStudentSuggestions_();
+    return;
+  }
+
+
+  if (currentRequestId) {
+    feeStudentSearchPendingQuery = query;
+    clearTimeout(feeStudentSearchTimer);
+    feeStudentSearchTimer = setTimeout(function() {
+      if (!currentRequestId && feeStudentSearchPendingQuery) {
+        const pending = feeStudentSearchPendingQuery;
+        feeStudentSearchPendingQuery = '';
+        requestFeeStudentSuggestions_(pending);
+      }
+    }, 300);
+    return;
+  }
+
+
+  feeStudentSearchRequestQuery = query;
+  feeStudentSearchPendingQuery = '';
+
+
+  const container = document.getElementById('feeStudentSuggestions');
+  if (container) {
+    container.innerHTML = '<div class="scanFeeLoading">Searching students...</div>';
+    container.classList.add('show');
+  }
+
+
+  postToBackend(
+    'fee_student_search',
+    {
+      token: sessionToken,
+      query: query
+    }
+  );
+}
+
+
+function handleFeeStudentSearchInput_() {
+
+
+  const input = document.getElementById('feeStudentSearch');
+  if (!input) return;
+
+
+  delete input.dataset.studentId;
+  feeStudentSearchMatches = [];
+  feeStudentSearchAutoOpenQuery = '';
+
+
+  const query = String(input.value || '').trim();
+  clearTimeout(feeStudentSearchTimer);
+
+
+  if (query.length < 2) {
+    hideFeeStudentSuggestions_();
+    return;
+  }
+
+
+  feeStudentSearchTimer = setTimeout(function() {
+    requestFeeStudentSuggestions_(query);
+  }, 280);
+}
+
+
+function selectFeeStudent_(index) {
+
+
+  const student = feeStudentSearchMatches[Number(index)];
+  const input = document.getElementById('feeStudentSearch');
+
+
+  if (!student || !student.id || !input) return;
+
+
+  input.dataset.studentId = String(student.id || '').trim().toUpperCase();
+  input.value =
+    String(student.name || 'Student') +
+    ' — ' +
+    String(student.id || '').trim().toUpperCase();
+
+
+  hideFeeStudentSuggestions_();
+  loadFeeModuleAccount(student.id);
+}
+
+
+function loadFeeModuleAccount(selectedStudentId) {
 
 
 
@@ -21844,22 +22941,52 @@ function loadFeeModuleAccount() {
 
 
   const input = document.getElementById('feeStudentSearch');
-  const studentId = String(input ? input.value : '')
+  const rawSearch = String(input ? input.value : '').trim();
+  let studentId = String(
+    selectedStudentId ||
+    (input && input.dataset ? input.dataset.studentId : '') ||
+    ''
+  )
     .trim()
     .toUpperCase();
 
 
+  if (!studentId && rawSearch) {
+    const exactMatch = feeStudentSearchMatches.find(function(student) {
+      return String(student.id || '').trim().toUpperCase() === rawSearch.toUpperCase();
+    });
 
 
-  if (input) input.value = studentId;
+    if (exactMatch) {
+      studentId = String(exactMatch.id || '').trim().toUpperCase();
+    }
+    else if (feeStudentSearchMatches.length === 1) {
+      studentId = String(feeStudentSearchMatches[0].id || '').trim().toUpperCase();
+    }
+    else if (feeStudentSearchMatches.length > 1) {
+      showError('feeModuleResult', 'Please select the student from the matching list.');
+      requestFeeStudentSuggestions_(rawSearch);
+      return;
+    }
+    else {
+      feeStudentSearchAutoOpenQuery = rawSearch;
+      showError('feeModuleResult', 'Searching for the student...');
+      requestFeeStudentSuggestions_(rawSearch);
+      return;
+    }
+  }
 
 
 
 
   if (!studentId) {
-    showError('feeModuleResult', 'Please enter Student ID.');
+    showError('feeModuleResult', 'Please enter Student Name or Student Code / ID.');
     return;
   }
+
+
+  if (input && input.dataset) input.dataset.studentId = studentId;
+  hideFeeStudentSuggestions_();
 
 
 
@@ -21874,6 +23001,7 @@ function loadFeeModuleAccount() {
 
 
   const ledger = document.getElementById('feeModuleLedger');
+  const statement = document.getElementById('feeModuleStatement');
   const collectPanel = document.getElementById('feeCollectPanel');
   const collectionResult = document.getElementById('feeCollectionResult');
 
@@ -21881,10 +23009,12 @@ function loadFeeModuleAccount() {
 
 
   if (ledger) ledger.innerHTML = '';
+  if (statement) statement.innerHTML = '';
   const history = document.getElementById('feeModuleHistory');
   if (history) history.innerHTML = '';
   if (collectPanel) collectPanel.style.display = 'none';
   if (collectionResult) collectionResult.innerHTML = '';
+  updateFeeCollectView_();
 
 
 
@@ -21979,7 +23109,7 @@ function renderFeeModuleAccount_(result) {
           '<div class="feeLedgerItem"><span class="feeLedgerLabel">2026-27 Mess Fee</span><span class="feeLedgerValue">' + formatFeeMoney_(account.currentYearFee) + '</span></div>' +
           '<div class="feeLedgerItem"><span class="feeLedgerLabel">Other Debit</span><span class="feeLedgerValue">' + formatFeeMoney_(account.otherDebit) + '</span></div>' +
           '<div class="feeLedgerItem totalPayable"><span class="feeLedgerLabel">Total Payable</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalPayable) + '</span></div>' +
-          '<div class="feeLedgerItem"><span class="feeLedgerLabel">Received up to 25-08-2026</span><span class="feeLedgerValue">' + formatFeeMoney_(account.broughtForwardReceived) + '</span></div>' +
+          '<div class="feeLedgerItem"><span class="feeLedgerLabel">Brought Forward Received</span><span class="feeLedgerValue">' + formatFeeMoney_(account.broughtForwardReceived) + '</span></div>' +
           '<div class="feeLedgerItem"><span class="feeLedgerLabel">New Receipts</span><span class="feeLedgerValue">' + formatFeeMoney_(account.newReceipts) + '</span></div>' +
           '<div class="feeLedgerItem totalReceived full"><span class="feeLedgerLabel">Total Received</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalReceived) + '</span></div>' +
           '<div class="feeLedgerItem outstanding full' + outstandingClass + '"><span class="feeLedgerLabel">Current Outstanding</span><span class="feeLedgerValue">' + formatFeeMoney_(account.outstanding) + '</span></div>' +
@@ -21988,6 +23118,10 @@ function renderFeeModuleAccount_(result) {
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">' +
           '<button id="printFullFeeLedgerButton" type="button" class="btn btnSoft" onclick="printFullFeeLedger_()" disabled>🖨️ Print Full Ledger / Save PDF</button>' +
           '<button id="downloadFeeLedgerExcelButton" type="button" class="btn btnPrimary" onclick="downloadFeeLedgerExcel_()" disabled>⬇️ Download Ledger Excel</button>' +
+        '</div>' +
+        '<div class="feeStatementControls">' +
+          '<div class="field"><label for="feeStatementUpToDate">Receipt / Statement Up To Date</label><input id="feeStatementUpToDate" class="input" type="date"></div>' +
+          '<button id="generateFeeStatementButton" type="button" class="btn btnPrimary" onclick="printFeeStatementUpToDate_()" disabled>🧾 Generate Receipt / Statement</button>' +
         '</div>' +
       '</div>';
   }
@@ -22024,6 +23158,16 @@ function renderFeeModuleAccount_(result) {
   if (dateInput && !dateInput.value) {
     dateInput.value = localDateInputValue_();
   }
+
+
+  const statementDateInput = document.getElementById('feeStatementUpToDate');
+  if (statementDateInput && !statementDateInput.value) {
+    statementDateInput.value = localDateInputValue_();
+  }
+
+
+  updateFeeCollectView_();
+  updateFeeDashboard_();
 }
 
 
@@ -22078,6 +23222,7 @@ function renderFeeLedgerHistory_(transactions) {
 
 
   setFeeLedgerExportReady_(true);
+  renderFeeAccountingStatement_();
 
 
   if (!transactions.length) {
@@ -22094,9 +23239,14 @@ function renderFeeLedgerHistory_(transactions) {
     const status = String(item.status || 'ACTIVE').trim().toUpperCase();
     const reversed = status === 'REVERSED';
     const amount = Number(item.credit || 0) > 0 ? Number(item.credit || 0) : Number(item.debit || 0);
-    const canReverse =
-      !reversed &&
+    const transactionType = String(item.transactionType || '').trim().toUpperCase();
+    const receiptAvailable =
+      transactionType === 'RECEIPT' &&
       Number(item.credit || 0) > 0 &&
+      !!String(item.receiptNo || '').trim();
+    const canReverse =
+      receiptAvailable &&
+      !reversed &&
       hasFeeReversePermission() &&
       feeModulePermissions.canReverse === true;
 
@@ -22118,9 +23268,9 @@ function renderFeeLedgerHistory_(transactions) {
         '<div class="feeHistoryAmount">' + formatFeeMoney_(amount) + '</div>' +
         '<div class="feeHistoryMeta">' + (details || 'Transaction details unavailable') + '</div>' +
         (item.remarks ? '<div class="feeHistoryMeta">Remarks: ' + escapeHtml(item.remarks) + '</div>' : '') +
-        (!reversed && Number(item.credit || 0) > 0
+        (receiptAvailable
           ? '<div style="display:grid;grid-template-columns:' + (canReverse ? '1fr 1fr' : '1fr') + ';gap:8px;margin-top:10px;">' +
-              '<button type="button" class="btn btnSoft" style="min-height:40px;" onclick="printFeeReceiptByIndex_(' + index + ')">🖨️ Print Receipt</button>' +
+              '<button type="button" class="btn btnSoft" style="min-height:40px;" onclick="printFeeReceiptByIndex_(' + index + ')">🧾 View / Print Receipt</button>' +
               (canReverse
                 ? '<button type="button" class="btn btnDanger feeReverseButton" style="min-height:40px;" onclick="requestFeeReversal_(' + index + ')"' + (feeReverseBusy ? ' disabled' : '') + '>↩️ Reverse Receipt</button>'
                 : '') +
@@ -22143,10 +23293,12 @@ function renderFeeLedgerHistory_(transactions) {
 
 function renderFeeLedgerError_(message) {
   const history = document.getElementById('feeModuleHistory');
+  const statement = document.getElementById('feeModuleStatement');
   if (!history) return;
 
 
   setFeeLedgerExportReady_(false);
+  if (statement) statement.innerHTML = '';
 
 
   history.innerHTML =
@@ -22162,8 +23314,10 @@ function renderFeeLedgerError_(message) {
 function setFeeLedgerExportReady_(ready) {
   const printButton = document.getElementById('printFullFeeLedgerButton');
   const excelButton = document.getElementById('downloadFeeLedgerExcelButton');
+  const statementButton = document.getElementById('generateFeeStatementButton');
   if (printButton) printButton.disabled = !ready;
   if (excelButton) excelButton.disabled = !ready;
+  if (statementButton) statementButton.disabled = !ready;
 }
 
 
@@ -22214,18 +23368,65 @@ function feeLedgerSortValue_(value, fallbackIndex) {
 }
 
 
-function buildFeeAccountingLedgerRows_() {
+function feeLedgerDateTimestamp_(value) {
+  const sortValue = feeLedgerSortValue_(value, 0);
+  return sortValue >= 9000000000000000 ? NaN : sortValue;
+}
+
+
+function feeLedgerParticulars_(item, debit, credit) {
+  const type = String(item.transactionType || '').trim().toUpperCase();
+  const status = String(item.status || 'ACTIVE').trim().toUpperCase();
+  const feeHead = feeHeadLabel_(item.feeHead);
+  const labels = {
+    RECEIPT: 'Mess Fee Collection',
+    REVERSAL: 'Receipt Reversal',
+    ADJUSTMENT: 'Adjustment',
+    ADDITIONAL_DEBIT: 'Additional Debit',
+    DISCOUNT: 'Discount / Concession',
+    CONCESSION: 'Discount / Concession',
+    CANCELLATION: 'Cancellation',
+    CORRECTION: 'Correction',
+    REFUND: 'Refund',
+    MANUAL_ADJUSTMENT: 'Manual Adjustment'
+  };
+  let label = labels[type] || (credit > 0 ? 'Payment / Credit' : (debit > 0 ? 'Additional Debit' : 'Transaction'));
+
+
+  if (type === 'RECEIPT' || (!type && credit > 0)) {
+    label += ' — ' + feeHead;
+  }
+  else if (item.feeHead) {
+    label += ' — ' + feeHead;
+  }
+
+
+  if (status && status !== 'ACTIVE') {
+    label += ' [' + status + ']';
+  }
+
+
+  return label;
+}
+
+
+function buildFeeAccountingLedgerRows_(upToDate) {
   const account = feeModuleAccount || {};
   const sourceTransactions = Array.isArray(feeLedgerTransactions)
     ? feeLedgerTransactions.slice()
     : [];
   const rows = [];
+  const upToText = String(upToDate || '').trim();
+  const upToTimestamp = upToText
+    ? feeLedgerDateTimestamp_(upToText) + 86399999
+    : NaN;
   let runningBalance = 0;
   let totalDebit = 0;
   let totalCredit = 0;
 
 
-  function addRow(date, particulars, voucherNo, debit, credit, extra, isReversed) {
+  function addRow(date, particulars, voucherNo, debit, credit, options) {
+    options = options || {};
     debit = feeLedgerNumber_(debit);
     credit = feeLedgerNumber_(credit);
     runningBalance += debit - credit;
@@ -22238,8 +23439,14 @@ function buildFeeAccountingLedgerRows_() {
       debit: debit,
       credit: credit,
       balance: runningBalance,
-      extra: extra || '',
-      reversed: isReversed === true
+      extra: options.extra || '',
+      reversed: options.reversed === true,
+      adjustment: options.adjustment === true,
+      sourceIndex: Number.isInteger(options.sourceIndex) ? options.sourceIndex : -1,
+      transactionId: options.transactionId || '',
+      transactionType: options.transactionType || '',
+      receiptAvailable: options.receiptAvailable === true,
+      status: options.status || ''
     });
   }
 
@@ -22249,9 +23456,6 @@ function buildFeeAccountingLedgerRows_() {
   const otherDebit = feeLedgerNumber_(account.otherDebit);
   const totalPayable = feeLedgerNumber_(account.totalPayable);
   const broughtForwardReceived = feeLedgerNumber_(account.broughtForwardReceived);
-  const expectedNewReceipts = feeLedgerNumber_(account.newReceipts);
-
-
   if (openingDue) {
     addRow('Opening', 'Previous Opening Due', 'OPENING', openingDue, 0);
   }
@@ -22270,7 +23474,8 @@ function buildFeeAccountingLedgerRows_() {
       'Fee Account Adjustment',
       'ADJUSTMENT',
       payableDifference > 0 ? payableDifference : 0,
-      payableDifference < 0 ? Math.abs(payableDifference) : 0
+      payableDifference < 0 ? Math.abs(payableDifference) : 0,
+      { adjustment: true }
     );
   }
 
@@ -22278,7 +23483,7 @@ function buildFeeAccountingLedgerRows_() {
   if (broughtForwardReceived) {
     addRow(
       'B/F',
-      'Amount Received up to 25-08-2026',
+      'Brought Forward Amount Received',
       'B/F-RECEIPTS',
       0,
       broughtForwardReceived
@@ -22299,87 +23504,158 @@ function buildFeeAccountingLedgerRows_() {
         b.item.transactionDate || b.item.entryDateTime,
         b.index
       );
-      return aValue === bValue ? a.index - b.index : aValue - bValue;
+      if (aValue !== bValue) return aValue - bValue;
+
+
+      const aEntryValue = feeLedgerDateTimestamp_(a.item.entryDateTime);
+      const bEntryValue = feeLedgerDateTimestamp_(b.item.entryDateTime);
+      if (Number.isFinite(aEntryValue) && Number.isFinite(bEntryValue) && aEntryValue !== bEntryValue) {
+        return aEntryValue - bEntryValue;
+      }
+
+
+      return b.index - a.index;
     });
-
-
-  let activeTransactionNetReceipts = 0;
 
 
   sortedTransactions.forEach(function(wrapper) {
     const item = wrapper.item;
+    const itemTimestamp = feeLedgerDateTimestamp_(
+      item.transactionDate || item.entryDateTime
+    );
+
+
+    if (
+      Number.isFinite(upToTimestamp) &&
+      Number.isFinite(itemTimestamp) &&
+      itemTimestamp > upToTimestamp
+    ) {
+      return;
+    }
+
+
     const status = String(item.status || 'ACTIVE').trim().toUpperCase();
     const reversed = status === 'REVERSED';
-    const debit = reversed ? 0 : feeLedgerNumber_(item.debit);
-    const credit = reversed ? 0 : feeLedgerNumber_(item.credit);
-    const feeHead = feeHeadLabel_(item.feeHead);
-    const particulars = reversed
-      ? 'REVERSED — ' + feeHead + ' (No Balance Effect)'
-      : (credit > 0 ? 'Fee Received — ' + feeHead : 'Fee Debit / Adjustment — ' + feeHead);
+    const debit = feeLedgerNumber_(item.debit);
+    const credit = feeLedgerNumber_(item.credit);
+    const transactionType = String(item.transactionType || '').trim().toUpperCase();
+    const particulars = feeLedgerParticulars_(item, debit, credit);
+    const receiptAvailable =
+      transactionType === 'RECEIPT' &&
+      credit > 0 &&
+      !!String(item.receiptNo || '').trim();
     const extra = [
+      transactionType ? 'Type: ' + transactionType : '',
       item.paymentMode ? 'Mode: ' + item.paymentMode : '',
       item.referenceNo ? 'Ref: ' + item.referenceNo : '',
       item.collectedBy ? 'By: ' + item.collectedBy : '',
+      item.reversalOf ? 'Reversal Of: ' + item.reversalOf : '',
       item.remarks ? 'Remarks: ' + item.remarks : ''
     ].filter(Boolean).join(' | ');
-
-
-    if (!reversed) {
-      activeTransactionNetReceipts += credit - debit;
-    }
 
 
     addRow(
       item.transactionDate || item.entryDateTime || '-',
       particulars,
-      item.receiptNo || '-',
+      item.receiptNo || item.transactionId || '-',
       debit,
       credit,
-      extra,
-      reversed
+      {
+        extra: extra,
+        reversed: reversed,
+        adjustment: transactionType !== 'RECEIPT',
+        sourceIndex: wrapper.index,
+        transactionId: item.transactionId || '',
+        transactionType: transactionType,
+        receiptAvailable: receiptAvailable,
+        status: status
+      }
     );
   });
 
 
-  const receiptDifference = expectedNewReceipts - activeTransactionNetReceipts;
-  if (Math.abs(receiptDifference) >= 0.005) {
-    addRow(
-      'B/F',
-      receiptDifference > 0
-        ? 'Other Recorded New Receipts'
-        : 'New Receipt Adjustment',
-      'RECEIPT-ADJ',
-      receiptDifference < 0 ? Math.abs(receiptDifference) : 0,
-      receiptDifference > 0 ? receiptDifference : 0
-    );
-  }
-
-
   const authoritativeOutstanding = feeLedgerNumber_(account.outstanding);
-  const closingDifference = authoritativeOutstanding - runningBalance;
-  if (Math.abs(closingDifference) >= 0.005) {
-    addRow(
-      'Closing',
-      'System Balance Adjustment',
-      'BAL-ADJ',
-      closingDifference > 0 ? closingDifference : 0,
-      closingDifference < 0 ? Math.abs(closingDifference) : 0
-    );
-  }
 
 
   return {
     rows: rows,
     totalDebit: totalDebit,
     totalCredit: totalCredit,
-    closingBalance: runningBalance
+    closingBalance: runningBalance,
+    accountOutstanding: authoritativeOutstanding,
+    balanceVariance: Number.isFinite(upToTimestamp)
+      ? 0
+      : authoritativeOutstanding - runningBalance,
+    upToDate: upToText
   };
 }
 
 
-function printFullFeeLedger_() {
+function renderFeeAccountingStatement_() {
+  const container = document.getElementById('feeModuleStatement');
+  if (!container || !feeModuleStudent || !feeModuleStudent.id) return;
+
+
+  const statement = buildFeeAccountingLedgerRows_();
+  const rows = statement.rows.map(function(row, index) {
+    const rowClass = row.reversed ? 'reversed' : (row.adjustment ? 'adjustment' : '');
+    const action = row.receiptAvailable && row.sourceIndex >= 0
+      ? '<button class="feeInlineReceiptButton" type="button" onclick="printFeeReceiptByIndex_(' + row.sourceIndex + ')">View / Print Receipt</button>'
+      : '—';
+
+
+    return '<tr class="' + rowClass + '">' +
+      '<td>' + (index + 1) + '</td>' +
+      '<td>' + escapeHtml(row.date) + '</td>' +
+      '<td><strong>' + escapeHtml(row.particulars) + '</strong>' +
+        (row.extra ? '<div class="feeInlineRowExtra">' + escapeHtml(row.extra) + '</div>' : '') +
+      '</td>' +
+      '<td>' + escapeHtml(row.voucherNo) + '</td>' +
+      '<td class="money">' + (row.debit ? escapeHtml(formatFeeMoney_(row.debit)) : '—') + '</td>' +
+      '<td class="money">' + (row.credit ? escapeHtml(formatFeeMoney_(row.credit)) : '—') + '</td>' +
+      '<td class="money"><strong>' + escapeHtml(feeLedgerBalanceText_(row.balance)) + '</strong></td>' +
+      '<td>' + action + '</td>' +
+    '</tr>';
+  }).join('');
+
+
+  const varianceNote = Math.abs(statement.balanceVariance) >= 0.005
+    ? '<div class="cameraHint" style="margin-top:10px;color:var(--danger);">Account summary difference detected: ' + escapeHtml(feeLedgerBalanceText_(statement.balanceVariance)) + '. No transaction was hidden or changed.</div>'
+    : '';
+
+
+  container.innerHTML =
+    '<div class="feeInlineStatement">' +
+      '<div class="feeInlineStatementHead"><div><div class="feeInlineStatementTitle">Student Account Statement</div>' +
+      '<div class="feeInlineStatementSub">Debit (+) increases payable. Credit (−) reduces payable. Every stored transaction is shown in chronological order.</div></div></div>' +
+      '<div class="feeInlineTableWrap"><table class="feeInlineTable">' +
+        '<thead><tr><th>#</th><th>Date</th><th>Particulars / Description</th><th>Receipt / Voucher No.</th><th class="money">+ Debit</th><th class="money">− Credit</th><th class="money">Running Balance</th><th>Receipt</th></tr></thead>' +
+        '<tbody>' + (rows || '<tr><td colspan="8">No statement entries available.</td></tr>') + '</tbody>' +
+        '<tfoot><tr><td colspan="4">TOTAL / FINAL BALANCE</td><td class="money">' + escapeHtml(formatFeeMoney_(statement.totalDebit)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(statement.totalCredit)) + '</td><td class="money">' + escapeHtml(feeLedgerBalanceText_(statement.closingBalance)) + '</td><td></td></tr></tfoot>' +
+      '</table></div>' + varianceNote +
+    '</div>';
+}
+
+
+function printFeeStatementUpToDate_() {
+  const input = document.getElementById('feeStatementUpToDate');
+  const upToDate = String(input ? input.value : '').trim();
+
+
+  if (!upToDate || !Number.isFinite(feeLedgerDateTimestamp_(upToDate))) {
+    window.alert('Please select a valid Receipt Up To Date.');
+    return;
+  }
+
+
+  printFullFeeLedger_(upToDate, true);
+}
+
+
+function printFullFeeLedger_(upToDate, receiptStatementMode) {
   const student = feeModuleStudent || {};
-  const account = feeModuleAccount || {};
+  const isUpToStatement = receiptStatementMode === true;
+  const upToText = String(upToDate || '').trim();
 
 
   if (!student.id) {
@@ -22395,7 +23671,31 @@ function printFullFeeLedger_() {
   }
 
 
-  const statement = buildFeeAccountingLedgerRows_();
+  const statement = buildFeeAccountingLedgerRows_(upToText);
+  const receiptRows = statement.rows.filter(function(row) {
+    return row.receiptAvailable && row.sourceIndex >= 0;
+  });
+  const latestReceiptRow = receiptRows.length
+    ? receiptRows[receiptRows.length - 1]
+    : null;
+  const latestReceipt = latestReceiptRow
+    ? (feeLedgerTransactions[latestReceiptRow.sourceIndex] || {})
+    : {};
+  const receiptAmount = feeLedgerNumber_(latestReceipt.credit);
+  const previousBalance = latestReceiptRow
+    ? latestReceiptRow.balance - latestReceiptRow.debit + latestReceiptRow.credit
+    : statement.closingBalance;
+  const statementReference = latestReceipt.receiptNo || (
+    'STMT-' + String(student.id || 'STUDENT').replace(/[^A-Za-z0-9]+/g, '') + '-' +
+    String(upToText || localDateInputValue_()).replace(/-/g, '')
+  );
+  const generatedUpTo = upToText || localDateInputValue_();
+  const documentTitle = isUpToStatement
+    ? 'STUDENT MESS FEE RECEIPT / STATEMENT'
+    : 'STUDENT MESS FEE LEDGER';
+  const documentNote = isUpToStatement
+    ? 'Future-dated transactions after ' + generatedUpTo + ' are not included. Existing receipt numbers and transaction data remain unchanged.'
+    : 'This is a computer-generated student mess fee ledger. Existing receipt numbers and transaction data remain unchanged.';
   const statementRows = statement.rows.map(function(row, index) {
     return '<tr' + (row.reversed ? ' class="reversed"' : '') + '>' +
       '<td>' + (index + 1) + '</td>' +
@@ -22412,30 +23712,31 @@ function printFullFeeLedger_() {
 
 
   const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' +
-    escapeHtml(feeLedgerFileName_()) +
+    escapeHtml(feeLedgerFileName_() + (isUpToStatement ? '_Up_To_' + generatedUpTo : '')) +
     '</title><style>' +
       'body{font-family:Arial,sans-serif;margin:0;background:#fff;color:#111}.wrap{max-width:1100px;margin:0 auto;padding:28px}.school{text-align:center}.school h1{font-size:23px;margin:0 0 5px}.addr{font-size:12px;line-height:1.45}.title{text-align:center;font-size:19px;font-weight:800;margin:18px 0 14px;padding:9px;border-top:1px solid #222;border-bottom:1px solid #222}.actions{display:flex;gap:8px;margin-bottom:15px}.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 18px;padding:11px;border:1px solid #aaa;font-size:13px}.label{font-weight:700}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.box{border:1px solid #bbb;padding:9px;font-size:11px}.box strong{display:block;font-size:14px;margin-top:4px}.box.outstanding{background:#fff4e5}.statementTitle{font-size:14px;font-weight:800;margin:18px 0 6px}.table{width:100%;border-collapse:collapse;font-size:10px}.table th,.table td{border:1px solid #888;padding:6px;vertical-align:top}.table th{background:#dce8fb}.table .amount{text-align:right;white-space:nowrap}.table .balance{font-weight:700}.table .extra{font-size:8px;color:#555;margin-top:3px}.table .reversed{color:#777;background:#f5f5f5}.table tfoot td{font-weight:800;background:#eef4ff}.footer{display:flex;justify-content:space-between;margin-top:38px;font-size:11px}.note{text-align:center;margin-top:22px;font-size:9px;color:#555}@media print{.actions{display:none}.wrap{padding:8px}@page{size:landscape;margin:9mm}}' +
     '</style></head><body><div class="wrap">' +
       '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
       '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur<br>Tal. Shrirampur, Dist. Ahilyanagar, Maharashtra - 413715</div></div>' +
-      '<div class="title">STUDENT MESS FEE LEDGER — ACADEMIC YEAR 2026-27</div>' +
+      '<div class="title">' + escapeHtml(documentTitle) + ' — ACADEMIC YEAR 2026-27</div>' +
       '<div class="student"><div><span class="label">Student Name:</span> ' + escapeHtml(student.name || '-') + '</div><div><span class="label">Student ID:</span> ' + escapeHtml(student.id || '-') + '</div><div><span class="label">Class:</span> ' + escapeHtml(student.className || '-') + '</div></div>' +
       '<div class="summary">' +
-        '<div class="box">Previous Opening Due<strong>' + escapeHtml(formatFeeMoney_(account.openingDue)) + '</strong></div>' +
-        '<div class="box">2026-27 Mess Fee<strong>' + escapeHtml(formatFeeMoney_(account.currentYearFee)) + '</strong></div>' +
-        '<div class="box">Other Debit<strong>' + escapeHtml(formatFeeMoney_(account.otherDebit)) + '</strong></div>' +
-        '<div class="box">Total Payable<strong>' + escapeHtml(formatFeeMoney_(account.totalPayable)) + '</strong></div>' +
-        '<div class="box">Received up to 25-08-2026<strong>' + escapeHtml(formatFeeMoney_(account.broughtForwardReceived)) + '</strong></div>' +
-        '<div class="box">New Receipts<strong>' + escapeHtml(formatFeeMoney_(account.newReceipts)) + '</strong></div>' +
-        '<div class="box">Total Received<strong>' + escapeHtml(formatFeeMoney_(account.totalReceived)) + '</strong></div>' +
-        '<div class="box outstanding">Current Outstanding<strong>' + escapeHtml(formatFeeMoney_(account.outstanding)) + '</strong></div>' +
+        '<div class="box">Receipt / Statement Ref.<strong>' + escapeHtml(statementReference) + '</strong></div>' +
+        '<div class="box">Receipt Date<strong>' + escapeHtml(latestReceipt.transactionDate || '-') + '</strong></div>' +
+        '<div class="box">Generated Up To Date<strong>' + escapeHtml(generatedUpTo) + '</strong></div>' +
+        '<div class="box">Amount Received<strong>' + escapeHtml(formatFeeMoney_(receiptAmount)) + '</strong></div>' +
+        '<div class="box">Payment Mode<strong>' + escapeHtml(latestReceipt.paymentMode || '-') + '</strong></div>' +
+        '<div class="box">Transaction / Reference No.<strong>' + escapeHtml(latestReceipt.referenceNo || '-') + '</strong></div>' +
+        '<div class="box">Previous Balance<strong>' + escapeHtml(feeLedgerBalanceText_(previousBalance)) + '</strong></div>' +
+        '<div class="box">Current Transaction<strong>' + (receiptAmount ? '− ' + escapeHtml(formatFeeMoney_(receiptAmount)) + ' Credit' : '-') + '</strong></div>' +
+        '<div class="box outstanding">Closing Balance<strong>' + escapeHtml(feeLedgerBalanceText_(statement.closingBalance)) + '</strong></div>' +
       '</div>' +
-      '<div class="statementTitle">ACCOUNTING STATEMENT</div>' +
+      '<div class="statementTitle">ACCOUNTING STATEMENT — + DEBIT / − CREDIT</div>' +
       '<table class="table"><thead><tr><th>#</th><th>Date</th><th>Particulars</th><th>Voucher / Receipt No.</th><th>Debit</th><th>Credit</th><th>Running Balance</th></tr></thead><tbody>' + statementRows + '</tbody>' +
         '<tfoot><tr><td colspan="4">TOTAL / CLOSING BALANCE</td><td class="amount">' + escapeHtml(formatFeeMoney_(statement.totalDebit)) + '</td><td class="amount">' + escapeHtml(formatFeeMoney_(statement.totalCredit)) + '</td><td class="amount balance">' + escapeHtml(feeLedgerBalanceText_(statement.closingBalance)) + '</td></tr></tfoot>' +
       '</table>' +
       '<div class="footer"><div>Generated: ' + escapeHtml(new Date().toLocaleString()) + '</div><div>Authorised Signatory</div></div>' +
-      '<div class="note">This is a computer-generated student mess fee ledger.</div>' +
+      '<div class="note">' + escapeHtml(documentNote) + '</div>' +
     '</div></body></html>';
 
 
@@ -22502,9 +23803,9 @@ function downloadFeeLedgerExcel_() {
 
 
   const detailRows = [[
-    'Sr. No.', 'Transaction Date', 'Receipt No.', 'Fee Head', 'Payment Mode',
+    'Sr. No.', 'Transaction Date', 'Receipt No.', 'Transaction Type', 'Fee Head', 'Payment Mode',
     'Reference No.', 'Debit', 'Credit', 'Status', 'Collected By',
-    'Entry Date & Time', 'Remarks'
+    'Entry Date & Time', 'Reversal Of', 'Remarks'
   ]];
 
 
@@ -22514,6 +23815,7 @@ function downloadFeeLedgerExcel_() {
         index + 1,
         item.transactionDate || '',
         item.receiptNo || '',
+        item.transactionType || '',
         feeHeadLabel_(item.feeHead),
         item.paymentMode || '',
         item.referenceNo || '',
@@ -22522,6 +23824,7 @@ function downloadFeeLedgerExcel_() {
         String(item.status || 'ACTIVE').trim().toUpperCase(),
         item.collectedBy || '',
         item.entryDateTime || '',
+        item.reversalOf || '',
         item.remarks || ''
       ]);
     });
@@ -22536,9 +23839,10 @@ function downloadFeeLedgerExcel_() {
     { wch: 16 }, { wch: 16 }, { wch: 19 }
   ];
   detailsSheet['!cols'] = [
-    { wch: 8 }, { wch: 16 }, { wch: 20 }, { wch: 24 },
-    { wch: 15 }, { wch: 20 }, { wch: 14 }, { wch: 14 },
-    { wch: 12 }, { wch: 20 }, { wch: 22 }, { wch: 30 }
+    { wch: 8 }, { wch: 16 }, { wch: 20 }, { wch: 20 },
+    { wch: 24 }, { wch: 15 }, { wch: 20 }, { wch: 14 },
+    { wch: 14 }, { wch: 12 }, { wch: 20 }, { wch: 22 },
+    { wch: 22 }, { wch: 30 }
   ];
 
 
@@ -22556,7 +23860,7 @@ function feeHeadLabel_(value) {
   if (value === 'OPENING_DUE') return 'Opening Due';
   if (value === 'CURRENT_YEAR_FEE') return 'Current Year Mess Fee';
   if (value === 'OTHER') return 'Other';
-  return value || '-';
+  return value || 'Mess Fee';
 }
 
 
@@ -22582,16 +23886,45 @@ function printFeeReceiptByIndex_(index) {
     window.alert('Receipt details not available. Please search the student again.');
     return;
   }
-  printFeeReceipt_(item);
+  printFeeReceipt_(item, Number(index));
 }
 
 
-function printFeeReceipt_(item) {
+function getFeeReceiptBalanceContext_(sourceIndex) {
+  const statement = buildFeeAccountingLedgerRows_();
+  const row = statement.rows.find(function(statementRow) {
+    return statementRow.sourceIndex === Number(sourceIndex);
+  });
+
+
+  if (!row) {
+    return {
+      previousBalance: 0,
+      currentDebit: 0,
+      currentCredit: 0,
+      closingBalance: 0
+    };
+  }
+
+
+  return {
+    previousBalance: row.balance - row.debit + row.credit,
+    currentDebit: row.debit,
+    currentCredit: row.credit,
+    closingBalance: row.balance
+  };
+}
+
+
+function printFeeReceipt_(item, sourceIndex) {
   const student = feeModuleStudent || {};
-  const account = feeModuleAccount || {};
   const amount = Number(item.credit || 0) > 0 ? Number(item.credit || 0) : Number(item.debit || 0);
   const receiptNo = item.receiptNo || '-';
   const entryDateTime = item.entryDateTime || '-';
+  const balanceContext = getFeeReceiptBalanceContext_(sourceIndex);
+  const currentTransactionText = balanceContext.currentDebit > 0
+    ? '+ ' + formatFeeMoney_(balanceContext.currentDebit) + ' Debit'
+    : '− ' + formatFeeMoney_(balanceContext.currentCredit) + ' Credit';
   const receiptWindow = window.open('', '_blank', 'width=650,height=850');
   if (!receiptWindow) {
     window.alert('Please allow pop-ups to print the receipt.');
@@ -22602,10 +23935,10 @@ function printFeeReceipt_(item) {
     '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
     '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur<br>Tal. Shrirampur, Dist. Ahilyanagar<br>Maharashtra - 413715</div></div>' +
     '<div class="title">MESS FEE RECEIPT</div>' +
-    '<div class="grid"><div class="row"><span class="label">Receipt No.:</span> ' + escapeHtml(receiptNo) + '</div><div class="row"><span class="label">Transaction Date:</span> ' + escapeHtml(item.transactionDate || '-') + '</div></div>' +
+    '<div class="grid"><div class="row"><span class="label">Receipt No.:</span> ' + escapeHtml(receiptNo) + '</div><div class="row"><span class="label">Receipt Date:</span> ' + escapeHtml(item.transactionDate || '-') + '</div><div class="row"><span class="label">Generated Up To Date:</span> ' + escapeHtml(item.transactionDate || '-') + '</div><div class="row"><span class="label">Status:</span> ' + escapeHtml(String(item.status || 'ACTIVE').toUpperCase()) + '</div></div>' +
     '<div class="student"><div><span class="label">Student Name:</span> ' + escapeHtml(student.name || '-') + '</div><div style="margin-top:6px"><span class="label">Student ID:</span> ' + escapeHtml(student.id || '-') + ' &nbsp;&nbsp; <span class="label">Class:</span> ' + escapeHtml(student.className || '-') + '</div><div style="margin-top:6px"><span class="label">Academic Year:</span> 2026-27</div></div>' +
     '<table class="table"><thead><tr><th>Particulars</th><th>Amount</th></tr></thead><tbody><tr><td>' + escapeHtml(feeHeadLabel_(item.feeHead)) + '</td><td>' + escapeHtml(formatFeeMoney_(amount)) + '</td></tr></tbody></table>' +
-    '<div class="words"><div><span class="label">Amount in Words:</span> ' + escapeHtml(feeAmountWords_(amount)) + '</div><div><span class="label">Payment Mode:</span> ' + escapeHtml(item.paymentMode || '-') + '</div><div><span class="label">Reference No.:</span> ' + escapeHtml(item.referenceNo || '-') + '</div><div><span class="label">On Account of:</span> Mess Fee received for Academic Year 2026-27</div><div><span class="label">Current Outstanding:</span> ' + escapeHtml(formatFeeMoney_(account.outstanding || 0)) + '</div></div>' +
+    '<div class="words"><div><span class="label">Amount Received:</span> ' + escapeHtml(formatFeeMoney_(amount)) + '</div><div><span class="label">Amount in Words:</span> ' + escapeHtml(feeAmountWords_(amount)) + '</div><div><span class="label">Payment Mode:</span> ' + escapeHtml(item.paymentMode || '-') + '</div><div><span class="label">Transaction / Reference No.:</span> ' + escapeHtml(item.referenceNo || '-') + '</div><div><span class="label">Previous Balance:</span> ' + escapeHtml(feeLedgerBalanceText_(balanceContext.previousBalance)) + '</div><div><span class="label">Current Transaction:</span> ' + escapeHtml(currentTransactionText) + '</div><div><span class="label">Closing Balance:</span> ' + escapeHtml(feeLedgerBalanceText_(balanceContext.closingBalance)) + '</div><div><span class="label">On Account of:</span> Mess Fee received for Academic Year 2026-27</div></div>' +
     '<div class="footer"><div><div><span class="label">Fee Collected By:</span> ' + escapeHtml(item.collectedBy || '-') + '</div><div style="margin-top:6px"><span class="label">Received Date & Time:</span> ' + escapeHtml(entryDateTime) + '</div></div><div class="sign">Authorised Signatory</div></div>' +
     '<div class="note">This is a computer-generated receipt.</div></div></body></html>';
   receiptWindow.document.open();
@@ -23599,6 +24932,17 @@ function clearSession() {
   feeReportBusy = false;
   lastFeeCollectionReport = null;
   lastFeeOutstandingReport = null;
+  activeFeeTab = 'dashboard';
+  feeDashboardRefreshStage = '';
+  feeDashboardTodaySummary = null;
+  feeDashboardOutstandingSummary = null;
+  feeDashboardUpdatedAt = '';
+  clearTimeout(feeStudentSearchTimer);
+  feeStudentSearchTimer = null;
+  feeStudentSearchMatches = [];
+  feeStudentSearchPendingQuery = '';
+  feeStudentSearchRequestQuery = '';
+  feeStudentSearchAutoOpenQuery = '';
 
 
 
