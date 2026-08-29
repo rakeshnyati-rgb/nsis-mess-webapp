@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- NSIS FINAL: STAFF_MESS_A4_DECIMAL_2026-08-29 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -3093,6 +3094,114 @@
     }
 
 
+    .staffMessFormGrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 12px;
+    }
+
+
+    .staffMessFormGrid .field {
+      min-width: 0;
+    }
+
+
+    .staffMessWide {
+      grid-column: 1 / -1;
+    }
+
+
+    .staffMessActionRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+
+    .staffMessActionRow .btn {
+      flex: 1 1 190px;
+      margin-top: 0;
+    }
+
+
+    .staffMessList {
+      display: grid;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+
+    .staffMessListItem {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+
+    .staffMessListHead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+
+    .staffMessListName {
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+
+    .staffMessListMeta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9.5px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+
+    .staffMessStatus {
+      flex: 0 0 auto;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: var(--success-bg);
+      color: var(--success);
+      font-size: 8.5px;
+      font-weight: 950;
+    }
+
+
+    .staffMessStatus.inactive {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+
+    .staffMessListActions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+
+    .staffMessListActions button {
+      min-height: 36px;
+      padding: 7px 8px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--info-bg);
+      color: var(--primary-dark);
+      font: inherit;
+      font-size: 9px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+
     .feeStatementControls {
       display: grid;
       grid-template-columns: minmax(0,1fr) minmax(190px,auto);
@@ -3234,6 +3343,17 @@
 
       .feeStatementControls {
         grid-template-columns: 1fr;
+      }
+
+
+      .staffMessFormGrid,
+      .staffMessListActions {
+        grid-template-columns: 1fr;
+      }
+
+
+      .staffMessWide {
+        grid-column: auto;
       }
     }
 
@@ -4122,12 +4242,12 @@
 
 
         <div class="field" style="margin-top:0;">
-          <label for="manualStudentId">Student ID</label>
+          <label for="manualStudentId">Student / Staff ID</label>
           <input
             id="manualStudentId"
             class="input"
             type="text"
-            placeholder="Example: STU0001"
+            placeholder="Example: STU0001 or STF0001"
             autocomplete="off"
           >
         </div>
@@ -5932,14 +6052,15 @@
       <div class="softwarePageHead">
         <div>
           <div class="softwarePageTitle">Fees & Accounts</div>
-          <div class="softwarePageSub">Student accounts, secure collection and reports</div>
+          <div class="softwarePageSub">Student and staff mess accounts, secure collection and reports</div>
         </div>
       </div>
 
 
       <div class="feeTabBar" role="tablist" aria-label="Fees and accounts sections">
         <button id="feeTabButtonDashboard" class="feeTabButton active" type="button" role="tab" aria-selected="true" onclick="openFeeTab_('dashboard')">🏠 Overview</button>
-        <button id="feeTabButtonAccount" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('account')">📒 Student Account</button>
+        <button id="feeTabButtonAccount" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('account')">📒 Member Account</button>
+        <button id="feeTabButtonStaff" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('staff')">👩‍🏫 Staff Mess</button>
         <button id="feeTabButtonCollect" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('collect')">💳 Collect Fee</button>
         <button id="feeTabButtonDaily" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('daily')">📅 Daily Collection</button>
         <button id="feeTabButtonOutstanding" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('outstanding')">⚠️ Outstanding</button>
@@ -5968,7 +6089,7 @@
             <div id="feeDashboardOutstanding" class="feeDashboardKpiValue">—</div>
           </div>
           <div class="feeDashboardKpi">
-            <div class="feeDashboardKpiLabel">Students With Outstanding</div>
+            <div class="feeDashboardKpiLabel">Accounts With Outstanding</div>
             <div id="feeDashboardOutstandingStudents" class="feeDashboardKpiValue">—</div>
           </div>
         </div>
@@ -5978,7 +6099,8 @@
 
 
         <div class="feeDashboardActions">
-          <button class="feeDashboardAction" type="button" onclick="openFeeTab_('account')"><strong>📒 Student Account</strong><span>Search ledger, receipts and reversal history</span></button>
+          <button class="feeDashboardAction" type="button" onclick="openFeeTab_('account')"><strong>📒 Member Account</strong><span>Search student/staff ledger, receipts and reversal history</span></button>
+          <button id="feeDashboardStaffAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('staff')"><strong>👩‍🏫 Staff Mess</strong><span>Teacher, admin and other staff charges, discounts and QR</span></button>
           <button id="feeDashboardCollectAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('collect')"><strong>💳 Collect Fee</strong><span>Create a secure fee receipt</span></button>
           <button id="feeDashboardDailyAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('daily')"><strong>📅 Daily Collection</strong><span>Collection register, PDF and Excel</span></button>
           <button id="feeDashboardOutstandingAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('outstanding')"><strong>⚠️ Outstanding</strong><span>Class-wise pending fee report</span></button>
@@ -5988,13 +6110,13 @@
 
       <div id="feeTabAccount" class="feeTabView" role="tabpanel">
         <div class="card manualCard">
-          <div class="sectionTitle" style="margin-top:0;">Student Fee Account</div>
+          <div class="sectionTitle" style="margin-top:0;">Student / Staff Mess Account</div>
           <div class="feeStudentSearchBox">
             <div class="field" style="margin-top:0;">
-              <label for="feeStudentSearch">Student Name or Student Code / ID</label>
-              <input id="feeStudentSearch" class="input" type="text" placeholder="Type student name or ID" autocomplete="off">
+              <label for="feeStudentSearch">Student / Staff Name or Code / ID</label>
+              <input id="feeStudentSearch" class="input" type="text" placeholder="Type student or staff name / ID" autocomplete="off">
             </div>
-            <div id="feeStudentSuggestions" class="feeStudentSuggestions" role="listbox" aria-label="Matching students"></div>
+            <div id="feeStudentSuggestions" class="feeStudentSuggestions" role="listbox" aria-label="Matching student and staff accounts"></div>
           </div>
 
 
@@ -6011,12 +6133,74 @@
       </div>
 
 
+      <div id="feeTabStaff" class="feeTabView" role="tabpanel">
+        <div class="card manualCard">
+          <div class="sectionTitle" style="margin-top:0;">👩‍🏫 Staff Mess Directory</div>
+          <div class="field" style="margin-top:0;">
+            <label for="staffMessSearch">Search Staff</label>
+            <input id="staffMessSearch" class="input" type="text" placeholder="Staff ID, name, type, department or designation" autocomplete="off">
+          </div>
+          <button id="staffMessLoadButton" class="btn btnPrimary" type="button" onclick="loadStaffMessList_()">🔎 Load Staff Mess Accounts</button>
+          <div id="staffMessListResult" class="resultArea"></div>
+        </div>
+
+
+        <div id="staffMessManageCard" class="card manualCard">
+          <div class="sectionTitle" style="margin-top:0;">Add / Update Staff Mess Account</div>
+          <div class="staffMessFormGrid">
+            <div class="field"><label for="staffMessId">Staff ID</label><input id="staffMessId" class="input" type="text" placeholder="Auto-generated for new staff" readonly></div>
+            <div class="field"><label for="staffMessName">Staff Name</label><input id="staffMessName" class="input" type="text" placeholder="Full name" autocomplete="off"></div>
+            <div class="field"><label for="staffMessType">Staff Type</label><select id="staffMessType" class="input"><option value="TEACHER">Teacher</option><option value="ADMIN">Admin</option><option value="OTHER_STAFF">Other Staff</option></select></div>
+            <div class="field"><label for="staffMessDepartment">Department</label><input id="staffMessDepartment" class="input" type="text" placeholder="Department" autocomplete="off"></div>
+            <div class="field"><label for="staffMessDesignation">Designation</label><input id="staffMessDesignation" class="input" type="text" placeholder="Designation" autocomplete="off"></div>
+            <div class="field"><label for="staffMessMobile">Mobile</label><input id="staffMessMobile" class="input" type="text" inputmode="tel" placeholder="Mobile number" autocomplete="off"></div>
+            <div class="field"><label for="staffMessActive">Mess Status</label><select id="staffMessActive" class="input"><option value="TRUE">Active</option><option value="FALSE">Inactive</option></select></div>
+            <div class="field"><label for="staffMessStartDate">Mess Start Date</label><input id="staffMessStartDate" class="input" type="date"></div>
+            <div class="field"><label for="staffMessStopDate">Mess Stop Date (Optional)</label><input id="staffMessStopDate" class="input" type="date"></div>
+            <div class="field"><label for="staffMessChargeBasis">Charge Basis</label><select id="staffMessChargeBasis" class="input" onchange="updateStaffMessChargeHelp_()"><option value="MONTHLY_FIXED">Monthly Fixed</option><option value="PER_MEAL">Per Meal</option><option value="NO_CHARGE">No Charge</option></select></div>
+            <div class="field"><label for="staffMessStandardCharge">Standard Charge (₹)</label><input id="staffMessStandardCharge" class="input" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"><div id="staffMessChargeHelp" class="helperText">Monthly charge amount.</div></div>
+            <div class="field"><label for="staffMessDiscountType">Discount</label><select id="staffMessDiscountType" class="input" onchange="updateStaffMessDiscountHelp_()"><option value="NONE">No Discount</option><option value="FIXED">Fixed Amount</option><option value="PERCENT">Percentage</option></select></div>
+            <div class="field"><label for="staffMessDiscountValue">Discount Value</label><input id="staffMessDiscountValue" class="input" type="number" min="0" step="0.01" inputmode="decimal" value="0"><div id="staffMessDiscountHelp" class="helperText">No discount.</div></div>
+            <div class="field staffMessWide"><label for="staffMessDiscountReason">Discount Reason</label><input id="staffMessDiscountReason" class="input" type="text" placeholder="Required when discount is applicable" autocomplete="off"></div>
+            <div class="field"><label for="staffMessDefaultPaymentMode">Default Payment Mode</label><select id="staffMessDefaultPaymentMode" class="input"><option value="">Select when collecting</option><option value="CASH">Cash</option><option value="UPI">UPI</option><option value="BANK">Bank</option><option value="CHEQUE">Cheque</option><option value="SALARY_DEDUCTION">Salary Deduction</option></select></div>
+            <div class="field staffMessWide"><label for="staffMessNotes">Notes</label><input id="staffMessNotes" class="input" type="text" placeholder="Optional notes" autocomplete="off"></div>
+          </div>
+          <div class="staffMessActionRow">
+            <button id="staffMessSaveButton" class="btn btnPrimary" type="button" onclick="saveStaffMessMember_()">💾 Save Staff Mess Account</button>
+            <button class="btn btnSoft" type="button" onclick="resetStaffMessForm_()">Clear / New</button>
+          </div>
+          <div id="staffMessSaveResult" class="resultArea"></div>
+        </div>
+
+
+        <div class="card manualCard">
+          <div class="sectionTitle" style="margin-top:0;">Monthly Staff Mess Billing & Report</div>
+          <div class="staffMessFormGrid">
+            <div class="field"><label for="staffMessBillingMonth">Billing Month</label><input id="staffMessBillingMonth" class="input" type="month"></div>
+            <div class="field"><label for="staffMessBillingStaffId">Staff ID (Optional)</label><input id="staffMessBillingStaffId" class="input" type="text" placeholder="Blank = all active staff" autocomplete="off"></div>
+            <div class="field staffMessWide"><label for="staffMessReportSearch">Report Search (Optional)</label><input id="staffMessReportSearch" class="input" type="text" placeholder="Staff ID, name, type or department" autocomplete="off"></div>
+          </div>
+          <div class="staffMessActionRow">
+            <button id="staffMessBillButton" class="btn btnPrimary" type="button" onclick="postStaffMessBilling_()">🧾 Post Monthly Charges</button>
+            <button id="staffMessReportButton" class="btn btnSoft" type="button" onclick="loadStaffMessReport_()">📊 Load Staff Mess Report</button>
+          </div>
+          <div id="staffMessBillingResult" class="resultArea"></div>
+          <div id="staffMessReportResult" class="resultArea"></div>
+          <div id="staffMessReportActions" class="feeReportActions" style="display:none;">
+            <button type="button" class="btn btnSoft" onclick="printStaffMessReport_()">🖨️ Print A4 / Save PDF</button>
+            <button type="button" class="btn btnPrimary" onclick="downloadStaffMessReportExcel_()">⬇️ Download Excel</button>
+          </div>
+        </div>
+        <div id="staffMessQrTemp" style="position:fixed;left:-9999px;top:-9999px;"></div>
+      </div>
+
+
       <div id="feeTabCollect" class="feeTabView" role="tabpanel">
         <div id="feeCollectEmptyState" class="card feeEmptyState">
           <div class="feeEmptyStateIcon">🎓</div>
-          <div id="feeCollectEmptyTitle" class="feeEmptyStateTitle">Select a student first</div>
-          <div id="feeCollectEmptyText" class="feeEmptyStateText">Open Student Account, search the Student ID and verify the outstanding balance. Then return here to collect the fee.</div>
-          <button class="btn btnPrimary" type="button" onclick="openFeeTab_('account')">Open Student Account</button>
+          <div id="feeCollectEmptyTitle" class="feeEmptyStateTitle">Select an account first</div>
+          <div id="feeCollectEmptyText" class="feeEmptyStateText">Open Member Account, search the Student/Staff ID and verify the outstanding balance. Then return here to collect the fee.</div>
+          <button class="btn btnPrimary" type="button" onclick="openFeeTab_('account')">Open Member Account</button>
         </div>
 
 
@@ -6050,6 +6234,7 @@
               <option value="UPI">UPI</option>
               <option value="BANK">Bank</option>
               <option value="CHEQUE">Cheque</option>
+              <option value="SALARY_DEDUCTION">Salary Deduction</option>
             </select>
           </div>
 
@@ -6147,8 +6332,8 @@
 
 
             <div class="field">
-              <label for="feeOutstandingSearch">Student Search</label>
-              <input id="feeOutstandingSearch" class="input" type="text" placeholder="Student ID or Name" autocomplete="off">
+              <label for="feeOutstandingSearch">Student / Staff Search</label>
+              <input id="feeOutstandingSearch" class="input" type="text" placeholder="Student/Staff ID or Name" autocomplete="off">
             </div>
 
 
@@ -6323,10 +6508,10 @@
         <div class="reportKpiGrid">
           <div class="reportKpi"><div class="reportKpiLabel">QR Reprints</div><div id="misQrReprints" class="reportKpiValue">0</div></div>
           <div class="reportKpi"><div class="reportKpiLabel">QR Regenerations</div><div id="misQrRegenerations" class="reportKpiValue">0</div></div>
-          <div class="reportKpi info"><div class="reportKpiLabel">Total Charges</div><div id="misQrChargeTotal" class="reportKpiValue reportMoneyValue">₹0</div></div>
-          <div class="reportKpi success"><div class="reportKpiLabel">Paid</div><div id="misQrPaidTotal" class="reportKpiValue reportMoneyValue">₹0</div></div>
-          <div class="reportKpi warning"><div class="reportKpiLabel">Pending</div><div id="misQrPendingTotal" class="reportKpiValue reportMoneyValue">₹0</div></div>
-          <div class="reportKpi"><div class="reportKpiLabel">Waived</div><div id="misQrWaivedTotal" class="reportKpiValue reportMoneyValue">₹0</div></div>
+          <div class="reportKpi info"><div class="reportKpiLabel">Total Charges</div><div id="misQrChargeTotal" class="reportKpiValue reportMoneyValue">₹0.00</div></div>
+          <div class="reportKpi success"><div class="reportKpiLabel">Paid</div><div id="misQrPaidTotal" class="reportKpiValue reportMoneyValue">₹0.00</div></div>
+          <div class="reportKpi warning"><div class="reportKpiLabel">Pending</div><div id="misQrPendingTotal" class="reportKpiValue reportMoneyValue">₹0.00</div></div>
+          <div class="reportKpi"><div class="reportKpiLabel">Waived</div><div id="misQrWaivedTotal" class="reportKpiValue reportMoneyValue">₹0.00</div></div>
         </div>
 
 
@@ -6751,6 +6936,10 @@ let feeStudentSearchMatches = [];
 let feeStudentSearchPendingQuery = '';
 let feeStudentSearchRequestQuery = '';
 let feeStudentSearchAutoOpenQuery = '';
+let staffMessMembers = [];
+let staffMessCanManage = false;
+let staffMessBusy = false;
+let lastStaffMessReport = null;
 
 
 
@@ -7450,7 +7639,7 @@ window.addEventListener(
 
 
       if (result.success !== true) {
-        renderFeeStudentSuggestions_([], result.message || 'Student search unavailable.');
+        renderFeeStudentSuggestions_([], result.message || 'Student / staff search unavailable.');
       }
       else {
         feeStudentSearchMatches = Array.isArray(result.matches)
@@ -7484,12 +7673,12 @@ window.addEventListener(
 
 
         if (feeStudentSearchMatches.length > 1) {
-          showError('feeModuleResult', 'Please select the correct student from the matching list.');
+          showError('feeModuleResult', 'Please select the correct account from the matching list.');
         }
         else if (!feeStudentSearchMatches.length) {
           showError(
             'feeModuleResult',
-            result.message || 'No matching student found for this name or ID.'
+            result.message || 'No matching student or staff account found for this name or ID.'
           );
         }
       }
@@ -7981,6 +8170,73 @@ window.addEventListener(
 
 
       updateFeeDashboard_();
+      return;
+    }
+
+
+    /* STAFF MESS MASTER / BILLING / REPORT */
+
+    if (
+      message.type === 'STAFF_MESS_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+      const requestedAction = currentAction;
+      finishRequest();
+      setStaffMessBusy_(false);
+
+      const result = message.result || {};
+      const operation = String(
+        result.operation || requestedAction || ''
+      ).trim().toLowerCase();
+
+      if (result.authRequired === true) {
+        handleExpiredSession();
+        return;
+      }
+
+      if (result.success !== true) {
+        const targetId = operation === 'staff_mess_save'
+          ? 'staffMessSaveResult'
+          : operation === 'staff_mess_report'
+            ? 'staffMessReportResult'
+            : operation === 'staff_mess_bill'
+              ? 'staffMessBillingResult'
+              : 'staffMessListResult';
+
+        showError(
+          targetId,
+          result.message || 'Staff mess operation failed.'
+        );
+        return;
+      }
+
+      if (operation === 'staff_mess_list') {
+        staffMessMembers = Array.isArray(result.members)
+          ? result.members.slice()
+          : [];
+        staffMessCanManage = result.canManage === true;
+        renderStaffMessList_(staffMessMembers);
+        updateStaffMessPermissionView_();
+      }
+      else if (operation === 'staff_mess_save') {
+        document.getElementById('staffMessSaveResult').innerHTML =
+          '<div class="feeReceiptSuccess"><div style="font-size:28px;">✅</div>' +
+          '<div style="font-size:15px;font-weight:950;margin-top:5px;">' +
+            escapeHtml(result.message || 'Staff mess account saved.') +
+          '</div><div style="margin-top:5px;color:var(--text);">Staff ID: <strong>' +
+            escapeHtml(result.member && result.member.id ? result.member.id : '-') +
+          '</strong></div></div>';
+        resetStaffMessForm_(true);
+        loadStaffMessList_();
+      }
+      else if (operation === 'staff_mess_bill') {
+        renderStaffMessBillingResult_(result);
+      }
+      else if (operation === 'staff_mess_report') {
+        lastStaffMessReport = result;
+        renderStaffMessReport_(result);
+      }
+
       return;
     }
 
@@ -9923,6 +10179,20 @@ window.addEventListener(
 
 
       }
+      else if (String(failedAction || '').indexOf('staff_mess_') === 0) {
+        setStaffMessBusy_(false);
+        const targetId = failedAction === 'staff_mess_save'
+          ? 'staffMessSaveResult'
+          : failedAction === 'staff_mess_bill'
+            ? 'staffMessBillingResult'
+            : failedAction === 'staff_mess_report'
+              ? 'staffMessReportResult'
+              : 'staffMessListResult';
+        showError(
+          targetId,
+          message.message || 'Staff mess backend error.'
+        );
+      }
       else if (failedAction === 'student_request') {
 
 
@@ -10420,6 +10690,17 @@ function postToBackend(
 
 
     }
+    else if (String(action || '').indexOf('staff_mess_') === 0) {
+      setStaffMessBusy_(false);
+      const targetId = action === 'staff_mess_save'
+        ? 'staffMessSaveResult'
+        : action === 'staff_mess_bill'
+          ? 'staffMessBillingResult'
+          : action === 'staff_mess_report'
+            ? 'staffMessReportResult'
+            : 'staffMessListResult';
+      showError(targetId, 'Mess System is still connecting.');
+    }
     else if (
       action === 'student_manage_lookup' ||
       action === 'student_manage_update'
@@ -10883,6 +11164,17 @@ function postToBackend(
 
 
         }
+        else if (String(actionCopy || '').indexOf('staff_mess_') === 0) {
+          setStaffMessBusy_(false);
+          const targetId = actionCopy === 'staff_mess_save'
+            ? 'staffMessSaveResult'
+            : actionCopy === 'staff_mess_bill'
+              ? 'staffMessBillingResult'
+              : actionCopy === 'staff_mess_report'
+                ? 'staffMessReportResult'
+                : 'staffMessListResult';
+          showError(targetId, 'Staff mess response timeout.');
+        }
         else if (actionCopy === 'student_manage_lookup') {
 
 
@@ -11168,7 +11460,9 @@ function postToBackend(
       },
       action === 'backup_now' ||
       action === 'fee_collection_report' ||
-      action === 'fee_outstanding_report'
+      action === 'fee_outstanding_report' ||
+      action === 'staff_mess_bill' ||
+      action === 'staff_mess_report'
         ? 45000
         : 20000
     );
@@ -12998,7 +13292,7 @@ function submitManualEntry() {
 
     showError(
       'manualResult',
-      'Please enter Student ID.'
+      'Please enter Student or Staff ID.'
     );
 
 
@@ -13050,7 +13344,7 @@ function submitManualEntry() {
     'manualResult'
   ).innerHTML =
     '<div class="resultCard" style="background:#eef4ff;">' +
-    '<strong>Student ID: ' +
+    '<strong>Member ID: ' +
     escapeHtml(studentId) +
     '</strong><br><br>' +
     'Checking Manual Entry...' +
@@ -19935,7 +20229,7 @@ function printMisReport() {
     '<html><head><meta charset="UTF-8">' +
     '<title>NSIS Mess MIS Report</title>' +
     '<style>' +
-      '@page{size:A4;margin:12mm;}' +
+      '@page{size:A4 portrait;margin:12mm;}' +
       '*{box-sizing:border-box;}' +
       'body{font-family:Arial,Helvetica,sans-serif;color:#172033;margin:0;background:#fff;}' +
       '.wrap{max-width:900px;margin:0 auto;}' +
@@ -19957,7 +20251,7 @@ function printMisReport() {
       '.actions{margin:0 0 14px;display:flex;gap:8px;}' +
       '.actions button{padding:8px 12px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer;}' +
       '.actions button.secondary{background:#eef4ff;color:#0b57d0;}' +
-      '@media print{.actions{display:none;}body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}' +
+      '@media print{.actions{display:none;}.wrap{width:100%;max-width:none;}body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}' +
     '</style></head><body>' +
     '<div class="wrap">' +
 
@@ -19965,7 +20259,7 @@ function printMisReport() {
 
 
       '<div class="actions">' +
-        '<button onclick="window.print()">Print / Save PDF</button>' +
+        '<button onclick="window.print()">Print A4 / Save PDF</button>' +
         '<button class="secondary" onclick="window.close()">Close</button>' +
       '</div>' +
 
@@ -20375,12 +20669,17 @@ function formatReportMoney(value) {
 
 
 
-  return '₹' +
-    reportNumber(value)
-      .toLocaleString(
-        'en-IN',
-        { maximumFractionDigits: 2 }
-      );
+  const number = reportNumber(value);
+
+
+  return (number < 0 ? '-₹' : '₹') +
+    Math.abs(number).toLocaleString(
+      'en-IN',
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }
+    );
 }
 
 
@@ -21249,8 +21548,8 @@ function renderQrReissueResult(
     '<div style="font-size:18px;font-weight:900;margin-top:5px;">' +
     escapeHtml(statusText) +
     '</div>' +
-    '<div style="margin-top:7px;font-size:13px;">Charge ₹' +
-    escapeHtml(result.chargeAmount || 0) +
+    '<div style="margin-top:7px;font-size:13px;">Charge ' +
+    escapeHtml(formatReportMoney(result.chargeAmount || 0)) +
     ' · ' +
     escapeHtml(result.paymentStatus || '') +
     '</div>' +
@@ -21891,6 +22190,9 @@ function showMealResult(
 
   const status = String(data.status || data.scanStatus || '').trim().toUpperCase();
   const student = data.student || {};
+  const isStaff = String(student.memberType || '').trim().toUpperCase() === 'STAFF';
+  const memberIdLabel = isStaff ? 'Staff ID' : 'Student ID';
+  const memberGroupLabel = isStaff ? 'Department / Designation' : 'Class';
 
 
 
@@ -21919,7 +22221,7 @@ function showMealResult(
     background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '⏳'; title = 'MESS NOT STARTED';
   }
   else if (status === 'UNKNOWN QR' || status === 'STUDENT NOT FOUND') {
-    background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '❓'; title = 'STUDENT NOT FOUND';
+    background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '❓'; title = 'MEMBER NOT FOUND';
   }
   else if (status === 'ERROR') {
     background = 'var(--danger-bg)'; textColor = 'var(--danger)'; icon = '⚠️'; title = data.message || 'SYSTEM ERROR';
@@ -21963,11 +22265,12 @@ function showMealResult(
     document.getElementById(targetId).innerHTML =
       '<div class="scanResultCard" style="background:' + background + ';">' +
         '<div class="scanResultPhotoWrap">' + photoHtml + '</div>' +
-        '<div class="scanResultName">' + escapeHtml(student.name || 'Student') + '</div>' +
+        '<div class="scanResultName">' + escapeHtml(student.name || (isStaff ? 'Staff' : 'Student')) + '</div>' +
         '<div class="scanResultDetails">' +
-          detail('Student ID', student.id || '') +
+          detail(memberIdLabel, student.id || '') +
+          detail('Member Type', isStaff ? String(student.staffType || 'STAFF').replace(/_/g, ' ') : 'STUDENT') +
           detail('Admission No.', student.admissionNo || '') +
-          detail('Class', student.className || '') +
+          detail(memberGroupLabel, student.className || '') +
           detail('Division', student.division || '') +
           detail('Roll No.', student.rollNo || '') +
           detail('Scan Time', nowText) +
@@ -21976,7 +22279,7 @@ function showMealResult(
         '<div id="scanFeeAccount" class="scanFeeAccount">' +
           '<div class="scanFeeLoading">Loading fee account...</div>' +
         '</div>' +
-        '<button id="scanNextButton" class="scanNextButton" type="button" onclick="prepareNextScan()" disabled>📷 Scan Next Student</button>' +
+        '<button id="scanNextButton" class="scanNextButton" type="button" onclick="prepareNextScan()" disabled>📷 Scan Next Member</button>' +
       '</div>';
 
 
@@ -21995,8 +22298,8 @@ function showMealResult(
         ? '<img class="studentPhoto" src="' + student.photoUrl + '" alt="Student Photo">'
         : '<div class="placeholder">👤</div>') +
       '<div class="studentName">' + escapeHtml(student.name || '') + '</div>' +
-      '<div class="studentMeta">Student ID: <strong>' + escapeHtml(student.id || '') + '</strong></div>' +
-      '<div class="studentMeta">Class: <strong>' + escapeHtml(student.className || '') + '</strong></div>' +
+      '<div class="studentMeta">' + escapeHtml(memberIdLabel) + ': <strong>' + escapeHtml(student.id || '') + '</strong></div>' +
+      '<div class="studentMeta">' + escapeHtml(memberGroupLabel) + ': <strong>' + escapeHtml(student.className || '') + '</strong></div>' +
       '<div class="statusIcon">' + icon + '</div>' +
       '<div class="statusText" style="color:' + textColor + ';">' + escapeHtml(title) + '</div>' +
     '</div>';
@@ -22079,7 +22382,7 @@ function loadScanFeeAccount(
 
   if (!studentId) {
     renderScanFeeAccountError_(
-      'Student ID not available.'
+      'Student / Staff ID not available.'
     );
     setScanNextEnabled_(true);
     return;
@@ -22129,7 +22432,7 @@ function formatFeeMoney_(
 
 
   if (!isFinite(number)) {
-    return '₹0';
+    return '₹0.00';
   }
 
 
@@ -22140,10 +22443,7 @@ function formatFeeMoney_(
     Math.abs(number).toLocaleString(
       'en-IN',
       {
-        minimumFractionDigits:
-          Number.isInteger(number)
-            ? 0
-            : 2,
+        minimumFractionDigits: 2,
         maximumFractionDigits: 2
       }
     )
@@ -22490,12 +22790,12 @@ function updateFeeCollectView_() {
     if (feeModuleStudent) {
       emptyTitle.textContent = 'Fee collection not allowed';
       emptyText.textContent =
-        'This student account is loaded, but collection permission is not available for this account or user.';
+        'This account is loaded, but collection permission is not available for this account or user.';
     }
     else {
-      emptyTitle.textContent = 'Select a student first';
+      emptyTitle.textContent = 'Select an account first';
       emptyText.textContent =
-        'Open Student Account, search the Student ID and verify the outstanding balance. Then return here to collect the fee.';
+        'Open Member Account, search the Student/Staff ID and verify the outstanding balance. Then return here to collect the fee.';
     }
   }
 }
@@ -22509,18 +22809,22 @@ function updateFeeDashboard_() {
 
 
   const collectTab = document.getElementById('feeTabButtonCollect');
+  const staffTab = document.getElementById('feeTabButtonStaff');
   const dailyTab = document.getElementById('feeTabButtonDaily');
   const outstandingTab = document.getElementById('feeTabButtonOutstanding');
   const collectAction = document.getElementById('feeDashboardCollectAction');
+  const staffAction = document.getElementById('feeDashboardStaffAction');
   const dailyAction = document.getElementById('feeDashboardDailyAction');
   const outstandingAction = document.getElementById('feeDashboardOutstandingAction');
   const refreshButton = document.getElementById('feeDashboardRefreshButton');
 
 
   if (collectTab) collectTab.style.display = canCollect ? '' : 'none';
+  if (staffTab) staffTab.style.display = hasFeeViewPermission() ? '' : 'none';
   if (dailyTab) dailyTab.style.display = canReports ? '' : 'none';
   if (outstandingTab) outstandingTab.style.display = canReports ? '' : 'none';
   if (collectAction) collectAction.style.display = canCollect ? '' : 'none';
+  if (staffAction) staffAction.style.display = hasFeeViewPermission() ? '' : 'none';
   if (dailyAction) dailyAction.style.display = canReports ? '' : 'none';
   if (outstandingAction) outstandingAction.style.display = canReports ? '' : 'none';
   if (refreshButton) refreshButton.style.display = canReports ? '' : 'none';
@@ -22651,6 +22955,7 @@ function openFeeTab_(name) {
   const viewMap = {
     dashboard: 'feeTabDashboard',
     account: 'feeTabAccount',
+    staff: 'feeTabStaff',
     collect: 'feeTabCollect',
     daily: 'feeTabDaily',
     outstanding: 'feeTabOutstanding'
@@ -22660,6 +22965,7 @@ function openFeeTab_(name) {
   const buttonMap = {
     dashboard: 'feeTabButtonDashboard',
     account: 'feeTabButtonAccount',
+    staff: 'feeTabButtonStaff',
     collect: 'feeTabButtonCollect',
     daily: 'feeTabButtonDaily',
     outstanding: 'feeTabButtonOutstanding'
@@ -22667,6 +22973,7 @@ function openFeeTab_(name) {
 
 
   if (!viewMap[name]) name = 'dashboard';
+  if (name === 'staff' && !hasFeeViewPermission()) name = 'dashboard';
   if (name === 'collect' && !hasFeeCollectPermission()) name = 'account';
   if ((name === 'daily' || name === 'outstanding') && !hasFeeReportsPermission()) {
     name = 'dashboard';
@@ -22700,6 +23007,10 @@ function openFeeTab_(name) {
 
   updateFeeCollectView_();
   updateFeeDashboard_();
+
+  if (name === 'staff') {
+    prepareStaffMessScreen_();
+  }
 
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -22757,13 +23068,14 @@ function prepareFeeScreen() {
     if (collectPanel) collectPanel.style.display = 'none';
     if (result && !result.innerHTML.trim()) {
       result.innerHTML =
-        '<div class="cameraHint">Search a student to view the fee account.</div>';
+        '<div class="cameraHint">Search a student or staff member to view the mess fee account.</div>';
     }
   }
 
 
   updateFeeCollectView_();
   updateFeeDashboard_();
+  prepareStaffMessScreen_();
   openFeeTab_(activeFeeTab || 'dashboard');
 }
 
@@ -22800,7 +23112,7 @@ function renderFeeStudentSuggestions_(matches, message) {
   if (!matches.length) {
     container.innerHTML =
       '<div class="cameraHint" style="padding:10px;">' +
-        escapeHtml(message || 'No matching student found.') +
+        escapeHtml(message || 'No matching student or staff member found.') +
       '</div>';
     container.classList.add('show');
     return;
@@ -22808,11 +23120,15 @@ function renderFeeStudentSuggestions_(matches, message) {
 
 
   container.innerHTML = matches.map(function(student, index) {
+    const accountType = String(student.accountType || 'STUDENT').toUpperCase();
+    const typeLabel = accountType === 'STAFF'
+      ? (student.staffType || 'STAFF').replace(/_/g, ' ')
+      : 'STUDENT';
     return (
       '<button class="feeStudentSuggestion" type="button" role="option" onclick="selectFeeStudent_(' + index + ')">' +
         '<span><span class="feeStudentSuggestionName">' + escapeHtml(student.name || 'Student') + '</span>' +
-        '<span class="feeStudentSuggestionMeta">Code: ' + escapeHtml(student.id || '-') + '</span></span>' +
-        '<span class="feeStudentSuggestionClass">' + escapeHtml(student.className || '-') + '</span>' +
+        '<span class="feeStudentSuggestionMeta">' + escapeHtml(typeLabel) + ' • Code: ' + escapeHtml(student.id || '-') + '</span></span>' +
+        '<span class="feeStudentSuggestionClass">' + escapeHtml(student.className || typeLabel) + '</span>' +
       '</button>'
     );
   }).join('');
@@ -22854,7 +23170,7 @@ function requestFeeStudentSuggestions_(query) {
 
   const container = document.getElementById('feeStudentSuggestions');
   if (container) {
-    container.innerHTML = '<div class="scanFeeLoading">Searching students...</div>';
+    container.innerHTML = '<div class="scanFeeLoading">Searching student / staff accounts...</div>';
     container.classList.add('show');
   }
 
@@ -22964,13 +23280,13 @@ function loadFeeModuleAccount(selectedStudentId) {
       studentId = String(feeStudentSearchMatches[0].id || '').trim().toUpperCase();
     }
     else if (feeStudentSearchMatches.length > 1) {
-      showError('feeModuleResult', 'Please select the student from the matching list.');
+      showError('feeModuleResult', 'Please select the correct account from the matching list.');
       requestFeeStudentSuggestions_(rawSearch);
       return;
     }
     else {
       feeStudentSearchAutoOpenQuery = rawSearch;
-      showError('feeModuleResult', 'Searching for the student...');
+      showError('feeModuleResult', 'Searching for the student / staff account...');
       requestFeeStudentSuggestions_(rawSearch);
       return;
     }
@@ -22980,7 +23296,7 @@ function loadFeeModuleAccount(selectedStudentId) {
 
 
   if (!studentId) {
-    showError('feeModuleResult', 'Please enter Student Name or Student Code / ID.');
+    showError('feeModuleResult', 'Please enter Student/Staff Name or Code / ID.');
     return;
   }
 
@@ -23020,7 +23336,7 @@ function loadFeeModuleAccount(selectedStudentId) {
 
 
   document.getElementById('feeModuleResult').innerHTML =
-    '<div class="scanFeeLoading">Loading fee account...</div>';
+    '<div class="scanFeeLoading">Loading mess fee account...</div>';
 
 
 
@@ -23084,6 +23400,32 @@ function renderFeeModuleAccount_(result) {
   const status = String(account.paymentStatus || '').trim().toUpperCase();
   const outstanding = Number(account.outstanding || 0);
   const outstandingClass = outstanding <= 0 ? ' zero' : '';
+  const isStaff =
+    String(student.accountType || account.accountType || '')
+      .trim()
+      .toUpperCase() === 'STAFF';
+  const memberIdLabel = isStaff ? 'Staff ID' : 'Student ID';
+  const memberGroupLabel = isStaff ? 'Department / Designation' : 'Class';
+  const memberTypeLabel = isStaff
+    ? String(student.staffType || 'STAFF').replace(/_/g, ' ')
+    : 'STUDENT';
+  const summaryHtml = isStaff
+    ? '<div class="feeLedgerGrid">' +
+        '<div class="feeLedgerItem"><span class="feeLedgerLabel">Opening Balance</span><span class="feeLedgerValue">' + formatFeeMoney_(account.openingDue) + '</span></div>' +
+        '<div class="feeLedgerItem totalPayable"><span class="feeLedgerLabel">Total Debits / Charges</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalPayable) + '</span></div>' +
+        '<div class="feeLedgerItem totalReceived"><span class="feeLedgerLabel">Total Credits / Payments & Discounts</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalReceived) + '</span></div>' +
+        '<div class="feeLedgerItem outstanding' + outstandingClass + '"><span class="feeLedgerLabel">Current Outstanding</span><span class="feeLedgerValue">' + formatFeeMoney_(account.outstanding) + '</span></div>' +
+      '</div>'
+    : '<div class="feeLedgerGrid">' +
+        '<div class="feeLedgerItem"><span class="feeLedgerLabel">Previous Opening Due</span><span class="feeLedgerValue">' + formatFeeMoney_(account.openingDue) + '</span></div>' +
+        '<div class="feeLedgerItem"><span class="feeLedgerLabel">2026-27 Mess Fee</span><span class="feeLedgerValue">' + formatFeeMoney_(account.currentYearFee) + '</span></div>' +
+        '<div class="feeLedgerItem"><span class="feeLedgerLabel">Other Debit</span><span class="feeLedgerValue">' + formatFeeMoney_(account.otherDebit) + '</span></div>' +
+        '<div class="feeLedgerItem totalPayable"><span class="feeLedgerLabel">Total Payable</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalPayable) + '</span></div>' +
+        '<div class="feeLedgerItem"><span class="feeLedgerLabel">Brought Forward Received</span><span class="feeLedgerValue">' + formatFeeMoney_(account.broughtForwardReceived) + '</span></div>' +
+        '<div class="feeLedgerItem"><span class="feeLedgerLabel">New Receipts</span><span class="feeLedgerValue">' + formatFeeMoney_(account.newReceipts) + '</span></div>' +
+        '<div class="feeLedgerItem totalReceived full"><span class="feeLedgerLabel">Total Received</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalReceived) + '</span></div>' +
+        '<div class="feeLedgerItem outstanding full' + outstandingClass + '"><span class="feeLedgerLabel">Current Outstanding</span><span class="feeLedgerValue">' + formatFeeMoney_(account.outstanding) + '</span></div>' +
+      '</div>';
 
 
 
@@ -23097,24 +23439,17 @@ function renderFeeModuleAccount_(result) {
     ledger.innerHTML =
       '<div class="feeModuleStudent">' +
         '<div class="feeModuleStudentName">' + escapeHtml(student.name || 'Student') + '</div>' +
-        '<div class="feeModuleStudentMeta">Student ID: <strong>' + escapeHtml(student.id || '-') + '</strong> &nbsp; • &nbsp; Class: <strong>' + escapeHtml(student.className || '-') + '</strong></div>' +
+        '<div class="feeModuleStudentMeta">' + escapeHtml(memberTypeLabel) + ' &nbsp; • &nbsp; ' + escapeHtml(memberIdLabel) + ': <strong>' + escapeHtml(student.id || '-') + '</strong> &nbsp; • &nbsp; ' + escapeHtml(memberGroupLabel) + ': <strong>' + escapeHtml(student.className || '-') + '</strong></div>' +
       '</div>' +
       '<div class="feeModuleLedgerBox">' +
         '<div class="feeAccountHead">' +
           '<div class="feeAccountTitle">💳 Mess Fee Account</div>' +
           '<div class="feeStatusBadge' + feeStatusClass_(status) + '">' + escapeHtml(status || '-') + '</div>' +
         '</div>' +
-        '<div class="feeLedgerGrid">' +
-          '<div class="feeLedgerItem"><span class="feeLedgerLabel">Previous Opening Due</span><span class="feeLedgerValue">' + formatFeeMoney_(account.openingDue) + '</span></div>' +
-          '<div class="feeLedgerItem"><span class="feeLedgerLabel">2026-27 Mess Fee</span><span class="feeLedgerValue">' + formatFeeMoney_(account.currentYearFee) + '</span></div>' +
-          '<div class="feeLedgerItem"><span class="feeLedgerLabel">Other Debit</span><span class="feeLedgerValue">' + formatFeeMoney_(account.otherDebit) + '</span></div>' +
-          '<div class="feeLedgerItem totalPayable"><span class="feeLedgerLabel">Total Payable</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalPayable) + '</span></div>' +
-          '<div class="feeLedgerItem"><span class="feeLedgerLabel">Brought Forward Received</span><span class="feeLedgerValue">' + formatFeeMoney_(account.broughtForwardReceived) + '</span></div>' +
-          '<div class="feeLedgerItem"><span class="feeLedgerLabel">New Receipts</span><span class="feeLedgerValue">' + formatFeeMoney_(account.newReceipts) + '</span></div>' +
-          '<div class="feeLedgerItem totalReceived full"><span class="feeLedgerLabel">Total Received</span><span class="feeLedgerValue">' + formatFeeMoney_(account.totalReceived) + '</span></div>' +
-          '<div class="feeLedgerItem outstanding full' + outstandingClass + '"><span class="feeLedgerLabel">Current Outstanding</span><span class="feeLedgerValue">' + formatFeeMoney_(account.outstanding) + '</span></div>' +
-        '</div>' +
-        '<div class="feeAccountNote">Opening Due and current-year fee are shown separately. Every new collection creates a separate receipt transaction.</div>' +
+        summaryHtml +
+        '<div class="feeAccountNote">' + (isStaff
+          ? 'Staff charges, discounts, salary deductions/payments and reversals are shown from the same financial transaction source.'
+          : 'Opening Due and current-year fee are shown separately. Every new collection creates a separate receipt transaction.') + '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">' +
           '<button id="printFullFeeLedgerButton" type="button" class="btn btnSoft" onclick="printFullFeeLedger_()" disabled>🖨️ Print Full Ledger / Save PDF</button>' +
           '<button id="downloadFeeLedgerExcelButton" type="button" class="btn btnPrimary" onclick="downloadFeeLedgerExcel_()" disabled>⬇️ Download Ledger Excel</button>' +
@@ -23157,6 +23492,14 @@ function renderFeeModuleAccount_(result) {
   const dateInput = document.getElementById('feeCollectDate');
   if (dateInput && !dateInput.value) {
     dateInput.value = localDateInputValue_();
+  }
+
+  const modeInput = document.getElementById('feeCollectMode');
+  if (modeInput) {
+    modeInput.value =
+      isStaff && student.defaultPaymentMode
+        ? String(student.defaultPaymentMode).toUpperCase()
+        : '';
   }
 
 
@@ -23381,6 +23724,8 @@ function feeLedgerParticulars_(item, debit, credit) {
   const labels = {
     RECEIPT: 'Mess Fee Collection',
     REVERSAL: 'Receipt Reversal',
+    STAFF_MESS_CHARGE: 'Staff Mess Charge',
+    STAFF_DISCOUNT: 'Staff Discount / Concession',
     ADJUSTMENT: 'Adjustment',
     ADDITIONAL_DEBIT: 'Additional Debit',
     DISCOUNT: 'Discount / Concession',
@@ -23456,6 +23801,12 @@ function buildFeeAccountingLedgerRows_(upToDate) {
   const otherDebit = feeLedgerNumber_(account.otherDebit);
   const totalPayable = feeLedgerNumber_(account.totalPayable);
   const broughtForwardReceived = feeLedgerNumber_(account.broughtForwardReceived);
+  const isStaffAccount =
+    String(
+      (feeModuleStudent && feeModuleStudent.accountType) ||
+      account.accountType ||
+      ''
+    ).trim().toUpperCase() === 'STAFF';
   if (openingDue) {
     addRow('Opening', 'Previous Opening Due', 'OPENING', openingDue, 0);
   }
@@ -23468,7 +23819,7 @@ function buildFeeAccountingLedgerRows_(upToDate) {
 
 
   const payableDifference = totalPayable - (openingDue + currentYearFee + otherDebit);
-  if (Math.abs(payableDifference) >= 0.005) {
+  if (!isStaffAccount && Math.abs(payableDifference) >= 0.005) {
     addRow(
       'Opening',
       'Fee Account Adjustment',
@@ -23626,7 +23977,7 @@ function renderFeeAccountingStatement_() {
 
   container.innerHTML =
     '<div class="feeInlineStatement">' +
-      '<div class="feeInlineStatementHead"><div><div class="feeInlineStatementTitle">Student Account Statement</div>' +
+      '<div class="feeInlineStatementHead"><div><div class="feeInlineStatementTitle">Mess Account Statement</div>' +
       '<div class="feeInlineStatementSub">Debit (+) increases payable. Credit (−) reduces payable. Every stored transaction is shown in chronological order.</div></div></div>' +
       '<div class="feeInlineTableWrap"><table class="feeInlineTable">' +
         '<thead><tr><th>#</th><th>Date</th><th>Particulars / Description</th><th>Receipt / Voucher No.</th><th class="money">+ Debit</th><th class="money">− Credit</th><th class="money">Running Balance</th><th>Receipt</th></tr></thead>' +
@@ -23654,12 +24005,16 @@ function printFeeStatementUpToDate_() {
 
 function printFullFeeLedger_(upToDate, receiptStatementMode) {
   const student = feeModuleStudent || {};
+  const isStaff = String(student.accountType || '').trim().toUpperCase() === 'STAFF';
+  const personNameLabel = isStaff ? 'Staff Name' : 'Student Name';
+  const personIdLabel = isStaff ? 'Staff ID' : 'Student ID';
+  const personGroupLabel = isStaff ? 'Department / Designation' : 'Class';
   const isUpToStatement = receiptStatementMode === true;
   const upToText = String(upToDate || '').trim();
 
 
   if (!student.id) {
-    window.alert('Please search and load a student fee account first.');
+    window.alert('Please search and load a student or staff fee account first.');
     return;
   }
 
@@ -23691,11 +24046,11 @@ function printFullFeeLedger_(upToDate, receiptStatementMode) {
   );
   const generatedUpTo = upToText || localDateInputValue_();
   const documentTitle = isUpToStatement
-    ? 'STUDENT MESS FEE RECEIPT / STATEMENT'
-    : 'STUDENT MESS FEE LEDGER';
+    ? (isStaff ? 'STAFF MESS FEE RECEIPT / STATEMENT' : 'STUDENT MESS FEE RECEIPT / STATEMENT')
+    : (isStaff ? 'STAFF MESS FEE LEDGER' : 'STUDENT MESS FEE LEDGER');
   const documentNote = isUpToStatement
     ? 'Future-dated transactions after ' + generatedUpTo + ' are not included. Existing receipt numbers and transaction data remain unchanged.'
-    : 'This is a computer-generated student mess fee ledger. Existing receipt numbers and transaction data remain unchanged.';
+    : 'This is a computer-generated mess fee ledger. Existing receipt numbers and transaction data remain unchanged.';
   const statementRows = statement.rows.map(function(row, index) {
     return '<tr' + (row.reversed ? ' class="reversed"' : '') + '>' +
       '<td>' + (index + 1) + '</td>' +
@@ -23714,12 +24069,12 @@ function printFullFeeLedger_(upToDate, receiptStatementMode) {
   const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' +
     escapeHtml(feeLedgerFileName_() + (isUpToStatement ? '_Up_To_' + generatedUpTo : '')) +
     '</title><style>' +
-      'body{font-family:Arial,sans-serif;margin:0;background:#fff;color:#111}.wrap{max-width:1100px;margin:0 auto;padding:28px}.school{text-align:center}.school h1{font-size:23px;margin:0 0 5px}.addr{font-size:12px;line-height:1.45}.title{text-align:center;font-size:19px;font-weight:800;margin:18px 0 14px;padding:9px;border-top:1px solid #222;border-bottom:1px solid #222}.actions{display:flex;gap:8px;margin-bottom:15px}.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 18px;padding:11px;border:1px solid #aaa;font-size:13px}.label{font-weight:700}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.box{border:1px solid #bbb;padding:9px;font-size:11px}.box strong{display:block;font-size:14px;margin-top:4px}.box.outstanding{background:#fff4e5}.statementTitle{font-size:14px;font-weight:800;margin:18px 0 6px}.table{width:100%;border-collapse:collapse;font-size:10px}.table th,.table td{border:1px solid #888;padding:6px;vertical-align:top}.table th{background:#dce8fb}.table .amount{text-align:right;white-space:nowrap}.table .balance{font-weight:700}.table .extra{font-size:8px;color:#555;margin-top:3px}.table .reversed{color:#777;background:#f5f5f5}.table tfoot td{font-weight:800;background:#eef4ff}.footer{display:flex;justify-content:space-between;margin-top:38px;font-size:11px}.note{text-align:center;margin-top:22px;font-size:9px;color:#555}@media print{.actions{display:none}.wrap{padding:8px}@page{size:landscape;margin:9mm}}' +
+      '@page{size:A4 landscape;margin:8mm}body{font-family:Arial,sans-serif;margin:0;background:#fff;color:#111}.wrap{width:100%;max-width:1100px;margin:0 auto;padding:28px;box-sizing:border-box}.school{text-align:center}.school h1{font-size:23px;margin:0 0 5px}.addr{font-size:12px;line-height:1.45}.title{text-align:center;font-size:19px;font-weight:800;margin:18px 0 14px;padding:9px;border-top:1px solid #222;border-bottom:1px solid #222}.actions{display:flex;gap:8px;margin-bottom:15px}.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}.student{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 18px;padding:11px;border:1px solid #aaa;font-size:13px}.label{font-weight:700}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.box{border:1px solid #bbb;padding:9px;font-size:11px}.box strong{display:block;font-size:14px;margin-top:4px}.box.outstanding{background:#fff4e5}.statementTitle{font-size:14px;font-weight:800;margin:18px 0 6px}.table{width:100%;border-collapse:collapse;font-size:10px}.table th,.table td{border:1px solid #888;padding:6px;vertical-align:top}.table th{background:#dce8fb}.table thead{display:table-header-group}.table .amount{text-align:right;white-space:nowrap}.table .balance{font-weight:700}.table .extra{font-size:8px;color:#555;margin-top:3px}.table .reversed{color:#777;background:#f5f5f5}.table tr{page-break-inside:avoid}.table tfoot td{font-weight:800;background:#eef4ff}.footer{display:flex;justify-content:space-between;margin-top:38px;font-size:11px}.note{text-align:center;margin-top:22px;font-size:9px;color:#555}@media print{html,body{width:297mm}.actions{display:none}.wrap{width:100%;max-width:none;padding:0}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}' +
     '</style></head><body><div class="wrap">' +
-      '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
+      '<div class="actions"><button onclick="window.print()">Print A4 / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
       '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur<br>Tal. Shrirampur, Dist. Ahilyanagar, Maharashtra - 413715</div></div>' +
       '<div class="title">' + escapeHtml(documentTitle) + ' — ACADEMIC YEAR 2026-27</div>' +
-      '<div class="student"><div><span class="label">Student Name:</span> ' + escapeHtml(student.name || '-') + '</div><div><span class="label">Student ID:</span> ' + escapeHtml(student.id || '-') + '</div><div><span class="label">Class:</span> ' + escapeHtml(student.className || '-') + '</div></div>' +
+      '<div class="student"><div><span class="label">' + escapeHtml(personNameLabel) + ':</span> ' + escapeHtml(student.name || '-') + '</div><div><span class="label">' + escapeHtml(personIdLabel) + ':</span> ' + escapeHtml(student.id || '-') + '</div><div><span class="label">' + escapeHtml(personGroupLabel) + ':</span> ' + escapeHtml(student.className || '-') + '</div></div>' +
       '<div class="summary">' +
         '<div class="box">Receipt / Statement Ref.<strong>' + escapeHtml(statementReference) + '</strong></div>' +
         '<div class="box">Receipt Date<strong>' + escapeHtml(latestReceipt.transactionDate || '-') + '</strong></div>' +
@@ -23749,10 +24104,11 @@ function printFullFeeLedger_(upToDate, receiptStatementMode) {
 function downloadFeeLedgerExcel_() {
   const student = feeModuleStudent || {};
   const account = feeModuleAccount || {};
+  const isStaff = String(student.accountType || '').trim().toUpperCase() === 'STAFF';
 
 
   if (!student.id) {
-    window.alert('Please search and load a student fee account first.');
+    window.alert('Please search and load a student or staff fee account first.');
     return;
   }
 
@@ -23766,11 +24122,11 @@ function downloadFeeLedgerExcel_() {
   const statement = buildFeeAccountingLedgerRows_();
   const excelRows = [
     ['Nyati Samata International School'],
-    ['Student Mess Fee Accounting Statement — Academic Year 2026-27'],
+    [(isStaff ? 'Staff' : 'Student') + ' Mess Fee Accounting Statement — Academic Year 2026-27'],
     [],
-    ['Student Name', student.name || '-'],
-    ['Student ID', student.id || '-'],
-    ['Class', student.className || '-'],
+    [isStaff ? 'Staff Name' : 'Student Name', student.name || '-'],
+    [isStaff ? 'Staff ID' : 'Student ID', student.id || '-'],
+    [isStaff ? 'Department / Designation' : 'Class', student.className || '-'],
     [],
     ['Sr. No.', 'Date', 'Particulars', 'Voucher / Receipt No.', 'Debit', 'Credit', 'Running Balance']
   ];
@@ -23860,6 +24216,7 @@ function feeHeadLabel_(value) {
   if (value === 'OPENING_DUE') return 'Opening Due';
   if (value === 'CURRENT_YEAR_FEE') return 'Current Year Mess Fee';
   if (value === 'OTHER') return 'Other';
+  if (value === 'MESS_FEE') return 'Mess Fee';
   return value || 'Mess Fee';
 }
 
@@ -23883,7 +24240,7 @@ function feeAmountWords_(amount) {
 function printFeeReceiptByIndex_(index) {
   const item = feeLedgerTransactions[index];
   if (!item) {
-    window.alert('Receipt details not available. Please search the student again.');
+    window.alert('Receipt details not available. Please search the account again.');
     return;
   }
   printFeeReceipt_(item, Number(index));
@@ -23918,6 +24275,10 @@ function getFeeReceiptBalanceContext_(sourceIndex) {
 
 function printFeeReceipt_(item, sourceIndex) {
   const student = feeModuleStudent || {};
+  const isStaff = String(student.accountType || '').trim().toUpperCase() === 'STAFF';
+  const personNameLabel = isStaff ? 'Staff Name' : 'Student Name';
+  const personIdLabel = isStaff ? 'Staff ID' : 'Student ID';
+  const personGroupLabel = isStaff ? 'Department / Designation' : 'Class';
   const amount = Number(item.credit || 0) > 0 ? Number(item.credit || 0) : Number(item.debit || 0);
   const receiptNo = item.receiptNo || '-';
   const entryDateTime = item.entryDateTime || '-';
@@ -23931,12 +24292,12 @@ function printFeeReceipt_(item, sourceIndex) {
     return;
   }
   const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + escapeHtml(receiptNo) + '</title>' +
-    '<style>@page{size:A5 portrait;margin:7mm}html,body{margin:0;background:#fff;color:#111}body{font-family:Arial,sans-serif}.wrap{width:100%;max-width:132mm;margin:0 auto;padding:7mm;box-sizing:border-box}.school{text-align:center}.school h1{font-size:18px;margin:0 0 3px}.addr{font-size:10px;line-height:1.35}.title{text-align:center;font-size:16px;font-weight:800;margin:10px 0 9px;padding:6px 0;border-top:1px solid #111;border-bottom:1px solid #111}.grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:10px}.row{padding:2px 0}.label{font-weight:700}.student{margin:8px 0 7px;padding:7px;border:1px solid #999;font-size:10px;line-height:1.35}.table{width:100%;border-collapse:collapse;margin-top:7px;font-size:10px}.table th,.table td{border:1px solid #888;padding:6px;text-align:left}.table th:last-child,.table td:last-child{text-align:right}.words{margin-top:8px;font-size:10px;line-height:1.45}.footer{display:flex;justify-content:space-between;gap:12px;margin-top:28px;font-size:9px}.sign{text-align:center;min-width:120px}.note{text-align:center;margin-top:12px;font-size:8px;color:#555}.actions{display:flex;gap:8px;margin-bottom:10px}.actions button{padding:8px 12px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}@media print{html,body{width:148mm;min-height:210mm}.actions{display:none}.wrap{width:100%;max-width:none;padding:0;page-break-inside:avoid}}</style></head><body><div class="wrap">' +
-    '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
+    '<style>@page{size:A4 portrait;margin:7mm}html,body{margin:0;background:#fff;color:#111}body{font-family:Arial,sans-serif}.wrap{width:100%;max-width:196mm;margin:0 auto;padding:6mm;box-sizing:border-box}.school{text-align:center}.school h1{font-size:18px;margin:0 0 3px}.addr{font-size:10px;line-height:1.35}.title{text-align:center;font-size:16px;font-weight:800;margin:8px 0 7px;padding:5px 0;border-top:1px solid #111;border-bottom:1px solid #111}.grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;font-size:10px}.row{padding:1px 0}.label{font-weight:700}.student{margin:6px 0;padding:6px;border:1px solid #999;font-size:10px;line-height:1.3}.table{width:100%;border-collapse:collapse;margin-top:6px;font-size:10px}.table th,.table td{border:1px solid #888;padding:5px;text-align:left}.table th:last-child,.table td:last-child{text-align:right}.words{margin-top:6px;font-size:10px;line-height:1.35}.footer{display:flex;justify-content:space-between;gap:12px;margin-top:15px;font-size:9px}.sign{text-align:center;min-width:120px}.note{text-align:center;margin-top:8px;font-size:8px;color:#555}.actions{display:flex;gap:8px;margin-bottom:10px}.actions button{padding:8px 12px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .secondary{background:#eee;color:#111}@media print{html,body{width:210mm;min-height:297mm}.actions{display:none}.wrap{width:196mm;max-width:196mm;min-height:136mm;height:136mm;padding:0;page-break-inside:avoid;border-bottom:1px dashed #aaa}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="wrap">' +
+    '<div class="actions"><button onclick="window.print()">Print A4 Half-Page / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
     '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur<br>Tal. Shrirampur, Dist. Ahilyanagar<br>Maharashtra - 413715</div></div>' +
     '<div class="title">MESS FEE RECEIPT</div>' +
     '<div class="grid"><div class="row"><span class="label">Receipt No.:</span> ' + escapeHtml(receiptNo) + '</div><div class="row"><span class="label">Receipt Date:</span> ' + escapeHtml(item.transactionDate || '-') + '</div><div class="row"><span class="label">Generated Up To Date:</span> ' + escapeHtml(item.transactionDate || '-') + '</div><div class="row"><span class="label">Status:</span> ' + escapeHtml(String(item.status || 'ACTIVE').toUpperCase()) + '</div></div>' +
-    '<div class="student"><div><span class="label">Student Name:</span> ' + escapeHtml(student.name || '-') + '</div><div style="margin-top:6px"><span class="label">Student ID:</span> ' + escapeHtml(student.id || '-') + ' &nbsp;&nbsp; <span class="label">Class:</span> ' + escapeHtml(student.className || '-') + '</div><div style="margin-top:6px"><span class="label">Academic Year:</span> 2026-27</div></div>' +
+    '<div class="student"><div><span class="label">' + escapeHtml(personNameLabel) + ':</span> ' + escapeHtml(student.name || '-') + '</div><div style="margin-top:6px"><span class="label">' + escapeHtml(personIdLabel) + ':</span> ' + escapeHtml(student.id || '-') + ' &nbsp;&nbsp; <span class="label">' + escapeHtml(personGroupLabel) + ':</span> ' + escapeHtml(student.className || '-') + '</div><div style="margin-top:6px"><span class="label">Academic Year:</span> 2026-27</div></div>' +
     '<table class="table"><thead><tr><th>Particulars</th><th>Amount</th></tr></thead><tbody><tr><td>' + escapeHtml(feeHeadLabel_(item.feeHead)) + '</td><td>' + escapeHtml(formatFeeMoney_(amount)) + '</td></tr></tbody></table>' +
     '<div class="words"><div><span class="label">Amount Received:</span> ' + escapeHtml(formatFeeMoney_(amount)) + '</div><div><span class="label">Amount in Words:</span> ' + escapeHtml(feeAmountWords_(amount)) + '</div><div><span class="label">Payment Mode:</span> ' + escapeHtml(item.paymentMode || '-') + '</div><div><span class="label">Transaction / Reference No.:</span> ' + escapeHtml(item.referenceNo || '-') + '</div><div><span class="label">Previous Balance:</span> ' + escapeHtml(feeLedgerBalanceText_(balanceContext.previousBalance)) + '</div><div><span class="label">Current Transaction:</span> ' + escapeHtml(currentTransactionText) + '</div><div><span class="label">Closing Balance:</span> ' + escapeHtml(feeLedgerBalanceText_(balanceContext.closingBalance)) + '</div><div><span class="label">On Account of:</span> Mess Fee received for Academic Year 2026-27</div></div>' +
     '<div class="footer"><div><div><span class="label">Fee Collected By:</span> ' + escapeHtml(item.collectedBy || '-') + '</div><div style="margin-top:6px"><span class="label">Received Date & Time:</span> ' + escapeHtml(entryDateTime) + '</div></div><div class="sign">Authorised Signatory</div></div>' +
@@ -23969,7 +24330,7 @@ function submitFeeCollection() {
 
 
   if (!feeModuleStudent || !feeModuleStudent.id) {
-    showError('feeCollectionResult', 'Please search and load a student fee account first.');
+    showError('feeCollectionResult', 'Please search and load a student or staff fee account first.');
     return;
   }
 
@@ -24080,7 +24441,7 @@ function requestFeeReversal_(index) {
 
   if (!item) {
     window.alert(
-      'Receipt details not available. Please search the student again.'
+      'Receipt details not available. Please search the account again.'
     );
     return;
   }
@@ -24365,10 +24726,11 @@ function renderFeeCollectionReport_(result) {
       '<div class="reportKpi info"><div class="reportKpiLabel">Active Receipts</div><div class="reportKpiValue">' + Number(summary.activeReceiptCount || 0) + '</div></div>' +
       '<div class="reportKpi"><div class="reportKpiLabel">Cash</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.cash) + '</div></div>' +
       '<div class="reportKpi"><div class="reportKpiLabel">UPI / Bank / Cheque</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(Number(summary.upi || 0) + Number(summary.bank || 0) + Number(summary.cheque || 0)) + '</div></div>' +
+      '<div class="reportKpi info"><div class="reportKpiLabel">Salary Deduction</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.salaryDeduction || 0) + '</div></div>' +
       '<div class="reportKpi danger"><div class="reportKpiLabel">Reversed</div><div class="reportKpiValue">' + Number(summary.reversedReceiptCount || 0) + '</div></div>' +
     '</div>' +
     '<div class="feeReportCaption">Period: <strong>' + escapeHtml(result.startDate || '-') + '</strong> to <strong>' + escapeHtml(result.endDate || '-') + '</strong><br>Collector Summary:<br>' + collectorText + '</div>' +
-    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Date</th><th>Receipt</th><th>Student</th><th>Class</th><th>Mode</th><th class="money">Amount</th><th>Collected By</th><th>Status</th></tr></thead><tbody>' + transactionRows + '</tbody></table></div>';
+    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Date</th><th>Receipt</th><th>Account Holder</th><th>Class / Department</th><th>Mode</th><th class="money">Amount</th><th>Collected By</th><th>Status</th></tr></thead><tbody>' + transactionRows + '</tbody></table></div>';
 
   const actions =
     document.getElementById('feeCollectionReportActions');
@@ -24422,6 +24784,7 @@ function renderFeeOutstandingReport_(result) {
           '<td>' + (index + 1) + '</td>' +
           '<td>' + escapeHtml(item.studentId || '-') + '</td>' +
           '<td><strong>' + escapeHtml(item.studentName || '-') + '</strong></td>' +
+          '<td>' + escapeHtml(item.accountType || 'STUDENT') + '</td>' +
           '<td>' + escapeHtml(item.className || '-') + '</td>' +
           '<td class="money">' + escapeHtml(formatFeeMoney_(item.totalPayable)) + '</td>' +
           '<td class="money">' + escapeHtml(formatFeeMoney_(item.totalReceived)) + '</td>' +
@@ -24429,20 +24792,20 @@ function renderFeeOutstandingReport_(result) {
           '<td>' + escapeHtml(item.paymentStatus || '-') + '</td>' +
         '</tr>';
       }).join('')
-    : '<tr><td colspan="8">No student accounts found for the selected filters.</td></tr>';
+    : '<tr><td colspan="9">No accounts found for the selected filters.</td></tr>';
 
   const filters = result.filters || {};
 
   target.innerHTML =
     '<div class="reportKpiGrid" style="margin-top:12px;">' +
-      '<div class="reportKpi info"><div class="reportKpiLabel">Students</div><div class="reportKpiValue">' + Number(summary.studentCount || 0) + '</div></div>' +
+      '<div class="reportKpi info"><div class="reportKpiLabel">Accounts</div><div class="reportKpiValue">' + Number(summary.studentCount || 0) + '</div></div>' +
       '<div class="reportKpi"><div class="reportKpiLabel">Total Payable</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalPayable) + '</div></div>' +
       '<div class="reportKpi success"><div class="reportKpiLabel">Total Received</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalReceived) + '</div></div>' +
       '<div class="reportKpi warning"><div class="reportKpiLabel">Outstanding</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalOutstanding) + '</div></div>' +
       '<div class="reportKpi info"><div class="reportKpiLabel">Advance</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalAdvance) + '</div></div>' +
     '</div>' +
     '<div class="feeReportCaption">Academic Year: <strong>' + escapeHtml(result.financialYear || '-') + '</strong> · Status: <strong>' + escapeHtml(filters.status || 'OUTSTANDING') + '</strong>' + (filters.className ? ' · Class: <strong>' + escapeHtml(filters.className) + '</strong>' : '') + '</div>' +
-    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Student ID</th><th>Student Name</th><th>Class</th><th class="money">Total Payable</th><th class="money">Total Received</th><th class="money">Outstanding</th><th>Status</th></tr></thead><tbody>' + tableRows + '</tbody></table></div>';
+    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Account ID</th><th>Account Holder</th><th>Type</th><th>Class / Department</th><th class="money">Total Debit / Payable</th><th class="money">Total Credit / Received</th><th class="money">Outstanding</th><th>Status</th></tr></thead><tbody>' + tableRows + '</tbody></table></div>';
 
   const actions =
     document.getElementById('feeOutstandingReportActions');
@@ -24482,8 +24845,8 @@ function openFeeReportPrint_(title, caption, summaryItems, headers, rows) {
 
   const html =
     '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + escapeHtml(title) + '</title>' +
-    '<style>@page{size:A4 landscape;margin:9mm}body{font-family:Arial,sans-serif;margin:0;color:#111}.wrap{padding:16px}.school{text-align:center}.school h1{margin:0;font-size:21px}.addr{font-size:10px;line-height:1.4;margin-top:3px}.title{text-align:center;font-size:18px;font-weight:800;margin:14px 0 5px}.caption{text-align:center;font-size:10px;color:#555;margin-bottom:12px}.actions{display:flex;gap:8px;margin-bottom:12px}.actions button{padding:8px 12px;border:0;border-radius:6px;background:#0b57d0;color:#fff;font-weight:700}.actions .secondary{background:#eee;color:#111}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}.box{border:1px solid #aaa;padding:7px;font-size:9px}.box span{display:block;color:#555}.box strong{display:block;font-size:13px;margin-top:3px}.table{width:100%;border-collapse:collapse;font-size:8.5px}.table th,.table td{border:1px solid #888;padding:5px;vertical-align:top}.table th{background:#dce8fb}.footer{display:flex;justify-content:space-between;margin-top:18px;font-size:9px}@media print{.actions{display:none}.wrap{padding:0}}</style></head><body><div class="wrap">' +
-    '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
+    '<style>@page{size:A4 landscape;margin:8mm}body{font-family:Arial,sans-serif;margin:0;color:#111}.wrap{width:100%;padding:16px;box-sizing:border-box}.school{text-align:center}.school h1{margin:0;font-size:21px}.addr{font-size:10px;line-height:1.4;margin-top:3px}.title{text-align:center;font-size:18px;font-weight:800;margin:14px 0 5px}.caption{text-align:center;font-size:10px;color:#555;margin-bottom:12px}.actions{display:flex;gap:8px;margin-bottom:12px}.actions button{padding:8px 12px;border:0;border-radius:6px;background:#0b57d0;color:#fff;font-weight:700}.actions .secondary{background:#eee;color:#111}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}.box{border:1px solid #aaa;padding:7px;font-size:9px}.box span{display:block;color:#555}.box strong{display:block;font-size:13px;margin-top:3px}.table{width:100%;border-collapse:collapse;font-size:8.5px}.table th,.table td{border:1px solid #888;padding:5px;vertical-align:top}.table th{background:#dce8fb}.table thead{display:table-header-group}.table tr{page-break-inside:avoid}.footer{display:flex;justify-content:space-between;margin-top:18px;font-size:9px}@media print{html,body{width:297mm}.actions{display:none}.wrap{width:100%;padding:0}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="wrap">' +
+    '<div class="actions"><button onclick="window.print()">Print A4 / Save PDF</button><button class="secondary" onclick="window.close()">Close</button></div>' +
     '<div class="school"><h1>Nyati Samata International School</h1><div class="addr">At. Eklahare, Post Belapur, Tal. Shrirampur, Dist. Ahilyanagar, Maharashtra - 413715</div></div>' +
     '<div class="title">' + escapeHtml(title) + '</div><div class="caption">' + escapeHtml(caption) + '</div>' +
     '<div class="summary">' + summaryHtml + '</div>' +
@@ -24519,6 +24882,7 @@ function printFeeCollectionReport_() {
       item.receiptNo || '-',
       item.studentId || '-',
       item.studentName || '-',
+      item.accountType || 'STUDENT',
       item.className || '-',
       item.paymentMode || '-',
       formatFeeMoney_(
@@ -24541,6 +24905,7 @@ function printFeeCollectionReport_() {
       ['Active Receipts', String(summary.activeReceiptCount || 0)],
       ['Cash', formatFeeMoney_(summary.cash)],
       ['UPI / Bank / Cheque', formatFeeMoney_(Number(summary.upi || 0) + Number(summary.bank || 0) + Number(summary.cheque || 0))],
+      ['Salary Deduction', formatFeeMoney_(summary.salaryDeduction || 0)],
       ['Reversed', String(summary.reversedReceiptCount || 0)]
     ],
     ['#', 'Date', 'Receipt No.', 'Student ID', 'Student Name', 'Class', 'Mode', 'Amount', 'Collected By', 'Status'],
@@ -24574,16 +24939,16 @@ function printFeeOutstandingReport_() {
   });
 
   openFeeReportPrint_(
-    'STUDENT OUTSTANDING FEES REPORT',
+    'MESS OUTSTANDING ACCOUNTS REPORT',
     'Academic Year ' + (report.financialYear || '') + ' · Status: ' + (filters.status || 'OUTSTANDING') + (filters.className ? ' · Class: ' + filters.className : ''),
     [
-      ['Students', String(summary.studentCount || 0)],
+      ['Accounts', String(summary.studentCount || 0)],
       ['Total Payable', formatFeeMoney_(summary.totalPayable)],
       ['Total Received', formatFeeMoney_(summary.totalReceived)],
       ['Outstanding', formatFeeMoney_(summary.totalOutstanding)],
       ['Advance', formatFeeMoney_(summary.totalAdvance)]
     ],
-    ['#', 'Student ID', 'Student Name', 'Class', 'Total Payable', 'Total Received', 'Outstanding', 'Status'],
+    ['#', 'Account ID', 'Account Holder', 'Type', 'Class / Department', 'Total Debit / Payable', 'Total Credit / Received', 'Outstanding', 'Status'],
     rows
   );
 }
@@ -24617,6 +24982,7 @@ function downloadFeeCollectionReportExcel_() {
     ['UPI', feeLedgerNumber_(summary.upi)],
     ['Bank', feeLedgerNumber_(summary.bank)],
     ['Cheque', feeLedgerNumber_(summary.cheque)],
+    ['Salary Deduction', feeLedgerNumber_(summary.salaryDeduction)],
     [],
     ['Sr. No.', 'Date', 'Receipt No.', 'Student ID', 'Student Name', 'Class', 'Fee Head', 'Payment Mode', 'Amount', 'Reference No.', 'Collected By', 'Status', 'Remarks']
   ];
@@ -24670,6 +25036,17 @@ function downloadFeeCollectionReportExcel_() {
   ];
   collectorSheet['!cols'] = [{wch:25},{wch:15},{wch:16}];
 
+  rows.forEach(function(row, index) {
+    if (index > 0 && collectionSheet['I' + (index + 1)]) {
+      collectionSheet['I' + (index + 1)].z = '₹#,##0.00';
+    }
+  });
+  collectorRows.forEach(function(row, index) {
+    if (index > 0 && collectorSheet['C' + (index + 1)]) {
+      collectorSheet['C' + (index + 1)].z = '₹#,##0.00';
+    }
+  });
+
   XLSX.utils.book_append_sheet(workbook, collectionSheet, 'Collection Register');
   XLSX.utils.book_append_sheet(workbook, collectorSheet, 'Collector Summary');
   XLSX.writeFile(
@@ -24697,18 +25074,18 @@ function downloadFeeOutstandingReportExcel_() {
   const filters = report.filters || {};
   const rows = [
     ['Nyati Samata International School'],
-    ['Student Outstanding Fees Report'],
+    ['Mess Outstanding Accounts Report'],
     ['Academic Year', report.financialYear || ''],
     ['Status Filter', filters.status || 'OUTSTANDING'],
     ['Class Filter', filters.className || 'All Classes'],
     [],
-    ['Students', Number(summary.studentCount || 0)],
+    ['Accounts', Number(summary.studentCount || 0)],
     ['Total Payable', feeLedgerNumber_(summary.totalPayable)],
     ['Total Received', feeLedgerNumber_(summary.totalReceived)],
     ['Total Outstanding', feeLedgerNumber_(summary.totalOutstanding)],
     ['Total Advance', feeLedgerNumber_(summary.totalAdvance)],
     [],
-    ['Sr. No.', 'Student ID', 'Student Name', 'Class', 'Opening Due', 'Current Year Fee', 'Other Debit', 'Total Payable', 'B/F Received', 'New Receipts', 'Total Received', 'Outstanding', 'Status']
+    ['Sr. No.', 'Account ID', 'Account Holder', 'Type', 'Class / Department', 'Opening Due', 'Current Year Fee', 'Other Debit', 'Total Debit / Payable', 'B/F Received', 'New Credits / Receipts', 'Total Credit / Received', 'Outstanding', 'Status']
   ];
 
   (report.rows || []).forEach(function(item, index) {
@@ -24716,6 +25093,7 @@ function downloadFeeOutstandingReportExcel_() {
       index + 1,
       item.studentId || '',
       item.studentName || '',
+      item.accountType || 'STUDENT',
       item.className || '',
       feeLedgerNumber_(item.openingDue),
       feeLedgerNumber_(item.currentYearFee),
@@ -24733,9 +25111,18 @@ function downloadFeeOutstandingReportExcel_() {
   const sheet = XLSX.utils.aoa_to_sheet(rows);
 
   sheet['!cols'] = [
-    {wch:8},{wch:14},{wch:28},{wch:12},{wch:14},{wch:17},{wch:14},
-    {wch:15},{wch:16},{wch:14},{wch:16},{wch:16},{wch:12}
+    {wch:8},{wch:14},{wch:28},{wch:12},{wch:22},{wch:14},{wch:17},{wch:14},
+    {wch:18},{wch:16},{wch:18},{wch:19},{wch:16},{wch:12}
   ];
+
+  rows.forEach(function(row, index) {
+    if (index === 0) return;
+    ['F','G','H','I','J','K','L','M'].forEach(function(column) {
+      if (sheet[column + (index + 1)]) {
+        sheet[column + (index + 1)].z = '₹#,##0.00';
+      }
+    });
+  });
 
   XLSX.utils.book_append_sheet(workbook, sheet, 'Outstanding Fees');
   XLSX.writeFile(
@@ -24943,6 +25330,10 @@ function clearSession() {
   feeStudentSearchPendingQuery = '';
   feeStudentSearchRequestQuery = '';
   feeStudentSearchAutoOpenQuery = '';
+  staffMessMembers = [];
+  staffMessCanManage = false;
+  staffMessBusy = false;
+  lastStaffMessReport = null;
 
 
 
@@ -24987,6 +25378,665 @@ function handleExpiredSession() {
 
 
 
+
+
+/* ==========================================
+   STAFF MESS MANAGEMENT
+========================================== */
+
+
+function hasStaffMessManagePermission_() {
+  if (!currentStaff || !hasFeeCollectPermission()) return false;
+
+  const role = String(currentStaff.role || '').trim().toUpperCase();
+  return role === 'ADMIN' || role === 'MESS_MANAGER';
+}
+
+
+function localMonthInputValue_() {
+  const now = new Date();
+  return String(now.getFullYear()) + '-' +
+    String(now.getMonth() + 1).padStart(2, '0');
+}
+
+
+function staffMessDateForInput_(value) {
+  const text = String(value || '').trim();
+  if (!text) return '';
+
+  let match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) return match[1] + '-' + match[2] + '-' + match[3];
+
+  match = text.match(/^(\d{2})[-\/]([0-9]{2})[-\/](\d{4})/);
+  if (match) return match[3] + '-' + match[2] + '-' + match[1];
+
+  const date = new Date(text);
+  if (Number.isNaN(date.getTime())) return '';
+
+  return String(date.getFullYear()) + '-' +
+    String(date.getMonth() + 1).padStart(2, '0') + '-' +
+    String(date.getDate()).padStart(2, '0');
+}
+
+
+function prepareStaffMessScreen_() {
+  const month = document.getElementById('staffMessBillingMonth');
+  const startDate = document.getElementById('staffMessStartDate');
+
+  if (month && !month.value) month.value = localMonthInputValue_();
+  if (startDate && !startDate.value) startDate.value = localDateInputValue_();
+
+  updateStaffMessChargeHelp_();
+  updateStaffMessDiscountHelp_();
+  updateStaffMessPermissionView_();
+}
+
+
+function updateStaffMessPermissionView_() {
+  const canManage = staffMessCanManage || hasStaffMessManagePermission_();
+  const manageCard = document.getElementById('staffMessManageCard');
+  const saveButton = document.getElementById('staffMessSaveButton');
+  const billButton = document.getElementById('staffMessBillButton');
+  const reportButton = document.getElementById('staffMessReportButton');
+
+  if (manageCard) manageCard.style.display = canManage ? 'block' : 'none';
+  if (saveButton) saveButton.disabled = !canManage || staffMessBusy;
+  if (billButton) billButton.disabled = !canManage || staffMessBusy;
+  if (reportButton) reportButton.disabled = !hasFeeReportsPermission() || staffMessBusy;
+}
+
+
+function setStaffMessBusy_(busy) {
+  staffMessBusy = busy === true;
+
+  [
+    ['staffMessLoadButton', 'Loading...', '🔎 Load Staff Mess Accounts'],
+    ['staffMessSaveButton', 'Saving...', '💾 Save Staff Mess Account'],
+    ['staffMessBillButton', 'Posting...', '🧾 Post Monthly Charges'],
+    ['staffMessReportButton', 'Loading...', '📊 Load Staff Mess Report']
+  ].forEach(function(config) {
+    const button = document.getElementById(config[0]);
+    if (!button) return;
+    button.disabled = staffMessBusy;
+    button.textContent = staffMessBusy ? config[1] : config[2];
+  });
+
+  updateStaffMessPermissionView_();
+}
+
+
+function loadStaffMessList_() {
+  if (!sessionToken) {
+    showLogin();
+    return;
+  }
+
+  if (!hasFeeViewPermission() || staffMessBusy || currentRequestId) return;
+
+  const search = String(
+    document.getElementById('staffMessSearch').value || ''
+  ).trim();
+
+  document.getElementById('staffMessListResult').innerHTML =
+    '<div class="scanFeeLoading">Loading staff mess accounts...</div>';
+  setStaffMessBusy_(true);
+
+  postToBackend('staff_mess_list', {
+    token: sessionToken,
+    search: search
+  });
+}
+
+
+function staffMessTypeLabel_(value) {
+  value = String(value || 'STAFF').trim().toUpperCase();
+  if (value === 'OTHER_STAFF') return 'Other Staff';
+  if (value === 'ADMIN') return 'Admin';
+  if (value === 'TEACHER') return 'Teacher';
+  return value.replace(/_/g, ' ');
+}
+
+
+function staffMessChargeBasisLabel_(value) {
+  value = String(value || '').trim().toUpperCase();
+  if (value === 'MONTHLY_FIXED') return 'Monthly Fixed';
+  if (value === 'PER_MEAL') return 'Per Meal';
+  if (value === 'NO_CHARGE') return 'No Charge';
+  return value.replace(/_/g, ' ') || '-';
+}
+
+
+function renderStaffMessList_(members) {
+  const container = document.getElementById('staffMessListResult');
+  if (!container) return;
+
+  members = Array.isArray(members) ? members : [];
+
+  if (!members.length) {
+    container.innerHTML =
+      '<div class="cameraHint">No staff mess account found. Use Add / Update Staff Mess Account to create the first account.</div>';
+    return;
+  }
+
+  const canManage = staffMessCanManage || hasStaffMessManagePermission_();
+
+  container.innerHTML =
+    '<div class="feeReportCaption">' + members.length + ' staff mess account(s)</div>' +
+    '<div class="staffMessList">' +
+    members.map(function(member, index) {
+      const discountText = String(member.discountType || 'NONE').toUpperCase() === 'NONE'
+        ? 'No discount'
+        : staffMessTypeLabel_(member.discountType) + ': ' +
+          (String(member.discountType).toUpperCase() === 'PERCENT'
+            ? Number(member.discountValue || 0).toFixed(2) + '%'
+            : formatFeeMoney_(member.discountValue));
+      return '<div class="staffMessListItem">' +
+        '<div class="staffMessListHead"><div><div class="staffMessListName">' +
+          escapeHtml(member.name || '-') +
+        '</div><div class="staffMessListMeta">' +
+          escapeHtml(member.id || '-') + ' • ' +
+          escapeHtml(staffMessTypeLabel_(member.staffType)) + ' • ' +
+          escapeHtml(member.department || '-') +
+          (member.designation ? ' • ' + escapeHtml(member.designation) : '') +
+        '</div></div><span class="staffMessStatus' + (member.active ? '' : ' inactive') + '">' +
+          (member.active ? 'ACTIVE' : 'INACTIVE') +
+        '</span></div>' +
+        '<div class="staffMessListMeta">Charge: <strong>' +
+          escapeHtml(staffMessChargeBasisLabel_(member.chargeBasis)) +
+          (String(member.chargeBasis || '').toUpperCase() === 'NO_CHARGE'
+            ? ''
+            : ' • ' + escapeHtml(formatFeeMoney_(member.standardCharge))) +
+          '</strong> &nbsp; | &nbsp; Discount: <strong>' + escapeHtml(discountText) + '</strong></div>' +
+        '<div class="staffMessListActions">' +
+          (canManage ? '<button type="button" onclick="editStaffMessMember_(' + index + ')">✏️ Edit</button>' : '') +
+          '<button type="button" onclick="openStaffMessAccount_(' + index + ')">📒 Ledger</button>' +
+          '<button type="button" onclick="printStaffMessQr_(' + index + ')">🖨️ QR Card</button>' +
+        '</div>' +
+      '</div>';
+    }).join('') +
+    '</div>';
+}
+
+
+function updateStaffMessChargeHelp_() {
+  const basisInput = document.getElementById('staffMessChargeBasis');
+  const chargeInput = document.getElementById('staffMessStandardCharge');
+  const helper = document.getElementById('staffMessChargeHelp');
+  if (!basisInput || !chargeInput || !helper) return;
+
+  const basis = String(basisInput.value || '').toUpperCase();
+  chargeInput.disabled = basis === 'NO_CHARGE';
+
+  if (basis === 'PER_MEAL') {
+    helper.textContent = 'Rate per allowed meal scan.';
+  }
+  else if (basis === 'NO_CHARGE') {
+    chargeInput.value = '0';
+    helper.textContent = 'No mess charge will be posted.';
+  }
+  else {
+    helper.textContent = 'Fixed monthly mess charge.';
+  }
+}
+
+
+function updateStaffMessDiscountHelp_() {
+  const typeInput = document.getElementById('staffMessDiscountType');
+  const valueInput = document.getElementById('staffMessDiscountValue');
+  const reasonInput = document.getElementById('staffMessDiscountReason');
+  const helper = document.getElementById('staffMessDiscountHelp');
+  if (!typeInput || !valueInput || !reasonInput || !helper) return;
+
+  const type = String(typeInput.value || 'NONE').toUpperCase();
+  const none = type === 'NONE';
+  valueInput.disabled = none;
+  reasonInput.disabled = none;
+
+  if (none) {
+    valueInput.value = '0';
+    reasonInput.value = '';
+    helper.textContent = 'No discount.';
+  }
+  else if (type === 'PERCENT') {
+    helper.textContent = 'Enter percentage from 0.00 to 100.00.';
+  }
+  else {
+    helper.textContent = 'Enter fixed discount amount.';
+  }
+}
+
+
+function resetStaffMessForm_(preserveMessage) {
+  const fields = {
+    staffMessId: '',
+    staffMessName: '',
+    staffMessType: 'TEACHER',
+    staffMessDepartment: '',
+    staffMessDesignation: '',
+    staffMessMobile: '',
+    staffMessActive: 'TRUE',
+    staffMessStartDate: localDateInputValue_(),
+    staffMessStopDate: '',
+    staffMessChargeBasis: 'MONTHLY_FIXED',
+    staffMessStandardCharge: '',
+    staffMessDiscountType: 'NONE',
+    staffMessDiscountValue: '0',
+    staffMessDiscountReason: '',
+    staffMessDefaultPaymentMode: '',
+    staffMessNotes: ''
+  };
+
+  Object.keys(fields).forEach(function(id) {
+    const input = document.getElementById(id);
+    if (input) input.value = fields[id];
+  });
+
+  if (!preserveMessage) {
+    const result = document.getElementById('staffMessSaveResult');
+    if (result) result.innerHTML = '';
+  }
+
+  updateStaffMessChargeHelp_();
+  updateStaffMessDiscountHelp_();
+}
+
+
+function editStaffMessMember_(index) {
+  const member = staffMessMembers[Number(index)];
+  if (!member || !hasStaffMessManagePermission_()) return;
+
+  const values = {
+    staffMessId: member.id || '',
+    staffMessName: member.name || '',
+    staffMessType: member.staffType || 'TEACHER',
+    staffMessDepartment: member.department || '',
+    staffMessDesignation: member.designation || '',
+    staffMessMobile: member.mobile || '',
+    staffMessActive: member.active ? 'TRUE' : 'FALSE',
+    staffMessStartDate: staffMessDateForInput_(member.startDate),
+    staffMessStopDate: staffMessDateForInput_(member.stopDate),
+    staffMessChargeBasis: member.chargeBasis || 'MONTHLY_FIXED',
+    staffMessStandardCharge: Number(member.standardCharge || 0).toFixed(2),
+    staffMessDiscountType: member.discountType || 'NONE',
+    staffMessDiscountValue: Number(member.discountValue || 0).toFixed(2),
+    staffMessDiscountReason: member.discountReason || '',
+    staffMessDefaultPaymentMode: member.defaultPaymentMode || '',
+    staffMessNotes: member.notes || ''
+  };
+
+  Object.keys(values).forEach(function(id) {
+    const input = document.getElementById(id);
+    if (input) input.value = values[id];
+  });
+
+  const billingId = document.getElementById('staffMessBillingStaffId');
+  if (billingId) billingId.value = member.id || '';
+
+  updateStaffMessChargeHelp_();
+  updateStaffMessDiscountHelp_();
+  document.getElementById('staffMessManageCard').scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  });
+}
+
+
+function saveStaffMessMember_() {
+  if (!sessionToken) {
+    showLogin();
+    return;
+  }
+
+  if (!hasStaffMessManagePermission_() || staffMessBusy || currentRequestId) {
+    showError('staffMessSaveResult', 'Staff mess management permission not allowed.');
+    return;
+  }
+
+  const get = function(id) {
+    const input = document.getElementById(id);
+    return String(input ? input.value : '').trim();
+  };
+  const payload = {
+    token: sessionToken,
+    staffId: get('staffMessId'),
+    staffName: get('staffMessName'),
+    staffType: get('staffMessType'),
+    department: get('staffMessDepartment'),
+    designation: get('staffMessDesignation'),
+    mobile: get('staffMessMobile'),
+    messActive: get('staffMessActive'),
+    messStartDate: get('staffMessStartDate'),
+    messStopDate: get('staffMessStopDate'),
+    chargeBasis: get('staffMessChargeBasis'),
+    standardCharge: Number(get('staffMessStandardCharge') || 0),
+    discountType: get('staffMessDiscountType'),
+    discountValue: Number(get('staffMessDiscountValue') || 0),
+    discountReason: get('staffMessDiscountReason'),
+    defaultPaymentMode: get('staffMessDefaultPaymentMode'),
+    notes: get('staffMessNotes')
+  };
+
+  if (!payload.staffName) {
+    showError('staffMessSaveResult', 'Staff name is required.');
+    return;
+  }
+
+  if (
+    payload.chargeBasis !== 'NO_CHARGE' &&
+    !(payload.standardCharge > 0)
+  ) {
+    showError('staffMessSaveResult', 'Enter a valid standard charge.');
+    return;
+  }
+
+  const confirmed = window.confirm(
+    (payload.staffId ? 'Update' : 'Create') +
+    ' staff mess account for ' + payload.staffName + '?'
+  );
+
+  if (!confirmed) return;
+
+  document.getElementById('staffMessSaveResult').innerHTML =
+    '<div class="scanFeeLoading">Saving staff mess account...</div>';
+  setStaffMessBusy_(true);
+  postToBackend('staff_mess_save', payload);
+}
+
+
+function openStaffMessAccount_(index) {
+  const member = staffMessMembers[Number(index)];
+  if (!member || !member.id) return;
+
+  const input = document.getElementById('feeStudentSearch');
+  if (input) {
+    input.dataset.studentId = String(member.id).toUpperCase();
+    input.value = (member.name || 'Staff') + ' — ' + String(member.id).toUpperCase();
+  }
+
+  openFeeTab_('account');
+  loadFeeModuleAccount(member.id);
+}
+
+
+function printStaffMessQr_(index) {
+  const member = staffMessMembers[Number(index)];
+
+  if (!member || !member.qrCode) {
+    window.alert('Staff QR Code is not available.');
+    return;
+  }
+
+  if (typeof QRCode === 'undefined') {
+    window.alert('QR library is not available. Please refresh and try again.');
+    return;
+  }
+
+  const holder = document.getElementById('staffMessQrTemp');
+  holder.innerHTML = '';
+  new QRCode(holder, {
+    text: member.qrCode,
+    width: 220,
+    height: 220,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  window.setTimeout(function() {
+    const canvas = holder.querySelector('canvas');
+    const image = holder.querySelector('img');
+    const source = canvas ? canvas.toDataURL('image/png') : (image ? image.src : '');
+
+    if (!source) {
+      window.alert('Staff QR image is not ready.');
+      return;
+    }
+
+    const qrWindow = window.open('', '_blank', 'width=520,height=720');
+    if (!qrWindow) {
+      window.alert('Please allow pop-ups to print the QR card.');
+      return;
+    }
+
+    const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Staff QR ' +
+      escapeHtml(member.id || '') +
+      '</title><style>@page{size:A4 portrait;margin:12mm}body{font-family:Arial,sans-serif;margin:0;color:#111}.actions{margin-bottom:18px}.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700}.card{width:86mm;min-height:112mm;margin:0 auto;padding:10mm;border:2px solid #111;border-radius:10px;text-align:center;box-sizing:border-box}.school{font-size:16px;font-weight:800}.title{margin:7px 0 10px;font-size:13px}.qr{width:55mm;height:55mm}.name{margin-top:8px;font-size:17px;font-weight:800}.meta{margin-top:5px;font-size:11px;line-height:1.45}.code{margin-top:7px;font-size:8px;word-break:break-all}@media print{.actions{display:none}}</style></head><body><div class="actions"><button onclick="window.print()">Print A4 / Save PDF</button></div><div class="card"><div class="school">Nyati Samata International School</div><div class="title">STAFF MESS QR CARD</div><img class="qr" src="' + source + '"><div class="name">' + escapeHtml(member.name || '-') + '</div><div class="meta">Staff ID: <strong>' + escapeHtml(member.id || '-') + '</strong><br>' + escapeHtml(staffMessTypeLabel_(member.staffType)) + ' • ' + escapeHtml(member.department || '-') + (member.designation ? '<br>' + escapeHtml(member.designation) : '') + '</div><div class="code">' + escapeHtml(member.qrCode) + '</div></div></body></html>';
+
+    qrWindow.document.open();
+    qrWindow.document.write(html);
+    qrWindow.document.close();
+  }, 80);
+}
+
+
+function postStaffMessBilling_() {
+  if (!hasStaffMessManagePermission_()) {
+    showError('staffMessBillingResult', 'Staff mess billing permission not allowed.');
+    return;
+  }
+
+  if (staffMessBusy || currentRequestId) return;
+
+  const month = String(
+    document.getElementById('staffMessBillingMonth').value || ''
+  ).trim();
+  const staffId = String(
+    document.getElementById('staffMessBillingStaffId').value || ''
+  ).trim().toUpperCase();
+
+  if (!month) {
+    showError('staffMessBillingResult', 'Select a billing month.');
+    return;
+  }
+
+  const confirmed = window.confirm(
+    'Post staff mess charges for ' + month +
+    (staffId ? ' for ' + staffId : ' for all active staff') +
+    '?\n\nThe same month cannot be posted twice for the same staff account.'
+  );
+
+  if (!confirmed) return;
+
+  document.getElementById('staffMessBillingResult').innerHTML =
+    '<div class="scanFeeLoading">Posting monthly staff charges and discounts...</div>';
+  setStaffMessBusy_(true);
+
+  postToBackend('staff_mess_bill', {
+    token: sessionToken,
+    billingMonth: month,
+    staffId: staffId
+  });
+}
+
+
+function renderStaffMessBillingResult_(result) {
+  const container = document.getElementById('staffMessBillingResult');
+  if (!container) return;
+
+  const details = Array.isArray(result.details) ? result.details : [];
+  container.innerHTML =
+    '<div class="feeReceiptSuccess"><div style="font-size:28px;">✅</div>' +
+      '<div style="font-size:15px;font-weight:950;margin-top:5px;">Monthly Billing Completed</div>' +
+      '<div style="margin-top:6px;color:var(--text);">Gross: <strong>' + formatFeeMoney_(result.totalGross) + '</strong> • Discount: <strong>' + formatFeeMoney_(result.totalDiscount) + '</strong> • Net: <strong>' + formatFeeMoney_(result.totalNet) + '</strong></div>' +
+      '<div style="margin-top:5px;font-size:10px;color:var(--muted);">' + escapeHtml(result.message || '') + '</div>' +
+    '</div>' +
+    (details.length
+      ? '<div class="feeReportTableWrap" style="margin-top:10px;"><table class="feeReportTable"><thead><tr><th>Staff</th><th>Meals</th><th class="money">Gross</th><th class="money">Discount</th><th class="money">Net</th><th>Status</th></tr></thead><tbody>' + details.map(function(item) {
+          return '<tr><td>' + escapeHtml(item.staffId || '-') + '<br><strong>' + escapeHtml(item.staffName || '-') + '</strong></td><td>' + escapeHtml(item.mealCount === undefined ? '-' : item.mealCount) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.grossCharge || 0)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.discount || 0)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.netCharge || 0)) + '</td><td>' + escapeHtml(String(item.status || '').replace(/_/g, ' ')) + '</td></tr>';
+        }).join('') + '</tbody></table></div>'
+      : '');
+}
+
+
+function loadStaffMessReport_() {
+  if (!hasFeeReportsPermission() || staffMessBusy || currentRequestId) {
+    showError('staffMessReportResult', 'Fee report permission not allowed.');
+    return;
+  }
+
+  const month = String(
+    document.getElementById('staffMessBillingMonth').value || ''
+  ).trim();
+  const search = String(
+    document.getElementById('staffMessReportSearch').value || ''
+  ).trim();
+
+  if (!month) {
+    showError('staffMessReportResult', 'Select a report month.');
+    return;
+  }
+
+  document.getElementById('staffMessReportResult').innerHTML =
+    '<div class="scanFeeLoading">Loading staff mess report...</div>';
+  document.getElementById('staffMessReportActions').style.display = 'none';
+  setStaffMessBusy_(true);
+
+  postToBackend('staff_mess_report', {
+    token: sessionToken,
+    billingMonth: month,
+    search: search
+  });
+}
+
+
+function renderStaffMessReport_(result) {
+  const container = document.getElementById('staffMessReportResult');
+  const actions = document.getElementById('staffMessReportActions');
+  if (!container) return;
+
+  const summary = result.summary || {};
+  const rows = Array.isArray(result.rows) ? result.rows : [];
+  const tableRows = rows.map(function(item, index) {
+    return '<tr><td>' + (index + 1) + '</td><td>' + escapeHtml(item.staffId || '-') + '</td><td><strong>' + escapeHtml(item.staffName || '-') + '</strong><br>' + escapeHtml(staffMessTypeLabel_(item.staffType)) + '</td><td>' + escapeHtml(item.department || '-') + '<br>' + escapeHtml(item.designation || '') + '</td><td>' + escapeHtml(staffMessChargeBasisLabel_(item.chargeBasis)) + '<br>' + escapeHtml(formatFeeMoney_(item.rate)) + '</td><td>' + escapeHtml(item.mealCount || 0) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.grossCharge)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.discount)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.netCharge)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.payments)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.currentOutstanding)) + '</td></tr>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="feeReportCaption">Staff Mess Report • ' + escapeHtml(result.billingMonth || '-') + ' • Generated ' + escapeHtml(result.generatedAt || '') + '</div>' +
+    '<div class="feeReportKpiGrid">' +
+      '<div class="reportKpi"><div class="reportKpiLabel">Staff</div><div class="reportKpiValue">' + escapeHtml(summary.staffCount || 0) + '</div></div>' +
+      '<div class="reportKpi"><div class="reportKpiLabel">Meals</div><div class="reportKpiValue">' + escapeHtml(summary.mealCount || 0) + '</div></div>' +
+      '<div class="reportKpi"><div class="reportKpiLabel">Gross Charges</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.grossCharge) + '</div></div>' +
+      '<div class="reportKpi info"><div class="reportKpiLabel">Discount</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.discount) + '</div></div>' +
+      '<div class="reportKpi success"><div class="reportKpiLabel">Net Charges</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.netCharge) + '</div></div>' +
+      '<div class="reportKpi warning"><div class="reportKpiLabel">Current Outstanding</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.currentOutstanding) + '</div></div>' +
+    '</div>' +
+    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Staff ID</th><th>Name / Type</th><th>Department</th><th>Basis / Rate</th><th>Meals</th><th class="money">Gross</th><th class="money">Discount</th><th class="money">Net</th><th class="money">Paid</th><th class="money">Current Outstanding</th></tr></thead><tbody>' +
+      (tableRows || '<tr><td colspan="11">No staff report rows found.</td></tr>') +
+    '</tbody></table></div>';
+
+  if (actions) actions.style.display = rows.length ? 'flex' : 'none';
+}
+
+
+function staffMessReportPrintHtml_(result) {
+  const summary = result.summary || {};
+  const rows = Array.isArray(result.rows) ? result.rows : [];
+  const body = rows.map(function(item, index) {
+    return '<tr><td>' + (index + 1) + '</td><td>' + escapeHtml(item.staffId || '-') + '</td><td><strong>' + escapeHtml(item.staffName || '-') + '</strong><br>' + escapeHtml(staffMessTypeLabel_(item.staffType)) + '</td><td>' + escapeHtml(item.department || '-') + '<br>' + escapeHtml(item.designation || '') + '</td><td>' + escapeHtml(staffMessChargeBasisLabel_(item.chargeBasis)) + '<br>' + escapeHtml(formatFeeMoney_(item.rate)) + '</td><td>' + escapeHtml(item.mealCount || 0) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.grossCharge)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.discount)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.netCharge)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.payments)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.currentOutstanding)) + '</td></tr>';
+  }).join('');
+
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Staff Mess Report ' + escapeHtml(result.billingMonth || '') + '</title><style>@page{size:A4 landscape;margin:8mm}body{font-family:Arial,sans-serif;margin:0;color:#111}.wrap{width:100%;box-sizing:border-box}.actions{margin-bottom:12px}.actions button{padding:8px 12px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700}.school{text-align:center}.school h1{margin:0;font-size:21px}.title{text-align:center;font-size:17px;font-weight:800;margin:12px 0;padding:7px;border-top:1px solid #222;border-bottom:1px solid #222}.summary{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px}.box{border:1px solid #aaa;padding:7px;font-size:9px}.box strong{display:block;margin-top:3px;font-size:12px}.table{width:100%;border-collapse:collapse;font-size:8px}.table th,.table td{border:1px solid #888;padding:5px;vertical-align:top}.table th{background:#dce8fb}.num{text-align:right;white-space:nowrap}.footer{display:flex;justify-content:space-between;margin-top:18px;font-size:9px}@media print{.actions{display:none}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="wrap"><div class="actions"><button onclick="window.print()">Print A4 / Save PDF</button></div><div class="school"><h1>Nyati Samata International School</h1><div>At. Eklahare, Post Belapur, Tal. Shrirampur, Dist. Ahilyanagar</div></div><div class="title">STAFF MESS REPORT — ' + escapeHtml(result.billingMonth || '-') + '</div><div class="summary"><div class="box">Staff<strong>' + escapeHtml(summary.staffCount || 0) + '</strong></div><div class="box">Meals<strong>' + escapeHtml(summary.mealCount || 0) + '</strong></div><div class="box">Gross<strong>' + escapeHtml(formatFeeMoney_(summary.grossCharge)) + '</strong></div><div class="box">Discount<strong>' + escapeHtml(formatFeeMoney_(summary.discount)) + '</strong></div><div class="box">Net Charges<strong>' + escapeHtml(formatFeeMoney_(summary.netCharge)) + '</strong></div><div class="box">Outstanding<strong>' + escapeHtml(formatFeeMoney_(summary.currentOutstanding)) + '</strong></div></div><table class="table"><thead><tr><th>#</th><th>Staff ID</th><th>Name / Type</th><th>Department</th><th>Basis / Rate</th><th>Meals</th><th>Gross</th><th>Discount</th><th>Net</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody>' + body + '</tbody></table><div class="footer"><div>Generated: ' + escapeHtml(result.generatedAt || new Date().toLocaleString()) + '</div><div>Authorised Signatory</div></div></div></body></html>';
+}
+
+
+function printStaffMessReport_() {
+  if (!lastStaffMessReport) {
+    window.alert('Load the staff mess report first.');
+    return;
+  }
+
+  const printWindow = window.open('', '_blank', 'width=1100,height=900');
+  if (!printWindow) {
+    window.alert('Please allow pop-ups to print the report.');
+    return;
+  }
+
+  printWindow.document.open();
+  printWindow.document.write(staffMessReportPrintHtml_(lastStaffMessReport));
+  printWindow.document.close();
+}
+
+
+function downloadStaffMessReportExcel_() {
+  if (!lastStaffMessReport) {
+    window.alert('Load the staff mess report first.');
+    return;
+  }
+
+  if (typeof XLSX === 'undefined') {
+    window.alert('Excel library is not available. Please refresh and try again.');
+    return;
+  }
+
+  const result = lastStaffMessReport;
+  const summary = result.summary || {};
+  const rows = [[
+    'Sr. No.', 'Staff ID', 'Staff Name', 'Staff Type', 'Department',
+    'Designation', 'Charge Basis', 'Rate', 'Meal Count', 'Gross Charge',
+    'Discount', 'Net Charge', 'Payments', 'Reversals', 'Current Outstanding'
+  ]];
+
+  (Array.isArray(result.rows) ? result.rows : []).forEach(function(item, index) {
+    rows.push([
+      index + 1,
+      item.staffId || '',
+      item.staffName || '',
+      staffMessTypeLabel_(item.staffType),
+      item.department || '',
+      item.designation || '',
+      staffMessChargeBasisLabel_(item.chargeBasis),
+      Number(item.rate || 0),
+      Number(item.mealCount || 0),
+      Number(item.grossCharge || 0),
+      Number(item.discount || 0),
+      Number(item.netCharge || 0),
+      Number(item.payments || 0),
+      Number(item.reversals || 0),
+      Number(item.currentOutstanding || 0)
+    ]);
+  });
+
+  const summaryRows = [
+    ['Staff Mess Report', result.billingMonth || ''],
+    ['Generated', result.generatedAt || ''],
+    [],
+    ['Staff Count', Number(summary.staffCount || 0)],
+    ['Meal Count', Number(summary.mealCount || 0)],
+    ['Gross Charge', Number(summary.grossCharge || 0)],
+    ['Discount', Number(summary.discount || 0)],
+    ['Net Charge', Number(summary.netCharge || 0)],
+    ['Payments', Number(summary.payments || 0)],
+    ['Reversals', Number(summary.reversals || 0)],
+    ['Current Outstanding', Number(summary.currentOutstanding || 0)]
+  ];
+
+  const detailSheet = XLSX.utils.aoa_to_sheet(rows);
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryRows);
+  detailSheet['!cols'] = [
+    {wch:8},{wch:14},{wch:24},{wch:14},{wch:18},{wch:20},{wch:17},
+    {wch:13},{wch:12},{wch:16},{wch:14},{wch:15},{wch:15},{wch:14},{wch:20}
+  ];
+
+  for (let row = 2; row <= rows.length; row++) {
+    ['H','J','K','L','M','N','O'].forEach(function(column) {
+      if (detailSheet[column + row]) {
+        detailSheet[column + row].z = '₹#,##0.00';
+      }
+    });
+  }
+
+  for (let row = 6; row <= summaryRows.length; row++) {
+    if (summarySheet['B' + row]) {
+      summarySheet['B' + row].z = '₹#,##0.00';
+    }
+  }
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, summarySheet, 'Summary');
+  XLSX.utils.book_append_sheet(workbook, detailSheet, 'Staff Mess Details');
+  XLSX.writeFile(
+    workbook,
+    'Staff_Mess_Report_' + String(result.billingMonth || '').replace(/[^0-9-]/g, '') + '.xlsx'
+  );
+}
 
 
 /* ==========================================
