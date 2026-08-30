@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- NSIS FINAL: STAFF_MESS_A4_DECIMAL_2026-08-29 -->
+<!-- NSIS FINAL: STAFF_FLEXIBLE_BILLING_2026-08-30 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6162,7 +6162,7 @@
             <div class="field"><label for="staffMessDiscountType">Discount</label><select id="staffMessDiscountType" class="input" onchange="updateStaffMessDiscountHelp_()"><option value="NONE">No Discount</option><option value="FIXED">Fixed Amount</option><option value="PERCENT">Percentage</option></select></div>
             <div class="field"><label for="staffMessDiscountValue">Discount Value</label><input id="staffMessDiscountValue" class="input" type="number" min="0" step="0.01" inputmode="decimal" value="0"><div id="staffMessDiscountHelp" class="helperText">No discount.</div></div>
             <div class="field staffMessWide"><label for="staffMessDiscountReason">Discount Reason</label><input id="staffMessDiscountReason" class="input" type="text" placeholder="Required when discount is applicable" autocomplete="off"></div>
-            <div class="field"><label for="staffMessDefaultPaymentMode">Default Payment Mode</label><select id="staffMessDefaultPaymentMode" class="input"><option value="">Select when collecting</option><option value="CASH">Cash</option><option value="UPI">UPI</option><option value="BANK">Bank</option><option value="CHEQUE">Cheque</option><option value="SALARY_DEDUCTION">Salary Deduction</option></select></div>
+            <div class="field"><label for="staffMessDefaultPaymentMode">Default Payment Method</label><select id="staffMessDefaultPaymentMode" class="input"><option value="">Select when collecting</option><optgroup label="Direct Payment"><option value="CASH">Direct Payment - Cash</option><option value="UPI">Direct Payment - UPI</option><option value="BANK">Direct Payment - Bank</option><option value="CHEQUE">Direct Payment - Cheque</option></optgroup><optgroup label="Salary"><option value="SALARY_DEDUCTION">Salary Deduction</option></optgroup></select></div>
             <div class="field staffMessWide"><label for="staffMessNotes">Notes</label><input id="staffMessNotes" class="input" type="text" placeholder="Optional notes" autocomplete="off"></div>
           </div>
           <div class="staffMessActionRow">
@@ -6174,14 +6174,16 @@
 
 
         <div class="card manualCard">
-          <div class="sectionTitle" style="margin-top:0;">Monthly Staff Mess Billing & Report</div>
+          <div class="sectionTitle" style="margin-top:0;">Staff Mess Billing & Report</div>
+          <div class="helperText" style="margin-bottom:10px;">Monthly Fixed charge and fixed discount are applied once for every selected month. Already billed months are skipped automatically.</div>
           <div class="staffMessFormGrid">
-            <div class="field"><label for="staffMessBillingMonth">Billing Month</label><input id="staffMessBillingMonth" class="input" type="month"></div>
+            <div class="field"><label for="staffMessBillingPeriod">Billing Period</label><select id="staffMessBillingPeriod" class="input"><option value="MONTHLY">Monthly (1 Month)</option><option value="HALF_YEARLY">Half-Yearly (6 Months)</option><option value="FULL_YEARLY">Full-Yearly (12 Months)</option></select></div>
+            <div class="field"><label for="staffMessBillingMonth">Billing Start Month</label><input id="staffMessBillingMonth" class="input" type="month"><div class="helperText">Selected period starts from this month.</div></div>
             <div class="field"><label for="staffMessBillingStaffId">Staff ID (Optional)</label><input id="staffMessBillingStaffId" class="input" type="text" placeholder="Blank = all active staff" autocomplete="off"></div>
             <div class="field staffMessWide"><label for="staffMessReportSearch">Report Search (Optional)</label><input id="staffMessReportSearch" class="input" type="text" placeholder="Staff ID, name, type or department" autocomplete="off"></div>
           </div>
           <div class="staffMessActionRow">
-            <button id="staffMessBillButton" class="btn btnPrimary" type="button" onclick="postStaffMessBilling_()">🧾 Post Monthly Charges</button>
+            <button id="staffMessBillButton" class="btn btnPrimary" type="button" onclick="postStaffMessBilling_()">🧾 Post Selected Period Charges</button>
             <button id="staffMessReportButton" class="btn btnSoft" type="button" onclick="loadStaffMessReport_()">📊 Load Staff Mess Report</button>
           </div>
           <div id="staffMessBillingResult" class="resultArea"></div>
@@ -6227,14 +6229,18 @@
 
 
           <div class="field">
-            <label for="feeCollectMode">Payment Mode</label>
+            <label for="feeCollectMode">Payment Method / Mode</label>
             <select id="feeCollectMode">
               <option value="">Select Payment Mode</option>
-              <option value="CASH">Cash</option>
-              <option value="UPI">UPI</option>
-              <option value="BANK">Bank</option>
-              <option value="CHEQUE">Cheque</option>
-              <option value="SALARY_DEDUCTION">Salary Deduction</option>
+              <optgroup label="Direct Payment">
+                <option value="CASH">Direct Payment - Cash</option>
+                <option value="UPI">Direct Payment - UPI</option>
+                <option value="BANK">Direct Payment - Bank</option>
+                <option value="CHEQUE">Direct Payment - Cheque</option>
+              </optgroup>
+              <optgroup label="Salary">
+                <option value="SALARY_DEDUCTION">Salary Deduction</option>
+              </optgroup>
             </select>
           </div>
 
@@ -23482,7 +23488,11 @@ function renderFeeModuleAccount_(result) {
   const caption = document.getElementById('feeCollectStudentCaption');
   if (caption) {
     caption.textContent = canCollect
-      ? 'Collecting for ' + (student.name || student.id || 'student') + '. A unique receipt number will be created automatically.'
+      ? 'Collecting for ' + (student.name || student.id || 'student') + '. ' +
+        (isStaff
+          ? 'Select Salary Deduction or a Direct Payment mode (Cash / UPI / Bank / Cheque). '
+          : '') +
+        'A unique receipt number will be created automatically.'
       : '';
   }
 
@@ -25452,7 +25462,7 @@ function setStaffMessBusy_(busy) {
   [
     ['staffMessLoadButton', 'Loading...', '🔎 Load Staff Mess Accounts'],
     ['staffMessSaveButton', 'Saving...', '💾 Save Staff Mess Account'],
-    ['staffMessBillButton', 'Posting...', '🧾 Post Monthly Charges'],
+    ['staffMessBillButton', 'Posting...', '🧾 Post Selected Period Charges'],
     ['staffMessReportButton', 'Loading...', '📊 Load Staff Mess Report']
   ].forEach(function(config) {
     const button = document.getElementById(config[0]);
@@ -25818,30 +25828,41 @@ function postStaffMessBilling_() {
   const month = String(
     document.getElementById('staffMessBillingMonth').value || ''
   ).trim();
+  const billingPeriod = String(
+    document.getElementById('staffMessBillingPeriod').value || 'MONTHLY'
+  ).trim().toUpperCase();
   const staffId = String(
     document.getElementById('staffMessBillingStaffId').value || ''
   ).trim().toUpperCase();
 
   if (!month) {
-    showError('staffMessBillingResult', 'Select a billing month.');
+    showError('staffMessBillingResult', 'Select a billing start month.');
     return;
   }
 
+  const periodLabels = {
+    MONTHLY: 'Monthly (1 month)',
+    HALF_YEARLY: 'Half-Yearly (6 months)',
+    FULL_YEARLY: 'Full-Yearly (12 months)'
+  };
+
   const confirmed = window.confirm(
-    'Post staff mess charges for ' + month +
+    'Post ' + (periodLabels[billingPeriod] || billingPeriod) +
+    ' staff mess charges starting ' + month +
     (staffId ? ' for ' + staffId : ' for all active staff') +
-    '?\n\nThe same month cannot be posted twice for the same staff account.'
+    '?\n\nAny month already billed for the same staff account will be skipped automatically.'
   );
 
   if (!confirmed) return;
 
   document.getElementById('staffMessBillingResult').innerHTML =
-    '<div class="scanFeeLoading">Posting monthly staff charges and discounts...</div>';
+    '<div class="scanFeeLoading">Posting selected-period staff charges and discounts...</div>';
   setStaffMessBusy_(true);
 
   postToBackend('staff_mess_bill', {
     token: sessionToken,
     billingMonth: month,
+    billingPeriod: billingPeriod,
     staffId: staffId
   });
 }
@@ -25854,13 +25875,14 @@ function renderStaffMessBillingResult_(result) {
   const details = Array.isArray(result.details) ? result.details : [];
   container.innerHTML =
     '<div class="feeReceiptSuccess"><div style="font-size:28px;">✅</div>' +
-      '<div style="font-size:15px;font-weight:950;margin-top:5px;">Monthly Billing Completed</div>' +
+      '<div style="font-size:15px;font-weight:950;margin-top:5px;">Billing Completed</div>' +
+      '<div style="margin-top:4px;font-size:11px;color:var(--muted);">' + escapeHtml(result.periodLabel || result.billingMonth || '') + '</div>' +
       '<div style="margin-top:6px;color:var(--text);">Gross: <strong>' + formatFeeMoney_(result.totalGross) + '</strong> • Discount: <strong>' + formatFeeMoney_(result.totalDiscount) + '</strong> • Net: <strong>' + formatFeeMoney_(result.totalNet) + '</strong></div>' +
       '<div style="margin-top:5px;font-size:10px;color:var(--muted);">' + escapeHtml(result.message || '') + '</div>' +
     '</div>' +
     (details.length
-      ? '<div class="feeReportTableWrap" style="margin-top:10px;"><table class="feeReportTable"><thead><tr><th>Staff</th><th>Meals</th><th class="money">Gross</th><th class="money">Discount</th><th class="money">Net</th><th>Status</th></tr></thead><tbody>' + details.map(function(item) {
-          return '<tr><td>' + escapeHtml(item.staffId || '-') + '<br><strong>' + escapeHtml(item.staffName || '-') + '</strong></td><td>' + escapeHtml(item.mealCount === undefined ? '-' : item.mealCount) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.grossCharge || 0)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.discount || 0)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.netCharge || 0)) + '</td><td>' + escapeHtml(String(item.status || '').replace(/_/g, ' ')) + '</td></tr>';
+      ? '<div class="feeReportTableWrap" style="margin-top:10px;"><table class="feeReportTable"><thead><tr><th>Staff</th><th>Months Posted</th><th>Meals</th><th class="money">Gross</th><th class="money">Discount</th><th class="money">Net</th><th>Status</th></tr></thead><tbody>' + details.map(function(item) {
+          return '<tr><td>' + escapeHtml(item.staffId || '-') + '<br><strong>' + escapeHtml(item.staffName || '-') + '</strong></td><td>' + escapeHtml(item.monthsPosted === undefined ? '-' : item.monthsPosted) + '</td><td>' + escapeHtml(item.mealCount === undefined ? '-' : item.mealCount) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.grossCharge || 0)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.discount || 0)) + '</td><td class="money">' + escapeHtml(formatFeeMoney_(item.netCharge || 0)) + '</td><td>' + escapeHtml(String(item.status || '').replace(/_/g, ' ')) + '</td></tr>';
         }).join('') + '</tbody></table></div>'
       : '');
 }
@@ -25875,12 +25897,15 @@ function loadStaffMessReport_() {
   const month = String(
     document.getElementById('staffMessBillingMonth').value || ''
   ).trim();
+  const billingPeriod = String(
+    document.getElementById('staffMessBillingPeriod').value || 'MONTHLY'
+  ).trim().toUpperCase();
   const search = String(
     document.getElementById('staffMessReportSearch').value || ''
   ).trim();
 
   if (!month) {
-    showError('staffMessReportResult', 'Select a report month.');
+    showError('staffMessReportResult', 'Select a report start month.');
     return;
   }
 
@@ -25892,6 +25917,7 @@ function loadStaffMessReport_() {
   postToBackend('staff_mess_report', {
     token: sessionToken,
     billingMonth: month,
+    billingPeriod: billingPeriod,
     search: search
   });
 }
@@ -25909,7 +25935,7 @@ function renderStaffMessReport_(result) {
   }).join('');
 
   container.innerHTML =
-    '<div class="feeReportCaption">Staff Mess Report • ' + escapeHtml(result.billingMonth || '-') + ' • Generated ' + escapeHtml(result.generatedAt || '') + '</div>' +
+    '<div class="feeReportCaption">Staff Mess Report • ' + escapeHtml(result.periodLabel || result.billingMonth || '-') + ' • Generated ' + escapeHtml(result.generatedAt || '') + '</div>' +
     '<div class="feeReportKpiGrid">' +
       '<div class="reportKpi"><div class="reportKpiLabel">Staff</div><div class="reportKpiValue">' + escapeHtml(summary.staffCount || 0) + '</div></div>' +
       '<div class="reportKpi"><div class="reportKpiLabel">Meals</div><div class="reportKpiValue">' + escapeHtml(summary.mealCount || 0) + '</div></div>' +
@@ -25933,7 +25959,7 @@ function staffMessReportPrintHtml_(result) {
     return '<tr><td>' + (index + 1) + '</td><td>' + escapeHtml(item.staffId || '-') + '</td><td><strong>' + escapeHtml(item.staffName || '-') + '</strong><br>' + escapeHtml(staffMessTypeLabel_(item.staffType)) + '</td><td>' + escapeHtml(item.department || '-') + '<br>' + escapeHtml(item.designation || '') + '</td><td>' + escapeHtml(staffMessChargeBasisLabel_(item.chargeBasis)) + '<br>' + escapeHtml(formatFeeMoney_(item.rate)) + '</td><td>' + escapeHtml(item.mealCount || 0) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.grossCharge)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.discount)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.netCharge)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.payments)) + '</td><td class="num">' + escapeHtml(formatFeeMoney_(item.currentOutstanding)) + '</td></tr>';
   }).join('');
 
-  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Staff Mess Report ' + escapeHtml(result.billingMonth || '') + '</title><style>@page{size:A4 landscape;margin:8mm}body{font-family:Arial,sans-serif;margin:0;color:#111}.wrap{width:100%;box-sizing:border-box}.actions{margin-bottom:12px}.actions button{padding:8px 12px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700}.school{text-align:center}.school h1{margin:0;font-size:21px}.title{text-align:center;font-size:17px;font-weight:800;margin:12px 0;padding:7px;border-top:1px solid #222;border-bottom:1px solid #222}.summary{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px}.box{border:1px solid #aaa;padding:7px;font-size:9px}.box strong{display:block;margin-top:3px;font-size:12px}.table{width:100%;border-collapse:collapse;font-size:8px}.table th,.table td{border:1px solid #888;padding:5px;vertical-align:top}.table th{background:#dce8fb}.num{text-align:right;white-space:nowrap}.footer{display:flex;justify-content:space-between;margin-top:18px;font-size:9px}@media print{.actions{display:none}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="wrap"><div class="actions"><button onclick="window.print()">Print A4 / Save PDF</button></div><div class="school"><h1>Nyati Samata International School</h1><div>At. Eklahare, Post Belapur, Tal. Shrirampur, Dist. Ahilyanagar</div></div><div class="title">STAFF MESS REPORT — ' + escapeHtml(result.billingMonth || '-') + '</div><div class="summary"><div class="box">Staff<strong>' + escapeHtml(summary.staffCount || 0) + '</strong></div><div class="box">Meals<strong>' + escapeHtml(summary.mealCount || 0) + '</strong></div><div class="box">Gross<strong>' + escapeHtml(formatFeeMoney_(summary.grossCharge)) + '</strong></div><div class="box">Discount<strong>' + escapeHtml(formatFeeMoney_(summary.discount)) + '</strong></div><div class="box">Net Charges<strong>' + escapeHtml(formatFeeMoney_(summary.netCharge)) + '</strong></div><div class="box">Outstanding<strong>' + escapeHtml(formatFeeMoney_(summary.currentOutstanding)) + '</strong></div></div><table class="table"><thead><tr><th>#</th><th>Staff ID</th><th>Name / Type</th><th>Department</th><th>Basis / Rate</th><th>Meals</th><th>Gross</th><th>Discount</th><th>Net</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody>' + body + '</tbody></table><div class="footer"><div>Generated: ' + escapeHtml(result.generatedAt || new Date().toLocaleString()) + '</div><div>Authorised Signatory</div></div></div></body></html>';
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Staff Mess Report ' + escapeHtml(result.periodLabel || result.billingMonth || '') + '</title><style>@page{size:A4 landscape;margin:8mm}body{font-family:Arial,sans-serif;margin:0;color:#111}.wrap{width:100%;box-sizing:border-box}.actions{margin-bottom:12px}.actions button{padding:8px 12px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700}.school{text-align:center}.school h1{margin:0;font-size:21px}.title{text-align:center;font-size:17px;font-weight:800;margin:12px 0;padding:7px;border-top:1px solid #222;border-bottom:1px solid #222}.summary{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px}.box{border:1px solid #aaa;padding:7px;font-size:9px}.box strong{display:block;margin-top:3px;font-size:12px}.table{width:100%;border-collapse:collapse;font-size:8px}.table th,.table td{border:1px solid #888;padding:5px;vertical-align:top}.table th{background:#dce8fb}.num{text-align:right;white-space:nowrap}.footer{display:flex;justify-content:space-between;margin-top:18px;font-size:9px}@media print{.actions{display:none}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="wrap"><div class="actions"><button onclick="window.print()">Print A4 / Save PDF</button></div><div class="school"><h1>Nyati Samata International School</h1><div>At. Eklahare, Post Belapur, Tal. Shrirampur, Dist. Ahilyanagar</div></div><div class="title">STAFF MESS REPORT — ' + escapeHtml(result.periodLabel || result.billingMonth || '-') + '</div><div class="summary"><div class="box">Staff<strong>' + escapeHtml(summary.staffCount || 0) + '</strong></div><div class="box">Meals<strong>' + escapeHtml(summary.mealCount || 0) + '</strong></div><div class="box">Gross<strong>' + escapeHtml(formatFeeMoney_(summary.grossCharge)) + '</strong></div><div class="box">Discount<strong>' + escapeHtml(formatFeeMoney_(summary.discount)) + '</strong></div><div class="box">Net Charges<strong>' + escapeHtml(formatFeeMoney_(summary.netCharge)) + '</strong></div><div class="box">Outstanding<strong>' + escapeHtml(formatFeeMoney_(summary.currentOutstanding)) + '</strong></div></div><table class="table"><thead><tr><th>#</th><th>Staff ID</th><th>Name / Type</th><th>Department</th><th>Basis / Rate</th><th>Meals</th><th>Gross</th><th>Discount</th><th>Net</th><th>Paid</th><th>Outstanding</th></tr></thead><tbody>' + body + '</tbody></table><div class="footer"><div>Generated: ' + escapeHtml(result.generatedAt || new Date().toLocaleString()) + '</div><div>Authorised Signatory</div></div></div></body></html>';
 }
 
 
@@ -25995,7 +26021,7 @@ function downloadStaffMessReportExcel_() {
   });
 
   const summaryRows = [
-    ['Staff Mess Report', result.billingMonth || ''],
+    ['Staff Mess Report', result.periodLabel || result.billingMonth || ''],
     ['Generated', result.generatedAt || ''],
     [],
     ['Staff Count', Number(summary.staffCount || 0)],
@@ -26034,7 +26060,7 @@ function downloadStaffMessReportExcel_() {
   XLSX.utils.book_append_sheet(workbook, detailSheet, 'Staff Mess Details');
   XLSX.writeFile(
     workbook,
-    'Staff_Mess_Report_' + String(result.billingMonth || '').replace(/[^0-9-]/g, '') + '.xlsx'
+    'Staff_Mess_Report_' + String(result.billingMonth || '').replace(/[^0-9-]/g, '') + '_' + String(result.billingPeriod || 'MONTHLY') + '.xlsx'
   );
 }
 
