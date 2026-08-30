@@ -4302,6 +4302,13 @@
       </div>
     </section>
 
+    <section id="schoolModuleSwitch" class="card" style="display:none;padding:10px;margin-bottom:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+        <button class="btn btnPrimary" type="button" onclick="closeTransportModule_()">🍽️ Mess Department</button>
+        <button class="btn btnSoft" type="button" onclick="openTransportModule_()">🚌 Transport Department</button>
+      </div>
+    </section>
+
 
 
 
@@ -7189,6 +7196,14 @@
 
 </div>
 
+<div id="transportModuleShell" style="display:none;position:fixed;inset:0;z-index:99999;background:#eef3f9;">
+  <div style="height:58px;background:#0f3158;color:#fff;display:flex;align-items:center;gap:10px;padding:8px 12px;box-shadow:0 3px 12px rgba(0,0,0,.2);">
+    <button type="button" onclick="closeTransportModule_()" style="border:0;border-radius:9px;background:#fff;color:#0f3158;padding:10px 13px;font-weight:850;">← Mess</button>
+    <div style="font-weight:900;">🚌 NSIS Transport Department</div>
+  </div>
+  <iframe id="transportModuleFrame" title="NSIS Transport Department" allow="camera;geolocation" style="display:block;width:100%;height:calc(100% - 58px);border:0;background:#fff;"></iframe>
+</div>
+
 
 
 
@@ -7233,6 +7248,9 @@ let backendReady = false;
 
 let sessionToken =
   sessionStorage.getItem('NSIS_MESS_TOKEN') || '';
+
+const NSIS_TRANSPORT_APP_URL = 'https://script.google.com/macros/s/AKfycbw8HgAMnZ7nq1MQbW_lbYk9CiVq2-n4uvvTn2xImGWOSowAyKJB9qX1ZbCaPAwmLLDY/exec';
+let transportPortalToken = sessionStorage.getItem('NSIS_TRANSPORT_PORTAL_TOKEN') || '';
 
 
 
@@ -7894,6 +7912,14 @@ window.addEventListener(
           'NSIS_MESS_STAFF',
           JSON.stringify(currentStaff)
         );
+
+        transportPortalToken = String(result.transportPortalToken || '');
+        if (transportPortalToken) {
+          sessionStorage.setItem('NSIS_TRANSPORT_PORTAL_TOKEN', transportPortalToken);
+        }
+        else {
+          sessionStorage.removeItem('NSIS_TRANSPORT_PORTAL_TOKEN');
+        }
 
 
 
@@ -12261,6 +12287,15 @@ function showApp() {
 
 
   updateStaffUI();
+
+  const moduleSwitch = document.getElementById('schoolModuleSwitch');
+  const portalRole = String(currentStaff.role || '').trim().toUpperCase();
+  if (moduleSwitch) {
+    moduleSwitch.style.display =
+      (transportPortalToken && (portalRole === 'ADMIN' || portalRole === 'SUPERVISOR'))
+        ? 'block'
+        : 'none';
+  }
 
 
 
@@ -26411,6 +26446,26 @@ function scheduleNextScan() {
    LOGOUT / SESSION
 ========================================== */
 
+function openTransportModule_() {
+  const role = String(currentStaff && currentStaff.role || '').trim().toUpperCase();
+  if (!transportPortalToken || (role !== 'ADMIN' && role !== 'SUPERVISOR')) {
+    window.alert('Transport access उपलब्ध नहीं है। दोनों apps में यही Login ID और role Active रखें, फिर दोबारा login करें।');
+    return;
+  }
+  stopScanner();
+  const shell = document.getElementById('transportModuleShell');
+  const frame = document.getElementById('transportModuleFrame');
+  frame.src = NSIS_TRANSPORT_APP_URL + '#portal=' + encodeURIComponent(transportPortalToken);
+  shell.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTransportModule_() {
+  const shell = document.getElementById('transportModuleShell');
+  if (shell) shell.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 
 
 
@@ -26472,6 +26527,9 @@ function clearSession() {
 
 
   sessionToken = '';
+  transportPortalToken = '';
+  sessionStorage.removeItem('NSIS_TRANSPORT_PORTAL_TOKEN');
+  closeTransportModule_();
   currentStaff = null;
   activeScreen = 'dashboard';
   lastQrResult = null;
