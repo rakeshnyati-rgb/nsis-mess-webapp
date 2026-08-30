@@ -2358,6 +2358,32 @@
       animation:scanResultIn .18s ease-out;
     }
 
+    .fastAllowedScan {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border: 1px solid #b8dfc4;
+      border-radius: 14px;
+      background: var(--success-bg);
+      color: var(--success);
+      text-align: center;
+      box-shadow: 0 5px 18px rgba(22,101,52,.10);
+      animation: scanResultIn .15s ease-out;
+    }
+
+    .fastAllowedScan strong {
+      display: block;
+      font-size: 17px;
+      font-weight: 950;
+    }
+
+    .fastAllowedScan span {
+      display: block;
+      margin-top: 3px;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
 
 
 
@@ -2973,6 +2999,27 @@
       border-radius: 16px;
       background: #fff;
       box-shadow: 0 4px 14px rgba(31,47,75,.04);
+    }
+
+    .feeDashboardKpiButton {
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      appearance: none;
+    }
+
+    .feeDashboardKpiButton:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .feeDashboardKpiHint {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
     }
 
 
@@ -4151,6 +4198,10 @@
       Login
     </button>
 
+    <button class="btn btnSoft" type="button" onclick="showPublicRegistration_()">
+      🎓 Student Mess Registration
+    </button>
+
 
 
 
@@ -4159,6 +4210,65 @@
 
 
 
+  </section>
+</main>
+
+
+<!-- PUBLIC PARENT REGISTRATION -->
+<main id="publicRegistrationPage" class="page" style="display:none;max-width:760px;margin:0 auto;padding-bottom:40px;">
+  <section class="card" style="margin-top:16px;">
+    <div class="center">
+      <div style="font-size:38px;">🍽️</div>
+      <h2 class="title">Student Mess Registration</h2>
+      <div class="subtitle">Nyati Samata International School</div>
+    </div>
+
+    <div class="requestInfo" style="margin-top:14px;">
+      Parent details submit करने के बाद request <strong>PENDING</strong> रहेगी। Admin approval के बाद ही Mess सुविधा और QR activate होगा।
+    </div>
+
+    <div class="formGrid">
+      <div class="field"><label for="publicAdmissionNo">Admission No. *</label><input id="publicAdmissionNo" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicSchoolStudentId">School Student ID *</label><input id="publicSchoolStudentId" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicStudentName">Student Name *</label><input id="publicStudentName" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicClass">Class *</label><input id="publicClass" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicDivision">Division</label><input id="publicDivision" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicRollNo">Roll No.</label><input id="publicRollNo" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicFatherName">Father / Guardian Name *</label><input id="publicFatherName" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicMotherName">Mother Name</label><input id="publicMotherName" class="input" type="text" autocomplete="off"></div>
+      <div class="field"><label for="publicFatherMobile">Father Mobile *</label><input id="publicFatherMobile" class="input" type="tel" inputmode="tel" maxlength="15" autocomplete="tel"></div>
+      <div class="field"><label for="publicMotherMobile">Mother Mobile</label><input id="publicMotherMobile" class="input" type="tel" inputmode="tel" maxlength="15" autocomplete="tel"></div>
+      <div class="field"><label for="publicMessStartDate">Mess Start Date *</label><input id="publicMessStartDate" class="input" type="date"></div>
+      <div class="field"><label for="publicNotes">Notes</label><input id="publicNotes" class="input" type="text" autocomplete="off"></div>
+    </div>
+
+    <div class="studentPhotoCapture">
+      <div class="studentPhotoCaptureTitle">Student Photo (Optional)</div>
+      <div class="studentPhotoCaptureRow">
+        <div id="publicPhotoPlaceholder" class="studentPhotoPlaceholder">👤</div>
+        <img id="publicPhotoPreview" class="studentPhotoPreview" alt="Student Photo Preview">
+        <div class="studentPhotoActions">
+          <button class="btn btnSoft" type="button" onclick="openStudentPhotoCamera_('public')">📷 Take Photo</button>
+          <button class="btn btnSoft" type="button" onclick="openStudentPhotoGallery_('public')">🖼️ Choose Photo</button>
+          <button id="publicPhotoRemoveButton" class="btn btnDanger" type="button" style="display:none;" onclick="removeStudentPhoto_('public')">Remove Photo</button>
+        </div>
+      </div>
+      <input id="publicPhotoCameraInput" type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleStudentPhotoFile_(event,'public')">
+      <input id="publicPhotoGalleryInput" type="file" accept="image/*" style="display:none;" onchange="handleStudentPhotoFile_(event,'public')">
+    </div>
+
+    <div class="field" style="position:absolute;left:-9999px;" aria-hidden="true">
+      <label for="publicWebsite">Website</label><input id="publicWebsite" type="text" tabindex="-1" autocomplete="off">
+    </div>
+
+    <label style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;font-size:12px;font-weight:750;line-height:1.45;">
+      <input id="publicConsent" type="checkbox" style="margin-top:3px;">
+      <span>मैं दी गई जानकारी सही होने की पुष्टि करता/करती हूँ और Student के लिए Mess सुविधा शुरू करने का अनुरोध करता/करती हूँ।</span>
+    </label>
+
+    <button id="publicRegistrationSubmitButton" class="btn btnPrimary" type="button" onclick="submitPublicRegistration_()">Submit Mess Registration</button>
+    <button class="btn btnSoft" type="button" onclick="showStaffLoginFromPublic_()">Staff Login</button>
+    <div id="publicRegistrationResult" class="resultArea"></div>
   </section>
 </main>
 
@@ -4679,7 +4789,16 @@
               type="button"
               onclick="printManagedStudentMessIdCard_()"
             >
-              🪪 Print Student Mess ID Card
+              🪪 Print Single Student Card
+            </button>
+
+            <button
+              id="downloadStudentCardExcelButton"
+              class="btn btnSoft studentIdCardButton"
+              type="button"
+              onclick="downloadStudentCardPrintingExcel_()"
+            >
+              📥 Download All Student Card Excel
             </button>
 
 
@@ -4831,9 +4950,15 @@
 
 
 
-              <div class="field">
-                <label for="manageParentName">Parent Name</label>
-                <input id="manageParentName" class="input" type="text" autocomplete="off">
+              <div class="formGrid">
+                <div class="field">
+                  <label for="manageParentName">Father / Guardian Name</label>
+                  <input id="manageParentName" class="input" type="text" autocomplete="off">
+                </div>
+                <div class="field">
+                  <label for="manageMotherName">Mother Name</label>
+                  <input id="manageMotherName" class="input" type="text" autocomplete="off">
+                </div>
               </div>
 
 
@@ -5075,15 +5200,15 @@
 
 
 
-        <div class="field">
-          <label for="studentParentName">Parent Name</label>
-          <input
-            id="studentParentName"
-            class="input"
-            type="text"
-            placeholder="Enter Parent Name"
-            autocomplete="off"
-          >
+        <div class="formGrid">
+          <div class="field">
+            <label for="studentParentName">Father / Guardian Name</label>
+            <input id="studentParentName" class="input" type="text" placeholder="Father / Guardian Name" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="studentMotherName">Mother Name</label>
+            <input id="studentMotherName" class="input" type="text" placeholder="Mother Name" autocomplete="off">
+          </div>
         </div>
 
 
@@ -6245,6 +6370,16 @@
             <div class="feeDashboardKpiLabel">Accounts With Outstanding</div>
             <div id="feeDashboardOutstandingStudents" class="feeDashboardKpiValue">—</div>
           </div>
+          <button id="feeDashboardPartialCard" class="feeDashboardKpi feeDashboardKpiButton info" type="button" onclick="openOutstandingFollowup_('PARTIAL')">
+            <div class="feeDashboardKpiLabel">Partial Payment Pending</div>
+            <div id="feeDashboardPartialCount" class="feeDashboardKpiValue">—</div>
+            <div id="feeDashboardPartialAmount" class="feeDashboardKpiHint">Click to open follow-up list</div>
+          </button>
+          <button id="feeDashboardUnpaidCard" class="feeDashboardKpi feeDashboardKpiButton warning" type="button" onclick="openOutstandingFollowup_('UNPAID')">
+            <div class="feeDashboardKpiLabel">100% Fee Pending</div>
+            <div id="feeDashboardUnpaidCount" class="feeDashboardKpiValue">—</div>
+            <div id="feeDashboardUnpaidAmount" class="feeDashboardKpiHint">Click to open follow-up list</div>
+          </button>
         </div>
 
 
@@ -6848,6 +6983,16 @@
             <span class="moreMenuText"><span class="moreMenuTitle">Share App by Email</span><span class="moreMenuSub">Email the secure application link</span></span>
             <span class="moreMenuArrow">›</span>
           </button>
+          <button id="moreShareRegistrationWhatsAppAction" class="moreMenuItem" type="button" onclick="sharePublicRegistrationLink_('WHATSAPP')">
+            <span class="moreMenuIcon">🎓</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Share Mess Registration</span><span class="moreMenuSub">Send parent registration link on WhatsApp</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
+          <button id="moreShareRegistrationEmailAction" class="moreMenuItem" type="button" onclick="sharePublicRegistrationLink_('EMAIL')">
+            <span class="moreMenuIcon">✉️</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Email Mess Registration</span><span class="moreMenuSub">Send parent self-registration link by email</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
         </div>
       </div>
 
@@ -7112,6 +7257,8 @@ catch (e) {
 
 let html5QrCode = null;
 let scannerRunning = false;
+let lastFastScanQr = '';
+let lastFastScanAt = 0;
 let scanLocked = false;
 
 
@@ -7176,10 +7323,15 @@ let staffMessBusy = false;
 let staffMessBulkRows = [];
 let masterDetailsUpdateRows = {STUDENT: [], STAFF: []};
 let masterDetailsPendingEntity = '';
+let masterDetailsExportPurpose = '';
 let staffMessSearchTimer = null;
 let staffMessEditMode = false;
 let staffMessViewingExisting = false;
 let lastStaffMessReport = null;
+let publicStudentPhotoDataUrl = '';
+let publicRegistrationRequested = /^(1|true|yes)$/i.test(
+  String(new URLSearchParams(window.location.search).get('register') || '')
+);
 
 
 
@@ -7637,6 +7789,7 @@ window.addEventListener(
 
 
       if (
+        !publicRegistrationRequested &&
         sessionToken &&
         currentStaff
       ) {
@@ -7655,6 +7808,35 @@ window.addEventListener(
 
 
 
+
+    /* PUBLIC PARENT MESS REGISTRATION */
+
+    if (
+      message.type === 'PUBLIC_STUDENT_REQUEST_RESULT' &&
+      message.requestId === currentRequestId
+    ) {
+      finishRequest();
+      setPublicRegistrationBusy_(false);
+      const result = message.result || {};
+      const target = document.getElementById('publicRegistrationResult');
+
+      if (result.success !== true) {
+        if (target) target.innerHTML = '<div class="result error">' +
+          escapeHtml(result.message || 'Unable to submit Mess registration.') + '</div>';
+        return;
+      }
+
+      if (target) {
+        target.innerHTML =
+          '<div class="feeReceiptSuccess"><div style="font-size:34px;">✅</div>' +
+          '<div style="font-size:17px;font-weight:950;">Registration Submitted</div>' +
+          '<div style="margin-top:7px;">Request ID: <strong>' + escapeHtml(result.requestId || '-') + '</strong></div>' +
+          '<div style="margin-top:5px;">Status: <strong>PENDING ADMIN APPROVAL</strong></div>' +
+          '<div class="helperText" style="margin-top:8px;">Please save this Request ID. Mess facility will start only after approval.</div></div>';
+      }
+      clearPublicRegistrationForm_(true);
+      return;
+    }
 
     /* LOGIN */
 
@@ -7813,11 +7995,18 @@ window.addEventListener(
 
 
 
-      showMealResult(
-        result.meal,
-        'scanResult',
-        false
-      );
+      const mealStatus = String(
+        result.meal && (result.meal.status || result.meal.scanStatus) || ''
+      ).trim().toUpperCase();
+
+      if (mealStatus === 'ALLOWED') {
+        showFastAllowedScan_(result.meal);
+        return;
+      }
+
+      // Exceptions remain on screen with full member and fee details.
+      stopScanner();
+      showMealResult(result.meal, 'scanResult', false);
 
 
 
@@ -8437,7 +8626,13 @@ window.addEventListener(
       }
 
       if (requestedAction === 'master_details_export') {
-        createMasterDetailsWorkbook_(entity, Array.isArray(result.rows) ? result.rows : []);
+        if (masterDetailsExportPurpose === 'ID_CARD') {
+          createStudentCardPrintingWorkbook_(Array.isArray(result.rows) ? result.rows : []);
+        }
+        else {
+          createMasterDetailsWorkbook_(entity, Array.isArray(result.rows) ? result.rows : []);
+        }
+        masterDetailsExportPurpose = '';
       }
       else {
         renderMasterDetailsUpdateResult_(entity, result);
@@ -10975,6 +11170,10 @@ function postToBackend(
 
 
     }
+    else if (action === 'public_student_mess_request') {
+      setPublicRegistrationBusy_(false);
+      showError('publicRegistrationResult', 'Mess System is still connecting. Please wait and try again.');
+    }
     else if (action === 'fee_outstanding_report') {
 
 
@@ -11332,7 +11531,11 @@ function postToBackend(
 
 
 
-        if (actionCopy === 'login') {
+        if (actionCopy === 'public_student_mess_request') {
+          setPublicRegistrationBusy_(false);
+          showError('publicRegistrationResult', 'Registration response timeout. Please try again.');
+        }
+        else if (actionCopy === 'login') {
 
 
 
@@ -12019,6 +12222,10 @@ document.getElementById(
 
 function showApp() {
 
+  publicRegistrationRequested = false;
+  const publicPage = document.getElementById('publicRegistrationPage');
+  if (publicPage) publicPage.style.display = 'none';
+
 
 
 
@@ -12144,6 +12351,9 @@ async function showLogin() {
     'appShell'
   ).style.display =
     'none';
+
+  const publicPage = document.getElementById('publicRegistrationPage');
+  if (publicPage) publicPage.style.display = 'none';
 
 
 
@@ -12479,6 +12689,8 @@ function updateStaffUI() {
   const moreReportsAction = document.getElementById('moreReportsAction');
   const moreShareWhatsAppAction = document.getElementById('moreShareWhatsAppAction');
   const moreShareEmailAction = document.getElementById('moreShareEmailAction');
+  const moreShareRegistrationWhatsAppAction = document.getElementById('moreShareRegistrationWhatsAppAction');
+  const moreShareRegistrationEmailAction = document.getElementById('moreShareRegistrationEmailAction');
 
 
 
@@ -12495,6 +12707,8 @@ function updateStaffUI() {
   if (moreReportsAction) moreReportsAction.style.display = hasReportsPermission() ? 'flex' : 'none';
   if (moreShareWhatsAppAction) moreShareWhatsAppAction.style.display = canAdminSupervisorShare_() ? 'flex' : 'none';
   if (moreShareEmailAction) moreShareEmailAction.style.display = canAdminSupervisorShare_() ? 'flex' : 'none';
+  if (moreShareRegistrationWhatsAppAction) moreShareRegistrationWhatsAppAction.style.display = canAdminSupervisorShare_() ? 'flex' : 'none';
+  if (moreShareRegistrationEmailAction) moreShareRegistrationEmailAction.style.display = canAdminSupervisorShare_() ? 'flex' : 'none';
   document.querySelectorAll('.adminSupervisorShare').forEach(function(button) {
     button.style.display = canAdminSupervisorShare_() ? '' : 'none';
   });
@@ -13432,15 +13646,20 @@ async function onQrDetected(
     return;
   }
 
+  const scanNow = Date.now();
+  if (
+    qr === lastFastScanQr &&
+    scanNow - lastFastScanAt < 3500
+  ) {
+    return;
+  }
+
 
 
 
   scanLocked = true;
-
-
-
-
-  await stopScanner();
+  lastFastScanQr = qr;
+  lastFastScanAt = scanNow;
 
 
 
@@ -14104,6 +14323,9 @@ function renderManagedStudent(
   ).value =
     managedStudent.parentName || '';
 
+  document.getElementById('manageMotherName').value =
+    managedStudent.motherName || '';
+
 
 
 
@@ -14157,6 +14379,7 @@ function renderManagedStudent(
     'manageDivision',
     'manageRollNo',
     'manageParentName',
+    'manageMotherName',
     'manageFatherMobile',
     'manageMotherMobile',
     'manageMessActive',
@@ -14197,7 +14420,7 @@ function enableManagedStudentEdit_() {
   managedStudentEditMode = true;
   const editableIds = [
     'manageAdmissionNo', 'manageSchoolStudentId', 'manageStudentName',
-    'manageClass', 'manageDivision', 'manageRollNo', 'manageParentName',
+    'manageClass', 'manageDivision', 'manageRollNo', 'manageParentName', 'manageMotherName',
     'manageFatherMobile', 'manageMotherMobile', 'manageMessActive', 'manageMessStartDate',
     'manageMessStopDate', 'manageNotes'
   ];
@@ -14334,6 +14557,8 @@ function saveManagedStudent() {
     document.getElementById(
       'manageParentName'
     ).value.trim();
+
+  const motherName = document.getElementById('manageMotherName').value.trim();
 
 
 
@@ -14534,6 +14759,7 @@ function saveManagedStudent() {
       rollNo: rollNo,
       photo: managedStudentPhotoDataUrl || managedStudent.photo || '',
       parentName: parentName,
+      motherName: motherName,
       contactNo: fatherMobile,
       fatherMobile: fatherMobile,
       motherMobile: motherMobile,
@@ -14665,12 +14891,13 @@ document.getElementById(
 
 function studentPhotoElementIds_(mode) {
   const manage = mode === 'manage';
+  const publicMode = mode === 'public';
   return {
-    camera: manage ? 'managePhotoCameraInput' : 'studentPhotoCameraInput',
-    gallery: manage ? 'managePhotoGalleryInput' : 'studentPhotoGalleryInput',
-    preview: manage ? 'managePhotoPreview' : 'studentPhotoPreview',
-    placeholder: manage ? 'managePhotoPlaceholder' : 'studentPhotoPlaceholder',
-    remove: manage ? 'managePhotoRemoveButton' : 'studentPhotoRemoveButton'
+    camera: publicMode ? 'publicPhotoCameraInput' : (manage ? 'managePhotoCameraInput' : 'studentPhotoCameraInput'),
+    gallery: publicMode ? 'publicPhotoGalleryInput' : (manage ? 'managePhotoGalleryInput' : 'studentPhotoGalleryInput'),
+    preview: publicMode ? 'publicPhotoPreview' : (manage ? 'managePhotoPreview' : 'studentPhotoPreview'),
+    placeholder: publicMode ? 'publicPhotoPlaceholder' : (manage ? 'managePhotoPlaceholder' : 'studentPhotoPlaceholder'),
+    remove: publicMode ? 'publicPhotoRemoveButton' : (manage ? 'managePhotoRemoveButton' : 'studentPhotoRemoveButton')
   };
 }
 
@@ -14767,6 +14994,9 @@ function handleStudentPhotoFile_(event, mode) {
       if (mode === 'manage') {
         managedStudentPhotoDataUrl = dataUrl;
       }
+      else if (mode === 'public') {
+        publicStudentPhotoDataUrl = dataUrl;
+      }
       else {
         studentRequestPhotoDataUrl = dataUrl;
       }
@@ -14799,6 +15029,10 @@ function removeStudentPhoto_(mode) {
       managedStudent && managedStudent.photoUrl ? managedStudent.photoUrl : '',
       false
     );
+  }
+  else if (mode === 'public') {
+    publicStudentPhotoDataUrl = '';
+    setStudentPhotoPreview_('public', '', false);
   }
   else {
     studentRequestPhotoDataUrl = '';
@@ -14938,6 +15172,8 @@ function submitStudentRequest() {
     document.getElementById(
       'studentParentName'
     ).value.trim();
+
+  const motherName = document.getElementById('studentMotherName').value.trim();
 
 
 
@@ -15102,6 +15338,7 @@ function submitStudentRequest() {
       rollNo: rollNo,
       photo: studentRequestPhotoDataUrl,
       parentName: parentName,
+      motherName: motherName,
       contactNo: fatherMobile,
       fatherMobile: fatherMobile,
       motherMobile: motherMobile,
@@ -15185,6 +15422,7 @@ function resetStudentRequestForm() {
     'studentDivision',
     'studentRollNo',
     'studentParentName',
+    'studentMotherName',
     'studentFatherMobile',
     'studentMotherMobile',
     'studentMessStartDate',
@@ -15349,6 +15587,7 @@ function canonicalImportHeader_(value) {
     PARENTNAME: 'Parent_Name',
     FATHERNAME: 'Parent_Name',
     GUARDIANNAME: 'Parent_Name',
+    MOTHERNAME: 'Mother_Name',
     CONTACTNO: 'Contact_No',
     CONTACTNUMBER: 'Contact_No',
     MOBILE: 'Contact_No',
@@ -15507,6 +15746,7 @@ function downloadStudentImportTemplate() {
       Roll_No: '1',
       Photo: '',
       Parent_Name: 'Sample Parent',
+      Mother_Name: 'Sample Mother',
       Father_Mobile: '9876543210',
       Mother_Mobile: '9876543211',
       Mess_Start_Date: '2026-08-25',
@@ -15530,6 +15770,7 @@ function downloadStudentImportTemplate() {
           'Roll_No',
           'Photo',
           'Parent_Name',
+          'Mother_Name',
           'Father_Mobile',
           'Mother_Mobile',
           'Mess_Start_Date',
@@ -15544,6 +15785,7 @@ function downloadStudentImportTemplate() {
   worksheet['!cols'] = [
     {wch: 16},
     {wch: 20},
+    {wch: 24},
     {wch: 24},
     {wch: 10},
     {wch: 10},
@@ -17087,7 +17329,8 @@ function renderAdminRequests(
         ['School Student ID', request.schoolStudentId || '-'],
         ['Class', (request.className || '-') + (request.division ? ' / ' + request.division : '')],
         ['Roll No.', request.rollNo || '-'],
-        ['Parent', request.parentName || '-'],
+        ['Father / Guardian', request.parentName || '-'],
+        ['Mother', request.motherName || '-'],
         ['Father Mobile', request.fatherMobile || request.contactNo || '-'],
         ['Mother Mobile', request.motherMobile || '-'],
         ['Mess Start', request.messStartDate || '-'],
@@ -17740,21 +17983,21 @@ function printStudentMessIdCard_(student) {
       '.actions button{padding:9px 14px;border:0;border-radius:7px;background:#0b57d0;color:#fff;font-weight:700;cursor:pointer}.actions .close{background:#e5e7eb;color:#111}' +
       '.sheet{width:190mm;min-height:270mm;margin:auto;background:#fff;padding:15mm 0;display:flex;justify-content:center;align-items:flex-start}' +
       '.card{position:relative;width:54mm;height:86mm;overflow:hidden;border:0.35mm solid #cbd7e8;border-radius:3mm;background:#fff;box-shadow:0 2mm 5mm rgba(15,39,72,.18)}' +
-      '.head{position:absolute;left:0;top:0;width:54mm;height:22.5mm;background:#173b88}' +
-      '.logoBox{position:absolute;left:2.6mm;top:1.5mm;width:10.8mm;height:17mm;overflow:hidden;border-radius:1.2mm;background:#fff}' +
-      '.logoBox img{position:absolute;width:18.3mm;height:39.65mm;left:-2.32mm;top:-11.1mm}' +
-      '.brand{position:absolute;left:15.5mm;top:3mm;color:#fff;font-weight:800;font-size:2.75mm;line-height:1.15}' +
-      '.dept{position:absolute;left:15.5mm;top:11.2mm;color:#ccecff;font-size:2.25mm;font-weight:700}' +
-      '.title{position:absolute;left:15.5mm;top:15.3mm;width:35.5mm;height:5.3mm;border-radius:3mm;background:#fff;color:#1a3d91;font-size:2.35mm;font-weight:800;display:flex;align-items:center;justify-content:center}' +
-      '.stripe1,.stripe2,.stripe3{position:absolute;left:0;width:54mm}.stripe1{top:22.5mm;height:1.5mm;background:#13afe1}.stripe2{top:24mm;height:1.1mm;background:#f4c126}.stripe3{top:25.1mm;height:1.1mm;background:#b31b1b}' +
-      '.photo{position:absolute;left:17mm;top:27.8mm;width:20mm;height:22mm;object-fit:cover;border:0.6mm solid #1b4aa8;border-radius:2mm;background:#eef2f7}' +
+      '.head{position:absolute;left:0;top:0;width:54mm;height:21.5mm;background:#173b88}' +
+      '.logoBox{position:absolute;left:2.2mm;top:1.3mm;width:12.5mm;height:14.5mm;padding:.7mm;overflow:hidden;border-radius:1.2mm;background:#fff;display:flex;align-items:center;justify-content:center}' +
+      '.logoBox img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}' +
+      '.brand{position:absolute;left:16.5mm;top:2.5mm;width:34.5mm;color:#fff;font-weight:800;font-size:2.65mm;line-height:1.16}' +
+      '.dept{position:absolute;left:16.5mm;top:9.8mm;color:#ccecff;font-size:2.15mm;font-weight:700}' +
+      '.title{position:absolute;left:16.5mm;top:14.1mm;width:34.5mm;height:5.2mm;border-radius:3mm;background:#fff;color:#1a3d91;font-size:2.25mm;font-weight:800;display:flex;align-items:center;justify-content:center}' +
+      '.stripe1,.stripe2,.stripe3{position:absolute;left:0;width:54mm}.stripe1{top:21.5mm;height:1.4mm;background:#13afe1}.stripe2{top:22.9mm;height:1mm;background:#f4c126}.stripe3{top:23.9mm;height:1mm;background:#b31b1b}' +
+      '.photo{position:absolute;left:18mm;top:26.2mm;width:18mm;height:20mm;object-fit:cover;border:0.5mm solid #1b4aa8;border-radius:2mm;background:#eef2f7}' +
       '.noPhoto{display:flex;align-items:center;justify-content:center;color:#778399;font-size:2mm;font-weight:700}' +
-      '.name{position:absolute;left:2.5mm;top:51.2mm;width:49mm;text-align:center;font-size:3.1mm;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-      '.ids{position:absolute;left:2.5mm;top:55.5mm;width:49mm;text-align:center;color:#58667d;font-size:2.15mm;font-weight:700;line-height:1.5}' +
-      '.panel{position:absolute;left:2.3mm;top:62mm;width:49.4mm;height:20.7mm;border:0.3mm solid #d6e1ef;border-radius:2mm;background:#f3f7fc}' +
-      '.qr{position:absolute;left:3.7mm;top:63.1mm;width:18.4mm;height:18.4mm;background:#fff;padding:.7mm;border:0.3mm solid #ccd8e8;border-radius:1.5mm}' +
-      '.details{position:absolute;left:24.5mm;top:63.5mm;width:25.5mm;font-size:2mm;line-height:1.25}.details label{display:block;color:#64748b;font-size:1.75mm;font-weight:700;margin-top:1.1mm}.details strong{font-size:2.35mm}' +
-      '.footer{position:absolute;left:2mm;bottom:1.2mm;width:50mm;text-align:center;color:#68778e;font-size:1.65mm}' +
+      '.name{position:absolute;left:2.5mm;top:47.4mm;width:49mm;text-align:center;font-size:2.85mm;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.ids{position:absolute;left:2.5mm;top:51.4mm;width:49mm;text-align:center;color:#58667d;font-size:1.9mm;font-weight:700;line-height:1.45}' +
+      '.panel{position:absolute;left:2.3mm;top:57.7mm;width:49.4mm;height:25.2mm;border:0.3mm solid #d6e1ef;border-radius:2mm;background:#f3f7fc}' +
+      '.qr{position:absolute;left:3.7mm;top:60.1mm;width:19.2mm;height:19.2mm;background:#fff;padding:.7mm;border:0.3mm solid #ccd8e8;border-radius:1.5mm}' +
+      '.details{position:absolute;left:25mm;top:59.1mm;width:24.5mm;font-size:1.85mm;line-height:1.12}.details label{display:block;color:#64748b;font-size:1.55mm;font-weight:700;margin-top:.8mm}.details strong{display:block;font-size:2.05mm;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.footer{position:absolute;left:2mm;bottom:.75mm;width:50mm;text-align:center;color:#68778e;font-size:1.45mm}' +
       '@media print{body{background:#fff}.actions{display:none}.sheet{width:190mm;min-height:270mm;padding-top:15mm}.card{box-shadow:none;page-break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}}' +
       '</style></head><body>' +
       '<div class="actions"><button onclick="window.print()">Print / Save PDF</button><button class="close" onclick="window.close()">Close</button></div>' +
@@ -22996,6 +23239,36 @@ function renderDashboard(
 
 
 
+function showFastAllowedScan_(data) {
+  const student = data && data.student ? data.student : {};
+  const isStaff = String(student.memberType || '').trim().toUpperCase() === 'STAFF';
+  const target = document.getElementById('scanResult');
+  if (target) {
+    target.innerHTML =
+      '<div class="fastAllowedScan"><strong>✅ MEAL ALLOWED</strong>' +
+      '<span>' + escapeHtml(student.name || (isStaff ? 'Staff' : 'Student')) +
+      (student.id ? ' · ' + escapeHtml(student.id) : '') +
+      (student.className ? ' · ' + escapeHtml(student.className) : '') +
+      '</span></div>';
+  }
+
+  try {
+    if (navigator.vibrate) navigator.vibrate(70);
+  }
+  catch (error) {}
+
+  window.setTimeout(function() {
+    if (target) target.innerHTML = '';
+    const scannerCard = document.getElementById('scannerCard');
+    if (scannerCard) scannerCard.classList.remove('showingResult');
+    scanLocked = false;
+    if (activeScreen === 'scan' && sessionToken && !scannerRunning) {
+      startScanner();
+    }
+  }, 800);
+}
+
+
 function showMealResult(
   data,
   targetId,
@@ -23642,6 +23915,8 @@ function updateFeeDashboard_() {
   const staffAction = document.getElementById('feeDashboardStaffAction');
   const dailyAction = document.getElementById('feeDashboardDailyAction');
   const outstandingAction = document.getElementById('feeDashboardOutstandingAction');
+  const partialCard = document.getElementById('feeDashboardPartialCard');
+  const unpaidCard = document.getElementById('feeDashboardUnpaidCard');
   const refreshButton = document.getElementById('feeDashboardRefreshButton');
 
 
@@ -23653,6 +23928,8 @@ function updateFeeDashboard_() {
   if (staffAction) staffAction.style.display = hasFeeViewPermission() ? '' : 'none';
   if (dailyAction) dailyAction.style.display = canReports ? '' : 'none';
   if (outstandingAction) outstandingAction.style.display = canReports ? '' : 'none';
+  if (partialCard) partialCard.style.display = canReports ? '' : 'none';
+  if (unpaidCard) unpaidCard.style.display = canReports ? '' : 'none';
   if (refreshButton) refreshButton.style.display = canReports ? '' : 'none';
 
 
@@ -23664,6 +23941,10 @@ function updateFeeDashboard_() {
   const todayReceipts = document.getElementById('feeDashboardTodayReceipts');
   const outstandingAmount = document.getElementById('feeDashboardOutstanding');
   const outstandingStudents = document.getElementById('feeDashboardOutstandingStudents');
+  const partialCount = document.getElementById('feeDashboardPartialCount');
+  const partialAmount = document.getElementById('feeDashboardPartialAmount');
+  const unpaidCount = document.getElementById('feeDashboardUnpaidCount');
+  const unpaidAmount = document.getElementById('feeDashboardUnpaidAmount');
 
 
   if (todayCollection) {
@@ -23691,6 +23972,27 @@ function updateFeeDashboard_() {
     outstandingStudents.textContent = feeDashboardOutstandingSummary
       ? String(Number(outstanding.studentCount || 0))
       : '—';
+  }
+
+  if (partialCount) {
+    partialCount.textContent = feeDashboardOutstandingSummary
+      ? String(Number(outstanding.partialCount || 0))
+      : '—';
+  }
+  if (partialAmount) {
+    partialAmount.textContent = feeDashboardOutstandingSummary
+      ? formatFeeMoney_(outstanding.partialOutstanding || 0) + ' pending · Click for follow-up'
+      : 'Click to open follow-up list';
+  }
+  if (unpaidCount) {
+    unpaidCount.textContent = feeDashboardOutstandingSummary
+      ? String(Number(outstanding.unpaidCount || 0))
+      : '—';
+  }
+  if (unpaidAmount) {
+    unpaidAmount.textContent = feeDashboardOutstandingSummary
+      ? formatFeeMoney_(outstanding.unpaidOutstanding || 0) + ' pending · Click for follow-up'
+      : 'Click to open follow-up list';
   }
 
 
@@ -23769,6 +24071,25 @@ function refreshFeeDashboard_() {
 
 
   loadFeeCollectionReport_();
+}
+
+
+function openOutstandingFollowup_(status) {
+  if (!hasFeeReportsPermission()) {
+    window.alert('Fee reports permission is not enabled.');
+    return;
+  }
+  status = String(status || 'OUTSTANDING').trim().toUpperCase();
+  const statusInput = document.getElementById('feeOutstandingStatus');
+  const classInput = document.getElementById('feeOutstandingClass');
+  const searchInput = document.getElementById('feeOutstandingSearch');
+  if (statusInput) statusInput.value = status;
+  if (classInput) classInput.value = '';
+  if (searchInput) searchInput.value = '';
+  openFeeTab_('outstanding');
+  window.setTimeout(function() {
+    if (!currentRequestId && !feeReportBusy) loadFeeOutstandingReport_();
+  }, 80);
 }
 
 
@@ -25621,7 +25942,10 @@ function renderFeeOutstandingReport_(result) {
           '<td class="money"><strong>' + escapeHtml(formatFeeMoney_(item.outstanding)) + '</strong></td>' +
           '<td>' + escapeHtml(item.paymentStatus || '-') + '</td>' +
           '<td>' + (canAdminSupervisorShare_() && item.contactNo
-            ? '<div class="staffMessListActions"><button type="button" onclick="messagePendingFee_(' + index + ')">🟢 Message</button><button type="button" onclick="callPendingFee_(' + index + ')">📞 Call</button></div>'
+            ? '<div class="helperText" style="margin-bottom:4px;"><strong>' +
+                escapeHtml(item.contactName || 'Parent') + '</strong><br>' +
+                escapeHtml(item.contactNo || '') + '</div>' +
+              '<div class="staffMessListActions"><button type="button" onclick="messagePendingFee_(' + index + ')">🟢 Message</button><button type="button" onclick="callPendingFee_(' + index + ')">📞 Call</button></div>'
             : '<span class="helperText">' + (item.contactNo ? 'Restricted' : 'No mobile') + '</span>') + '</td>' +
         '</tr>';
       }).join('')
@@ -25763,11 +26087,14 @@ function printFeeOutstandingReport_() {
       index + 1,
       item.studentId || '-',
       item.studentName || '-',
+      item.accountType || 'STUDENT',
       item.className || '-',
       formatFeeMoney_(item.totalPayable),
       formatFeeMoney_(item.totalReceived),
       formatFeeMoney_(item.outstanding),
-      item.paymentStatus || '-'
+      item.paymentStatus || '-',
+      item.contactName || '-',
+      item.contactNo || '-'
     ];
   });
 
@@ -25781,7 +26108,7 @@ function printFeeOutstandingReport_() {
       ['Outstanding', formatFeeMoney_(summary.totalOutstanding)],
       ['Advance', formatFeeMoney_(summary.totalAdvance)]
     ],
-    ['#', 'Account ID', 'Account Holder', 'Type', 'Class / Department', 'Total Debit / Payable', 'Total Credit / Received', 'Outstanding', 'Status'],
+    ['#', 'Account ID', 'Account Holder', 'Type', 'Class / Department', 'Total Debit / Payable', 'Total Credit / Received', 'Outstanding', 'Status', 'Contact Person', 'Mobile'],
     rows
   );
 }
@@ -25918,7 +26245,7 @@ function downloadFeeOutstandingReportExcel_() {
     ['Total Outstanding', feeLedgerNumber_(summary.totalOutstanding)],
     ['Total Advance', feeLedgerNumber_(summary.totalAdvance)],
     [],
-    ['Sr. No.', 'Account ID', 'Account Holder', 'Type', 'Class / Department', 'Opening Due', 'Current Year Fee', 'Other Debit', 'Total Debit / Payable', 'B/F Received', 'New Credits / Receipts', 'Total Credit / Received', 'Outstanding', 'Status']
+    ['Sr. No.', 'Account ID', 'Account Holder', 'Type', 'Class / Department', 'Opening Due', 'Current Year Fee', 'Other Debit', 'Total Debit / Payable', 'B/F Received', 'New Credits / Receipts', 'Total Credit / Received', 'Outstanding', 'Status', 'Contact Person', 'Mobile']
   ];
 
   (report.rows || []).forEach(function(item, index) {
@@ -25936,7 +26263,9 @@ function downloadFeeOutstandingReportExcel_() {
       feeLedgerNumber_(item.newReceipts),
       feeLedgerNumber_(item.totalReceived),
       feeLedgerNumber_(item.outstanding),
-      item.paymentStatus || ''
+      item.paymentStatus || '',
+      item.contactName || '',
+      item.contactNo || ''
     ]);
   });
 
@@ -25945,7 +26274,7 @@ function downloadFeeOutstandingReportExcel_() {
 
   sheet['!cols'] = [
     {wch:8},{wch:14},{wch:28},{wch:12},{wch:22},{wch:14},{wch:17},{wch:14},
-    {wch:18},{wch:16},{wch:18},{wch:19},{wch:16},{wch:12}
+    {wch:18},{wch:16},{wch:18},{wch:19},{wch:16},{wch:12},{wch:24},{wch:16}
   ];
 
   rows.forEach(function(row, index) {
@@ -27180,6 +27509,134 @@ function publicMessAppUrl_() {
 }
 
 
+function publicMessRegistrationUrl_() {
+  return publicMessAppUrl_() + '?register=1';
+}
+
+
+function showPublicRegistration_() {
+  publicRegistrationRequested = true;
+  const loginPage = document.getElementById('loginPage');
+  const appShell = document.getElementById('appShell');
+  const publicPage = document.getElementById('publicRegistrationPage');
+  if (loginPage) loginPage.style.display = 'none';
+  if (appShell) appShell.style.display = 'none';
+  if (publicPage) publicPage.style.display = 'block';
+  const startDate = document.getElementById('publicMessStartDate');
+  if (startDate && !startDate.value) startDate.value = localDateInputValue_();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+
+function showStaffLoginFromPublic_() {
+  publicRegistrationRequested = false;
+  if (window.history && window.history.replaceState) {
+    window.history.replaceState({}, document.title, publicMessAppUrl_());
+  }
+  showLogin();
+}
+
+
+function setPublicRegistrationBusy_(busy) {
+  const button = document.getElementById('publicRegistrationSubmitButton');
+  if (!button) return;
+  button.disabled = busy === true;
+  button.textContent = busy === true ? 'Submitting Registration...' : 'Submit Mess Registration';
+}
+
+
+function submitPublicRegistration_() {
+  if (currentRequestId) return;
+  const value = function(id) {
+    const element = document.getElementById(id);
+    return element ? String(element.value || '').trim() : '';
+  };
+  const admissionNo = value('publicAdmissionNo').toUpperCase();
+  const schoolStudentId = value('publicSchoolStudentId').toUpperCase();
+  const studentName = value('publicStudentName');
+  const className = value('publicClass');
+  const fatherName = value('publicFatherName');
+  const fatherMobile = value('publicFatherMobile').replace(/\s+/g, '');
+  const messStartDate = value('publicMessStartDate');
+  const consent = document.getElementById('publicConsent').checked;
+
+  if (!admissionNo || !schoolStudentId || !studentName || !className || !fatherName || !fatherMobile || !messStartDate) {
+    showError('publicRegistrationResult', 'Please fill all fields marked with * before submitting.');
+    return;
+  }
+  if (!/^\+?[0-9]{10,13}$/.test(fatherMobile)) {
+    showError('publicRegistrationResult', 'Please enter a valid Father Mobile Number.');
+    return;
+  }
+  if (!consent) {
+    showError('publicRegistrationResult', 'Please confirm the parent consent checkbox.');
+    return;
+  }
+  if (!backendReady) {
+    showError('publicRegistrationResult', 'Mess System is still connecting. Please wait and try again.');
+    return;
+  }
+
+  setPublicRegistrationBusy_(true);
+  document.getElementById('publicRegistrationResult').innerHTML =
+    '<div class="scanFeeLoading">Submitting registration for Admin approval...</div>';
+  postToBackend('public_student_mess_request', {
+    admissionNo:admissionNo,
+    schoolStudentId:schoolStudentId,
+    studentName:studentName,
+    className:className,
+    division:value('publicDivision').toUpperCase(),
+    rollNo:value('publicRollNo'),
+    photo:publicStudentPhotoDataUrl,
+    parentName:fatherName,
+    motherName:value('publicMotherName'),
+    contactNo:fatherMobile,
+    fatherMobile:fatherMobile,
+    motherMobile:value('publicMotherMobile').replace(/\s+/g, ''),
+    messStartDate:messStartDate,
+    notes:value('publicNotes'),
+    consent:'TRUE',
+    website:value('publicWebsite')
+  });
+}
+
+
+function clearPublicRegistrationForm_(keepResult) {
+  [
+    'publicAdmissionNo','publicSchoolStudentId','publicStudentName','publicClass','publicDivision',
+    'publicRollNo','publicFatherName','publicMotherName','publicFatherMobile','publicMotherMobile',
+    'publicNotes','publicWebsite'
+  ].forEach(function(id) {
+    const element = document.getElementById(id);
+    if (element) element.value = '';
+  });
+  const consent = document.getElementById('publicConsent');
+  if (consent) consent.checked = false;
+  publicStudentPhotoDataUrl = '';
+  setStudentPhotoPreview_('public', '', false);
+  if (!keepResult) {
+    const result = document.getElementById('publicRegistrationResult');
+    if (result) result.innerHTML = '';
+  }
+}
+
+
+function sharePublicRegistrationLink_(channel) {
+  if (!canAdminSupervisorShare_()) {
+    window.alert('Only Admin or Supervisor can share the registration link.');
+    return;
+  }
+  const subject = 'NSIS Student Mess Registration';
+  const text = 'Dear Parent,\n\nPlease open the link below and submit the Student Mess Registration form. The Mess facility will start only after Admin approval.\n\n' + publicMessRegistrationUrl_();
+  if (String(channel || '').toUpperCase() === 'EMAIL') {
+    window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
+  }
+  else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(subject + '\n\n' + text), '_blank');
+  }
+}
+
+
 function shareTextByChannel_(subject, text, channel) {
   const url = publicMessAppUrl_();
   const body = String(text || '').trim() + '\n\nOpen NSIS Mess Application:\n' + url;
@@ -27428,9 +27885,68 @@ function downloadCurrentMasterDetails_(entity) {
     return;
   }
   masterDetailsPendingEntity = entity;
+  masterDetailsExportPurpose = 'MASTER_UPDATE';
   document.getElementById(masterDetailsResultId_(entity)).innerHTML =
     '<div class="scanFeeLoading">Preparing all current ' + escapeHtml(entity.toLowerCase()) + ' details...</div>';
   postToBackend('master_details_export', {token:sessionToken, entity:entity});
+}
+
+
+function downloadStudentCardPrintingExcel_() {
+  if (!sessionToken) { showLogin(); return; }
+  if (currentRequestId) return;
+  if (typeof XLSX === 'undefined') {
+    window.alert('Excel library is not loaded. Refresh the page and try again.');
+    return;
+  }
+  masterDetailsPendingEntity = 'STUDENT';
+  masterDetailsExportPurpose = 'ID_CARD';
+  postToBackend('master_details_export', {token:sessionToken, entity:'STUDENT'});
+}
+
+
+function createStudentCardPrintingWorkbook_(rows) {
+  const columns = [
+    ['Student Mess ID','studentId'], ['School Student ID','schoolStudentId'],
+    ['Admission No','admissionNo'], ['Student Name','studentName'],
+    ['Class','className'], ['Division','division'], ['Roll No','rollNo'],
+    ['Father / Guardian Name','parentName'], ['Mother Name','motherName'],
+    ['Father Mobile','fatherMobile'], ['Mother Mobile','motherMobile'],
+    ['Academic Year','academicYear'], ['Branch','branch'],
+    ['QR Code Data','qrCode'], ['Photo File','photoFile'],
+    ['Photo Available','photoAvailable'], ['Mess Active','messActive'],
+    ['Card Print Status','cardPrintStatus']
+  ];
+  const data = [columns.map(function(item) { return item[0]; })].concat(
+    rows.map(function(row) {
+      return columns.map(function(item) {
+        if (item[1] === 'cardPrintStatus') return '';
+        return row[item[1]] === undefined ? '' : row[item[1]];
+      });
+    })
+  );
+  const sheet = XLSX.utils.aoa_to_sheet(data);
+  sheet['!cols'] = columns.map(function(item) {
+    const wide = ['studentName','parentName','motherName','qrCode','photoFile'].indexOf(item[1]) >= 0;
+    return {wch: wide ? 30 : Math.max(14, item[0].length + 2)};
+  });
+  sheet['!autofilter'] = {ref:'A1:' + XLSX.utils.encode_col(columns.length - 1) + Math.max(data.length, 1)};
+
+  const instructions = XLSX.utils.aoa_to_sheet([
+    ['NSIS STUDENT MESS ID CARD PRINTING DATA'],
+    ['1','This file contains card-ready student data for the printing vendor.'],
+    ['2','Student Mess ID, School Student ID, mobile numbers and QR Code Data must be treated as text.'],
+    ['3','QR Code Data must be encoded exactly as provided; do not alter spaces or characters.'],
+    ['4','Photo File identifies the saved student photo. Photo Available shows YES / NO.'],
+    ['5','Card Print Status is blank for the vendor to mark PRINTED / HOLD / CORRECTION.'],
+    ['6','Do not use this file to update fee, receipt or ledger data.']
+  ]);
+  instructions['!cols'] = [{wch:5},{wch:105}];
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, sheet, 'Student Card Data');
+  XLSX.utils.book_append_sheet(workbook, instructions, 'Instructions');
+  XLSX.writeFile(workbook, 'NSIS_Student_Mess_ID_Card_Printing_Data.xlsx');
+  window.alert(rows.length + ' student card record(s) downloaded successfully.');
 }
 
 
@@ -27444,7 +27960,8 @@ function createMasterDetailsWorkbook_(entity, rows) {
   const columns = student ? [
     ['Student Mess ID','studentId'], ['School Student ID','schoolStudentId'],
     ['Admission No','admissionNo'], ['Student Name','studentName'], ['Class','className'],
-    ['Division','division'], ['Roll No','rollNo'], ['Parent Name','parentName'],
+    ['Division','division'], ['Roll No','rollNo'], ['Father / Guardian Name','parentName'],
+    ['Mother Name','motherName'],
     ['Father Mobile','fatherMobile'], ['Mother Mobile','motherMobile'], ['Mess Active','messActive'],
     ['Mess Start Date','messStartDate'], ['Mess Stop Date','messStopDate'], ['Notes','notes'],
     ['Pending Fields','pendingFields']
@@ -27524,7 +28041,8 @@ function readMasterDetailsUpdateFile_(event, entity) {
       const studentAliases = {
         studentmessid:'studentId', schoolstudentid:'schoolStudentId', admissionno:'admissionNo',
         studentname:'studentName', class:'className', division:'division', rollno:'rollNo',
-        parentname:'parentName', fathermobile:'fatherMobile', mothermobile:'motherMobile',
+        parentname:'parentName', fatherguardianname:'parentName', mothername:'motherName',
+        fathermobile:'fatherMobile', mothermobile:'motherMobile',
         messactive:'messActive', messstartdate:'messStartDate', messstopdate:'messStopDate', notes:'notes'
       };
       const staffAliases = {
@@ -27629,6 +28147,11 @@ function escapeHtml(
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+
+if (publicRegistrationRequested) {
+  showPublicRegistration_();
 }
 
 
