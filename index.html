@@ -18899,7 +18899,7 @@ function createAdminUser() {
 
 
 
-  if (!/^\\d{6}$/.test(pin)) {
+  if (!/^\d{6}$/.test(pin)) {
     showError(
       'userManagementResult',
       'PIN must be exactly 6 digits.'
@@ -19347,7 +19347,7 @@ function resetAdminUserPin() {
 
 
 
-  if (!/^\\d{6}$/.test(newPin)) {
+  if (!/^\d{6}$/.test(newPin)) {
     showError(
       'userManagementResult',
       'New PIN must be exactly 6 digits.'
