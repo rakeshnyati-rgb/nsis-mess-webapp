@@ -6283,6 +6283,23 @@
         </div>
 
 
+        <div id="staffMessBulkImportCard" class="card manualCard">
+          <div class="sectionTitle" style="margin-top:0;">📥 Bulk Staff Excel Import</div>
+          <div class="helperText" style="margin-bottom:10px;">Download the format, fill one staff member per row and upload it here. Staff ID will be generated automatically.</div>
+          <div class="staffMessActionRow">
+            <button class="btn btnSoft" type="button" onclick="downloadStaffMessImportTemplate_()">⬇️ Download Staff Excel Format</button>
+            <label class="btn btnSoft" for="staffMessBulkFile" style="cursor:pointer;">📂 Select Excel File</label>
+            <input id="staffMessBulkFile" type="file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="readStaffMessImportFile_(event)">
+          </div>
+          <div id="staffMessBulkPreview" class="resultArea"></div>
+          <div class="staffMessActionRow">
+            <button id="staffMessBulkImportButton" class="btn btnPrimary" type="button" onclick="submitStaffMessBulkImport_()" disabled>⬆️ Import Staff Accounts</button>
+            <button class="btn btnSoft" type="button" onclick="clearStaffMessBulkImport_()">Clear</button>
+          </div>
+          <div id="staffMessBulkResult" class="resultArea"></div>
+        </div>
+
+
         <div id="staffMessManageCard" class="card manualCard">
           <div class="sectionTitle" style="margin-top:0;">Add / Update Staff Mess Account</div>
           <div class="staffMessFormGrid">
@@ -6329,6 +6346,8 @@
           <div id="staffMessReportActions" class="feeReportActions" style="display:none;">
             <button type="button" class="btn btnSoft" onclick="printStaffMessReport_()">🖨️ Print A4 / Save PDF</button>
             <button type="button" class="btn btnPrimary" onclick="downloadStaffMessReportExcel_()">⬇️ Download Excel</button>
+            <button type="button" class="btn btnSoft adminSupervisorShare" onclick="shareLoadedReport_('STAFF','WHATSAPP')">🟢 WhatsApp</button>
+            <button type="button" class="btn btnSoft adminSupervisorShare" onclick="shareLoadedReport_('STAFF','EMAIL')">✉️ Email</button>
           </div>
         </div>
         <div id="staffMessQrTemp" style="position:fixed;left:-9999px;top:-9999px;"></div>
@@ -6442,6 +6461,8 @@
             <div id="feeCollectionReportActions" class="feeReportActions" style="display:none;">
               <button type="button" class="btn btnSoft" onclick="printFeeCollectionReport_()">🖨️ Print / Save PDF</button>
               <button type="button" class="btn btnPrimary" onclick="downloadFeeCollectionReportExcel_()">⬇️ Download Excel</button>
+              <button type="button" class="btn btnSoft adminSupervisorShare" onclick="shareLoadedReport_('COLLECTION','WHATSAPP')">🟢 WhatsApp</button>
+              <button type="button" class="btn btnSoft adminSupervisorShare" onclick="shareLoadedReport_('COLLECTION','EMAIL')">✉️ Email</button>
             </div>
           </div>
         </div>
@@ -6492,6 +6513,8 @@
             <div id="feeOutstandingReportActions" class="feeReportActions" style="display:none;">
               <button type="button" class="btn btnSoft" onclick="printFeeOutstandingReport_()">🖨️ Print / Save PDF</button>
               <button type="button" class="btn btnPrimary" onclick="downloadFeeOutstandingReportExcel_()">⬇️ Download Excel</button>
+              <button type="button" class="btn btnSoft adminSupervisorShare" onclick="shareLoadedReport_('OUTSTANDING','WHATSAPP')">🟢 WhatsApp</button>
+              <button type="button" class="btn btnSoft adminSupervisorShare" onclick="shareLoadedReport_('OUTSTANDING','EMAIL')">✉️ Email</button>
             </div>
           </div>
         </div>
@@ -6761,6 +6784,16 @@
           <button id="moreReportsAction" class="moreMenuItem" type="button" onclick="openScreen('reports')">
             <span class="moreMenuIcon">📈</span>
             <span class="moreMenuText"><span class="moreMenuTitle">Reports & MIS</span><span class="moreMenuSub">Meals, students, QR collection and history</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
+          <button id="moreShareWhatsAppAction" class="moreMenuItem" type="button" onclick="shareAppLink_('WHATSAPP')">
+            <span class="moreMenuIcon">🟢</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Share App on WhatsApp</span><span class="moreMenuSub">Send login link to Admin or Supervisor</span></span>
+            <span class="moreMenuArrow">›</span>
+          </button>
+          <button id="moreShareEmailAction" class="moreMenuItem" type="button" onclick="shareAppLink_('EMAIL')">
+            <span class="moreMenuIcon">✉️</span>
+            <span class="moreMenuText"><span class="moreMenuTitle">Share App by Email</span><span class="moreMenuSub">Email the secure application link</span></span>
             <span class="moreMenuArrow">›</span>
           </button>
         </div>
@@ -7087,6 +7120,8 @@ let feeStudentSearchAutoOpenQuery = '';
 let staffMessMembers = [];
 let staffMessCanManage = false;
 let staffMessBusy = false;
+let staffMessBulkRows = [];
+let staffMessSearchTimer = null;
 let lastStaffMessReport = null;
 
 
@@ -8345,6 +8380,8 @@ window.addEventListener(
       if (result.success !== true) {
         const targetId = operation === 'staff_mess_save'
           ? 'staffMessSaveResult'
+          : operation === 'staff_mess_bulk_import'
+            ? 'staffMessBulkResult'
           : operation === 'staff_mess_report'
             ? 'staffMessReportResult'
             : operation === 'staff_mess_bill'
@@ -8375,6 +8412,10 @@ window.addEventListener(
             escapeHtml(result.member && result.member.id ? result.member.id : '-') +
           '</strong></div></div>';
         resetStaffMessForm_(true);
+        loadStaffMessList_();
+      }
+      else if (operation === 'staff_mess_bulk_import') {
+        renderStaffMessBulkResult_(result);
         loadStaffMessList_();
       }
       else if (operation === 'staff_mess_bill') {
@@ -10339,6 +10380,8 @@ window.addEventListener(
         setStaffMessBusy_(false);
         const targetId = failedAction === 'staff_mess_save'
           ? 'staffMessSaveResult'
+          : failedAction === 'staff_mess_bulk_import'
+            ? 'staffMessBulkResult'
           : failedAction === 'staff_mess_bill'
             ? 'staffMessBillingResult'
             : failedAction === 'staff_mess_report'
@@ -10850,6 +10893,8 @@ function postToBackend(
       setStaffMessBusy_(false);
       const targetId = action === 'staff_mess_save'
         ? 'staffMessSaveResult'
+        : action === 'staff_mess_bulk_import'
+          ? 'staffMessBulkResult'
         : action === 'staff_mess_bill'
           ? 'staffMessBillingResult'
           : action === 'staff_mess_report'
@@ -11324,6 +11369,8 @@ function postToBackend(
           setStaffMessBusy_(false);
           const targetId = actionCopy === 'staff_mess_save'
             ? 'staffMessSaveResult'
+            : actionCopy === 'staff_mess_bulk_import'
+              ? 'staffMessBulkResult'
             : actionCopy === 'staff_mess_bill'
               ? 'staffMessBillingResult'
               : actionCopy === 'staff_mess_report'
@@ -12318,6 +12365,8 @@ function updateStaffUI() {
   const moreManualAction = document.getElementById('moreManualAction');
   const moreAdminAction = document.getElementById('moreAdminAction');
   const moreReportsAction = document.getElementById('moreReportsAction');
+  const moreShareWhatsAppAction = document.getElementById('moreShareWhatsAppAction');
+  const moreShareEmailAction = document.getElementById('moreShareEmailAction');
 
 
 
@@ -12332,6 +12381,11 @@ function updateStaffUI() {
   if (moreManualAction) moreManualAction.style.display = hasManualPermission() ? 'flex' : 'none';
   if (moreAdminAction) moreAdminAction.style.display = hasUserManagementPermission() ? 'flex' : 'none';
   if (moreReportsAction) moreReportsAction.style.display = hasReportsPermission() ? 'flex' : 'none';
+  if (moreShareWhatsAppAction) moreShareWhatsAppAction.style.display = canAdminSupervisorShare_() ? 'flex' : 'none';
+  if (moreShareEmailAction) moreShareEmailAction.style.display = canAdminSupervisorShare_() ? 'flex' : 'none';
+  document.querySelectorAll('.adminSupervisorShare').forEach(function(button) {
+    button.style.display = canAdminSupervisorShare_() ? '' : 'none';
+  });
 
 
 
@@ -14396,6 +14450,32 @@ document.addEventListener('click', function(event) {
   const searchBox = document.querySelector('.feeStudentSearchBox');
   if (searchBox && !searchBox.contains(event.target)) {
     hideFeeStudentSuggestions_();
+  }
+});
+
+
+document.getElementById('staffMessSearch').addEventListener('input', function() {
+  clearTimeout(staffMessSearchTimer);
+  const value = String(this.value || '').trim();
+
+  if (value.length < 2) {
+    if (!value) {
+      const result = document.getElementById('staffMessListResult');
+      if (result) result.innerHTML = '';
+    }
+    return;
+  }
+
+  staffMessSearchTimer = setTimeout(function() {
+    loadStaffMessList_();
+  }, 450);
+});
+
+
+document.getElementById('staffMessSearch').addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    clearTimeout(staffMessSearchTimer);
+    loadStaffMessList_();
   }
 });
 
@@ -25383,9 +25463,12 @@ function renderFeeOutstandingReport_(result) {
           '<td class="money">' + escapeHtml(formatFeeMoney_(item.totalReceived)) + '</td>' +
           '<td class="money"><strong>' + escapeHtml(formatFeeMoney_(item.outstanding)) + '</strong></td>' +
           '<td>' + escapeHtml(item.paymentStatus || '-') + '</td>' +
+          '<td>' + (canAdminSupervisorShare_() && item.contactNo
+            ? '<div class="staffMessListActions"><button type="button" onclick="messagePendingFee_(' + index + ')">🟢 Message</button><button type="button" onclick="callPendingFee_(' + index + ')">📞 Call</button></div>'
+            : '<span class="helperText">' + (item.contactNo ? 'Restricted' : 'No mobile') + '</span>') + '</td>' +
         '</tr>';
       }).join('')
-    : '<tr><td colspan="9">No accounts found for the selected filters.</td></tr>';
+    : '<tr><td colspan="10">No accounts found for the selected filters.</td></tr>';
 
   const filters = result.filters || {};
 
@@ -25398,7 +25481,7 @@ function renderFeeOutstandingReport_(result) {
       '<div class="reportKpi info"><div class="reportKpiLabel">Advance</div><div class="reportKpiValue reportMoneyValue">' + formatFeeMoney_(summary.totalAdvance) + '</div></div>' +
     '</div>' +
     '<div class="feeReportCaption">Academic Year: <strong>' + escapeHtml(result.financialYear || '-') + '</strong> · Status: <strong>' + escapeHtml(filters.status || 'OUTSTANDING') + '</strong>' + (filters.className ? ' · Class: <strong>' + escapeHtml(filters.className) + '</strong>' : '') + '</div>' +
-    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Account ID</th><th>Account Holder</th><th>Type</th><th>Class / Department</th><th class="money">Total Debit / Payable</th><th class="money">Total Credit / Received</th><th class="money">Outstanding</th><th>Status</th></tr></thead><tbody>' + tableRows + '</tbody></table></div>';
+    '<div class="feeReportTableWrap"><table class="feeReportTable"><thead><tr><th>#</th><th>Account ID</th><th>Account Holder</th><th>Type</th><th>Class / Department</th><th class="money">Total Debit / Payable</th><th class="money">Total Credit / Received</th><th class="money">Outstanding</th><th>Status</th><th>Contact</th></tr></thead><tbody>' + tableRows + '</tbody></table></div>';
 
   const actions =
     document.getElementById('feeOutstandingReportActions');
@@ -25986,6 +26069,13 @@ function hasStaffMessManagePermission_() {
 }
 
 
+function canAdminSupervisorShare_() {
+  if (!currentStaff) return false;
+  const role = String(currentStaff.role || '').trim().toUpperCase();
+  return role === 'ADMIN' || role === 'MESS_MANAGER' || role === 'SUPERVISOR';
+}
+
+
 function localMonthInputValue_() {
   const now = new Date();
   return String(now.getFullYear()) + '-' +
@@ -26031,11 +26121,15 @@ function updateStaffMessPermissionView_() {
   const saveButton = document.getElementById('staffMessSaveButton');
   const billButton = document.getElementById('staffMessBillButton');
   const reportButton = document.getElementById('staffMessReportButton');
+  const bulkCard = document.getElementById('staffMessBulkImportCard');
+  const bulkButton = document.getElementById('staffMessBulkImportButton');
 
   if (manageCard) manageCard.style.display = canManage ? 'block' : 'none';
   if (saveButton) saveButton.disabled = !canManage || staffMessBusy;
   if (billButton) billButton.disabled = !canManage || staffMessBusy;
   if (reportButton) reportButton.disabled = !hasFeeReportsPermission() || staffMessBusy;
+  if (bulkCard) bulkCard.style.display = canManage ? 'block' : 'none';
+  if (bulkButton) bulkButton.disabled = !canManage || staffMessBusy || !staffMessBulkRows.length;
 }
 
 
@@ -26045,6 +26139,7 @@ function setStaffMessBusy_(busy) {
   [
     ['staffMessLoadButton', 'Loading...', '🔎 Load Staff Mess Accounts'],
     ['staffMessSaveButton', 'Saving...', '💾 Save Staff Mess Account'],
+    ['staffMessBulkImportButton', 'Importing...', '⬆️ Import Staff Accounts'],
     ['staffMessBillButton', 'Posting...', '🧾 Post Selected Period Charges'],
     ['staffMessReportButton', 'Loading...', '📊 Load Staff Mess Report']
   ].forEach(function(config) {
@@ -26078,6 +26173,222 @@ function loadStaffMessList_() {
     token: sessionToken,
     search: search
   });
+}
+
+
+function downloadStaffMessImportTemplate_() {
+  if (typeof XLSX === 'undefined') {
+    showError('staffMessBulkResult', 'Excel library is not loaded. Refresh the page and try again.');
+    return;
+  }
+
+  const headers = [
+    'Staff Name',
+    'Staff Type',
+    'Department',
+    'Designation',
+    'Mobile',
+    'Mess Active',
+    'Mess Start Date',
+    'Mess Stop Date',
+    'Charge Basis',
+    'Standard Charge',
+    'Discount Type',
+    'Discount Value',
+    'Discount Reason',
+    'Default Payment Mode',
+    'Notes'
+  ];
+
+  const examples = [
+    ['Example Teacher', 'TEACHER', 'Secondary', 'Teacher', '9876543210', 'TRUE', localDateInputValue_(), '', 'MONTHLY_FIXED', 1500, 'NONE', 0, '', 'SALARY_DEDUCTION', 'Delete this example row before import'],
+    ['Example Staff', 'OTHER_STAFF', 'Administration', 'Helper', '9876543211', 'TRUE', localDateInputValue_(), '', 'MONTHLY_FIXED', 1200, 'PERCENT', 10, 'Approved staff concession', 'CASH', 'Delete this example row before import']
+  ];
+
+  const worksheet = XLSX.utils.aoa_to_sheet([headers].concat(examples));
+  worksheet['!cols'] = [
+    {wch:24}, {wch:15}, {wch:18}, {wch:18}, {wch:14},
+    {wch:12}, {wch:16}, {wch:16}, {wch:18}, {wch:16},
+    {wch:15}, {wch:15}, {wch:28}, {wch:24}, {wch:30}
+  ];
+  worksheet['!autofilter'] = {ref: 'A1:O3'};
+
+  const instructions = XLSX.utils.aoa_to_sheet([
+    ['NSIS STAFF MESS BULK IMPORT - INSTRUCTIONS'],
+    ['1', 'Do not change column headings. Staff ID is generated automatically.'],
+    ['2', 'Staff Type: TEACHER / ADMIN / OTHER_STAFF'],
+    ['3', 'Mess Active: TRUE / FALSE'],
+    ['4', 'Dates: YYYY-MM-DD. Mess Stop Date may be blank.'],
+    ['5', 'Charge Basis: MONTHLY_FIXED / PER_MEAL / NO_CHARGE'],
+    ['6', 'Discount Type: NONE / FIXED / PERCENT'],
+    ['7', 'Payment Mode: CASH / UPI / BANK / CHEQUE / SALARY_DEDUCTION or blank'],
+    ['8', 'Discount Reason is required when discount is applicable.'],
+    ['9', 'Delete example rows before importing actual staff. Maximum 300 rows.']
+  ]);
+  instructions['!cols'] = [{wch:5}, {wch:95}];
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Staff Import');
+  XLSX.utils.book_append_sheet(workbook, instructions, 'Instructions');
+  XLSX.writeFile(workbook, 'NSIS_Staff_Mess_Import_Format.xlsx');
+}
+
+
+function staffMessImportKey_(value) {
+  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+
+function readStaffMessImportFile_(event) {
+  const file = event && event.target && event.target.files
+    ? event.target.files[0]
+    : null;
+
+  staffMessBulkRows = [];
+  updateStaffMessPermissionView_();
+
+  if (!file) return;
+  if (typeof XLSX === 'undefined') {
+    showError('staffMessBulkResult', 'Excel library is not loaded. Refresh the page and try again.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(loadEvent) {
+    try {
+      const bytes = new Uint8Array(loadEvent.target.result);
+      const workbook = XLSX.read(bytes, {type: 'array', cellDates: false});
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rawRows = XLSX.utils.sheet_to_json(sheet, {defval: '', raw: false});
+
+      const aliases = {
+        staffname: 'staffName', stafftype: 'staffType', department: 'department',
+        designation: 'designation', mobile: 'mobile', messactive: 'messActive',
+        messstartdate: 'messStartDate', messstopdate: 'messStopDate',
+        chargebasis: 'chargeBasis', standardcharge: 'standardCharge',
+        discounttype: 'discountType', discountvalue: 'discountValue',
+        discountreason: 'discountReason', defaultpaymentmode: 'defaultPaymentMode',
+        notes: 'notes'
+      };
+
+      staffMessBulkRows = rawRows.map(function(raw) {
+        const row = {};
+        Object.keys(raw).forEach(function(header) {
+          const key = aliases[staffMessImportKey_(header)];
+          if (key) row[key] = raw[header];
+        });
+        return row;
+      }).filter(function(row) {
+        return String(row.staffName || '').trim();
+      });
+
+      if (!staffMessBulkRows.length) {
+        throw new Error('No Staff rows found. Please use the downloaded Staff Excel format.');
+      }
+
+      if (staffMessBulkRows.length > 300) {
+        throw new Error('Maximum 300 Staff rows are allowed in one import.');
+      }
+
+      renderStaffMessBulkPreview_();
+      document.getElementById('staffMessBulkResult').innerHTML = '';
+      updateStaffMessPermissionView_();
+    }
+    catch (error) {
+      staffMessBulkRows = [];
+      updateStaffMessPermissionView_();
+      showError('staffMessBulkResult', error && error.message ? error.message : String(error));
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+
+function renderStaffMessBulkPreview_() {
+  const target = document.getElementById('staffMessBulkPreview');
+  if (!target) return;
+
+  const preview = staffMessBulkRows.slice(0, 10);
+  target.innerHTML =
+    '<div class="feeReportCaption"><strong>' + staffMessBulkRows.length +
+      ' Staff row(s) ready.</strong> Previewing first ' + preview.length + '.</div>' +
+    '<div class="feeTableWrap"><table class="feeReportTable"><thead><tr>' +
+      '<th>#</th><th>Staff Name</th><th>Type</th><th>Department</th>' +
+      '<th>Charge Basis</th><th>Charge</th><th>Discount</th><th>Payment</th>' +
+    '</tr></thead><tbody>' +
+    preview.map(function(row, index) {
+      const discount = String(row.discountType || 'NONE').toUpperCase() === 'NONE'
+        ? 'NONE'
+        : String(row.discountType || '') + ' ' + String(row.discountValue || 0);
+      return '<tr><td>' + (index + 2) + '</td><td>' + escapeHtml(row.staffName || '') +
+        '</td><td>' + escapeHtml(row.staffType || 'TEACHER') +
+        '</td><td>' + escapeHtml(row.department || '') +
+        '</td><td>' + escapeHtml(row.chargeBasis || 'MONTHLY_FIXED') +
+        '</td><td>' + escapeHtml(String(row.standardCharge || '0')) +
+        '</td><td>' + escapeHtml(discount) +
+        '</td><td>' + escapeHtml(row.defaultPaymentMode || '') + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+
+function submitStaffMessBulkImport_() {
+  if (!sessionToken) {
+    showLogin();
+    return;
+  }
+  if (!hasStaffMessManagePermission_() || staffMessBusy || currentRequestId) {
+    showError('staffMessBulkResult', 'Staff mess management permission not allowed.');
+    return;
+  }
+  if (!staffMessBulkRows.length) {
+    showError('staffMessBulkResult', 'Select and preview the Staff Excel file first.');
+    return;
+  }
+
+  if (!window.confirm('Create ' + staffMessBulkRows.length + ' new Staff Mess account(s)?')) return;
+
+  document.getElementById('staffMessBulkResult').innerHTML =
+    '<div class="scanFeeLoading">Importing Staff accounts...</div>';
+  setStaffMessBusy_(true);
+  postToBackend('staff_mess_bulk_import', {
+    token: sessionToken,
+    rowsJson: JSON.stringify(staffMessBulkRows)
+  });
+}
+
+
+function renderStaffMessBulkResult_(result) {
+  const errors = Array.isArray(result.errors) ? result.errors : [];
+  document.getElementById('staffMessBulkResult').innerHTML =
+    '<div class="feeReceiptSuccess"><div style="font-size:26px;">✅</div>' +
+      '<div style="font-weight:950;">' + escapeHtml(result.message || 'Staff import completed.') + '</div>' +
+    '</div>' +
+    (errors.length
+      ? '<div class="result error" style="margin-top:10px;"><strong>Skipped rows:</strong><br>' +
+        errors.slice(0, 30).map(function(item) {
+          return 'Row ' + escapeHtml(String(item.rowNumber || '-')) + ' — ' +
+            escapeHtml(item.staffName || '-') + ': ' + escapeHtml(item.message || 'Error');
+        }).join('<br>') + '</div>'
+      : '');
+
+  staffMessBulkRows = [];
+  const file = document.getElementById('staffMessBulkFile');
+  if (file) file.value = '';
+  const preview = document.getElementById('staffMessBulkPreview');
+  if (preview) preview.innerHTML = '';
+  updateStaffMessPermissionView_();
+}
+
+
+function clearStaffMessBulkImport_() {
+  staffMessBulkRows = [];
+  const file = document.getElementById('staffMessBulkFile');
+  if (file) file.value = '';
+  const preview = document.getElementById('staffMessBulkPreview');
+  if (preview) preview.innerHTML = '';
+  const result = document.getElementById('staffMessBulkResult');
+  if (result) result.innerHTML = '';
+  updateStaffMessPermissionView_();
 }
 
 
@@ -26645,6 +26956,138 @@ function downloadStaffMessReportExcel_() {
     workbook,
     'Staff_Mess_Report_' + String(result.billingMonth || '').replace(/[^0-9-]/g, '') + '_' + String(result.billingPeriod || 'MONTHLY') + '.xlsx'
   );
+}
+
+
+function publicMessAppUrl_() {
+  return 'https://rakeshnyati-rgb.github.io/nsis-mess-webapp/';
+}
+
+
+function shareTextByChannel_(subject, text, channel) {
+  const url = publicMessAppUrl_();
+  const body = String(text || '').trim() + '\n\nOpen NSIS Mess Application:\n' + url;
+
+  if (String(channel || '').toUpperCase() === 'EMAIL') {
+    window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+    return;
+  }
+
+  window.open('https://wa.me/?text=' + encodeURIComponent(subject + '\n\n' + body), '_blank');
+}
+
+
+function shareAppLink_(channel) {
+  if (!canAdminSupervisorShare_()) {
+    window.alert('Only Admin or Supervisor can share the application link.');
+    return;
+  }
+  shareTextByChannel_(
+    'NSIS Mess Management Application',
+    'Admin / Supervisor login link. Please use only your authorised Login ID and PIN.',
+    channel
+  );
+}
+
+
+function pendingFeeContact_(index) {
+  if (!canAdminSupervisorShare_() || !lastFeeOutstandingReport) return null;
+  const rows = Array.isArray(lastFeeOutstandingReport.rows)
+    ? lastFeeOutstandingReport.rows
+    : [];
+  return rows[Number(index)] || null;
+}
+
+
+function indianWhatsAppNumber_(value) {
+  let number = String(value || '').replace(/\D/g, '');
+  if (number.length === 10) number = '91' + number;
+  return number;
+}
+
+
+function messagePendingFee_(index) {
+  const item = pendingFeeContact_(index);
+  if (!item) {
+    window.alert('Only Admin or Supervisor can send pending fee messages.');
+    return;
+  }
+  const number = indianWhatsAppNumber_(item.contactNo);
+  if (!number) {
+    window.alert('Mobile number is not available for this account.');
+    return;
+  }
+
+  const message =
+    'Dear Parent / Staff,\n\nMess fee of ' + formatFeeMoney_(item.outstanding) +
+    ' is pending for ' + (item.studentName || item.studentId || 'the account') +
+    ' (' + (item.studentId || '-') + '). Kindly arrange payment at the earliest.\n\n' +
+    'Nyati Samata International School - Mess Department';
+
+  window.open('https://wa.me/' + number + '?text=' + encodeURIComponent(message), '_blank');
+}
+
+
+function callPendingFee_(index) {
+  const item = pendingFeeContact_(index);
+  if (!item) {
+    window.alert('Only Admin or Supervisor can call from this report.');
+    return;
+  }
+  const number = String(item.contactNo || '').replace(/[^0-9+]/g, '');
+  if (!number) {
+    window.alert('Mobile number is not available for this account.');
+    return;
+  }
+  window.location.href = 'tel:' + number;
+}
+
+
+function shareLoadedReport_(reportType, channel) {
+  if (!canAdminSupervisorShare_()) {
+    window.alert('Only Admin or Supervisor can share reports.');
+    return;
+  }
+  reportType = String(reportType || '').toUpperCase();
+  let subject = 'NSIS Mess Report';
+  let text = '';
+
+  if (reportType === 'STAFF' && lastStaffMessReport) {
+    const report = lastStaffMessReport;
+    const summary = report.summary || {};
+    subject = 'NSIS Staff Mess Report - ' + (report.periodLabel || report.billingMonth || '');
+    text = 'Staff: ' + Number(summary.staffCount || 0) +
+      '\nMeals: ' + Number(summary.mealCount || 0) +
+      '\nGross Charges: ' + formatFeeMoney_(summary.grossCharge) +
+      '\nDiscount: ' + formatFeeMoney_(summary.discount) +
+      '\nNet Charges: ' + formatFeeMoney_(summary.netCharge) +
+      '\nOutstanding: ' + formatFeeMoney_(summary.currentOutstanding);
+  }
+  else if (reportType === 'COLLECTION' && lastFeeCollectionReport) {
+    const report = lastFeeCollectionReport;
+    const summary = report.summary || {};
+    subject = 'NSIS Fee Collection Report - ' + (report.startDate || '') + ' to ' + (report.endDate || '');
+    text = 'Total Collected: ' + formatFeeMoney_(summary.totalCollected) +
+      '\nActive Receipts: ' + Number(summary.activeReceiptCount || 0) +
+      '\nReversed Receipts: ' + Number(summary.reversedReceiptCount || 0);
+  }
+  else if (reportType === 'OUTSTANDING' && lastFeeOutstandingReport) {
+    const report = lastFeeOutstandingReport;
+    const summary = report.summary || {};
+    subject = 'NSIS Outstanding Fees Report';
+    text = 'Accounts: ' + Number(summary.studentCount || 0) +
+      '\nTotal Payable: ' + formatFeeMoney_(summary.totalPayable) +
+      '\nTotal Received: ' + formatFeeMoney_(summary.totalReceived) +
+      '\nOutstanding: ' + formatFeeMoney_(summary.totalOutstanding);
+  }
+  else {
+    window.alert('Please load the report first.');
+    return;
+  }
+
+  text += '\n\nFor the complete PDF/Excel report, download it from the application and attach it to WhatsApp or Email.';
+  shareTextByChannel_(subject, text, channel);
 }
 
 
