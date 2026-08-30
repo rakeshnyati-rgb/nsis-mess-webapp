@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- NSIS FINAL: STAFF_FLEXIBLE_BILLING_2026-08-30 -->
+<!-- NSIS FINAL: STUDENT_STAFF_CLEAR_TABS_2026-08-30 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6059,7 +6059,7 @@
 
       <div class="feeTabBar" role="tablist" aria-label="Fees and accounts sections">
         <button id="feeTabButtonDashboard" class="feeTabButton active" type="button" role="tab" aria-selected="true" onclick="openFeeTab_('dashboard')">🏠 Overview</button>
-        <button id="feeTabButtonAccount" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('account')">📒 Member Account</button>
+        <button id="feeTabButtonAccount" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('account')">🎓 Student Mess</button>
         <button id="feeTabButtonStaff" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('staff')">👩‍🏫 Staff Mess</button>
         <button id="feeTabButtonCollect" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('collect')">💳 Collect Fee</button>
         <button id="feeTabButtonDaily" class="feeTabButton" type="button" role="tab" aria-selected="false" onclick="openFeeTab_('daily')">📅 Daily Collection</button>
@@ -6099,7 +6099,7 @@
 
 
         <div class="feeDashboardActions">
-          <button class="feeDashboardAction" type="button" onclick="openFeeTab_('account')"><strong>📒 Member Account</strong><span>Search student/staff ledger, receipts and reversal history</span></button>
+          <button class="feeDashboardAction" type="button" onclick="openFeeTab_('account')"><strong>🎓 Student Mess</strong><span>Student search, fee ledger, receipts and collection</span></button>
           <button id="feeDashboardStaffAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('staff')"><strong>👩‍🏫 Staff Mess</strong><span>Teacher, admin and other staff charges, discounts and QR</span></button>
           <button id="feeDashboardCollectAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('collect')"><strong>💳 Collect Fee</strong><span>Create a secure fee receipt</span></button>
           <button id="feeDashboardDailyAction" class="feeDashboardAction" type="button" onclick="openFeeTab_('daily')"><strong>📅 Daily Collection</strong><span>Collection register, PDF and Excel</span></button>
@@ -6110,7 +6110,7 @@
 
       <div id="feeTabAccount" class="feeTabView" role="tabpanel">
         <div class="card manualCard">
-          <div class="sectionTitle" style="margin-top:0;">Student / Staff Mess Account</div>
+          <div class="sectionTitle" style="margin-top:0;">🎓 Student Mess Account</div>
           <div class="feeStudentSearchBox">
             <div class="field" style="margin-top:0;">
               <label for="feeStudentSearch">Student / Staff Name or Code / ID</label>
@@ -6201,8 +6201,8 @@
         <div id="feeCollectEmptyState" class="card feeEmptyState">
           <div class="feeEmptyStateIcon">🎓</div>
           <div id="feeCollectEmptyTitle" class="feeEmptyStateTitle">Select an account first</div>
-          <div id="feeCollectEmptyText" class="feeEmptyStateText">Open Member Account, search the Student/Staff ID and verify the outstanding balance. Then return here to collect the fee.</div>
-          <button class="btn btnPrimary" type="button" onclick="openFeeTab_('account')">Open Member Account</button>
+          <div id="feeCollectEmptyText" class="feeEmptyStateText">Open Student Mess, search the Student/Staff ID and verify the outstanding balance. Then return here to collect the fee.</div>
+          <button class="btn btnPrimary" type="button" onclick="openFeeTab_('account')">Open Student Mess</button>
         </div>
 
 
@@ -22801,7 +22801,7 @@ function updateFeeCollectView_() {
     else {
       emptyTitle.textContent = 'Select an account first';
       emptyText.textContent =
-        'Open Member Account, search the Student/Staff ID and verify the outstanding balance. Then return here to collect the fee.';
+        'Open Student Mess, search the Student/Staff ID and verify the outstanding balance. Then return here to collect the fee.';
     }
   }
 }
