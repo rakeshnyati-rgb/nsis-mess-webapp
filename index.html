@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- BUILD: FEE_PERMISSION_CONTROLS_FINAL_2026-08-31 -->
 <!-- NSIS FINAL: STUDENT_MESS_ID_PHOTO_CAMERA_2026-08-30 -->
 <html lang="en">
 <head>
@@ -6083,6 +6084,26 @@
             <input id="newUserManual" type="checkbox">
             <span>Manual Entry Permission</span>
           </label>
+
+          <label class="checkTile">
+            <input id="newUserFeeView" type="checkbox">
+            <span>Fee Account View</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="newUserFeeCollect" type="checkbox">
+            <span>Fee Collection</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="newUserFeeReverse" type="checkbox">
+            <span>Fee Receipt Reversal</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="newUserFeeReports" type="checkbox">
+            <span>Fee Reports</span>
+          </label>
         </div>
 
 
@@ -6229,6 +6250,26 @@
           <label class="checkTile">
             <input id="editUserManual" type="checkbox">
             <span>Manual Entry Permission</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="editUserFeeView" type="checkbox">
+            <span>Fee Account View</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="editUserFeeCollect" type="checkbox">
+            <span>Fee Collection</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="editUserFeeReverse" type="checkbox">
+            <span>Fee Receipt Reversal</span>
+          </label>
+
+          <label class="checkTile">
+            <input id="editUserFeeReports" type="checkbox">
+            <span>Fee Reports</span>
           </label>
         </div>
 
@@ -18569,6 +18610,10 @@ function renderAdminUsers(users) {
       ['Role', user.role || '-'],
       ['Active', user.active === true ? 'YES' : 'NO'],
       ['Manual Entry', user.canManualEntry === true ? 'ALLOWED' : 'NOT ALLOWED'],
+      ['Fee View', user.canFeeView === true ? 'ALLOWED' : 'NOT ALLOWED'],
+      ['Fee Collect', user.canFeeCollect === true ? 'ALLOWED' : 'NOT ALLOWED'],
+      ['Fee Reverse', user.canFeeReverse === true ? 'ALLOWED' : 'NOT ALLOWED'],
+      ['Fee Reports', user.canFeeReports === true ? 'ALLOWED' : 'NOT ALLOWED'],
       ['PIN', user.pinSet === true ? 'SET' : 'NOT SET'],
       ['Email', user.email || '-'],
       ['Notes', user.notes || '-']
@@ -18778,6 +18823,11 @@ function clearCreateUserForm() {
   document.getElementById(
     'newUserManual'
   ).checked = false;
+
+  ['newUserFeeView', 'newUserFeeCollect', 'newUserFeeReverse', 'newUserFeeReports']
+    .forEach(function(id) {
+      document.getElementById(id).checked = false;
+    });
 }
 
 
@@ -18838,9 +18888,18 @@ function createAdminUser() {
 
 
   const pin =
-    document.getElementById(
-      'newUserPin'
-    ).value.trim();
+    String(
+      document.getElementById(
+        'newUserPin'
+      ).value || ''
+    )
+      .replace(/[\u0966-\u096F]/g, function(digit) {
+        return String(digit.charCodeAt(0) - 0x0966);
+      })
+      .replace(/[\uFF10-\uFF19]/g, function(digit) {
+        return String(digit.charCodeAt(0) - 0xFF10);
+      })
+      .replace(/\s+/g, '');
 
 
 
@@ -18857,6 +18916,11 @@ function createAdminUser() {
     document.getElementById(
       'newUserManual'
     ).checked;
+
+  const canFeeView = document.getElementById('newUserFeeView').checked;
+  const canFeeCollect = document.getElementById('newUserFeeCollect').checked;
+  const canFeeReverse = document.getElementById('newUserFeeReverse').checked;
+  const canFeeReports = document.getElementById('newUserFeeReports').checked;
 
 
 
@@ -18936,6 +19000,10 @@ function createAdminUser() {
       role: role,
       active: active,
       canManualEntry: canManualEntry,
+      canFeeView: canFeeView,
+      canFeeCollect: canFeeCollect,
+      canFeeReverse: canFeeReverse,
+      canFeeReports: canFeeReports,
       notes: notes,
       pin: pin,
       reason: reason
@@ -19043,6 +19111,11 @@ function openEditUserPanel(
     'editUserManual'
   ).checked =
     selectedAdminUser.canManualEntry === true;
+
+  document.getElementById('editUserFeeView').checked = selectedAdminUser.canFeeView === true;
+  document.getElementById('editUserFeeCollect').checked = selectedAdminUser.canFeeCollect === true;
+  document.getElementById('editUserFeeReverse').checked = selectedAdminUser.canFeeReverse === true;
+  document.getElementById('editUserFeeReports').checked = selectedAdminUser.canFeeReports === true;
 
 
 
@@ -19209,6 +19282,11 @@ function updateAdminUser() {
       'editUserManual'
     ).checked;
 
+  const canFeeView = document.getElementById('editUserFeeView').checked;
+  const canFeeCollect = document.getElementById('editUserFeeCollect').checked;
+  const canFeeReverse = document.getElementById('editUserFeeReverse').checked;
+  const canFeeReports = document.getElementById('editUserFeeReports').checked;
+
 
 
 
@@ -19291,6 +19369,10 @@ function updateAdminUser() {
       role: role,
       active: active,
       canManualEntry: canManualEntry,
+      canFeeView: canFeeView,
+      canFeeCollect: canFeeCollect,
+      canFeeReverse: canFeeReverse,
+      canFeeReports: canFeeReports,
       notes: notes,
       reason: reason
     }
@@ -19332,9 +19414,18 @@ function resetAdminUserPin() {
 
 
   const newPin =
-    document.getElementById(
-      'editUserNewPin'
-    ).value.trim();
+    String(
+      document.getElementById(
+        'editUserNewPin'
+      ).value || ''
+    )
+      .replace(/[\u0966-\u096F]/g, function(digit) {
+        return String(digit.charCodeAt(0) - 0x0966);
+      })
+      .replace(/[\uFF10-\uFF19]/g, function(digit) {
+        return String(digit.charCodeAt(0) - 0xFF10);
+      })
+      .replace(/\s+/g, '');
 
 
 
